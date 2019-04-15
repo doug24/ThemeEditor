@@ -10,17 +10,16 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace ThemeEditor
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for ColorEditor.xaml
     /// </summary>
-    public partial class MainWindow : ThemedWindow
+    public partial class ColorEditor : Window
     {
-        public MainWindow()
+        public ColorEditor()
         {
             InitializeComponent();
         }
