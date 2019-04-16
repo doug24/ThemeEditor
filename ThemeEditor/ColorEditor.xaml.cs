@@ -17,11 +17,21 @@ namespace ThemeEditor
     /// <summary>
     /// Interaction logic for ColorEditor.xaml
     /// </summary>
-    public partial class ColorEditor : Window
+    public partial class ColorEditor : UserControl
     {
+        private ColorEditorViewModel vm;
+
         public ColorEditor()
         {
             InitializeComponent();
+            vm = new ColorEditorViewModel();
+            DataContext = vm;
+        }
+
+        public Color Color
+        {
+            get => vm.Color;
+            set => vm.Color = value;
         }
     }
 }

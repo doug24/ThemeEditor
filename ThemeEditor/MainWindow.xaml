@@ -16,6 +16,12 @@
     </local:ThemedWindow.Background>
 
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        
+        <local:ColorEditor Grid.Column="1" />
 
     </Grid>
 

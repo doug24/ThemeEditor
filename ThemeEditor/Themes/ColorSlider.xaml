@@ -29,7 +29,7 @@
                                 MinHeight="25"
                                 BorderBrush="{TemplateBinding BorderBrush}"
                                 BorderThickness="{TemplateBinding BorderThickness}">
-                            <Border Margin="5,5,0.5,5" Background="{TemplateBinding Background}" BorderBrush="Black" BorderThickness="1" />
+                            <Border Margin="5" Background="{TemplateBinding Background}" BorderBrush="Black" BorderThickness="1" />
                         </Border>
                         <Track Grid.Row="0" Name="PART_Track">
                             <Track.DecreaseRepeatButton>

@@ -23,7 +23,7 @@ namespace ThemeEditor
 
         public static readonly DependencyProperty MinColorProperty =
             DependencyProperty.Register("MinColor", typeof(Color), typeof(ColorSlider),
-                new FrameworkPropertyMetadata(Colors.DimGray, new PropertyChangedCallback(ColorChangedCallback)));
+                new FrameworkPropertyMetadata(Color.FromArgb(255, 76, 76, 76), new PropertyChangedCallback(ColorChangedCallback)));
 
         public Color MinColor
         {
