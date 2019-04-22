@@ -16,18 +16,13 @@ using System.Windows.Shapes;
 namespace ThemeEditor
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for TestControls.xaml
     /// </summary>
-    public partial class MainWindow : ThemedWindow
+    public partial class TestControls : UserControl
     {
-        private MainViewModel vm;
-
-        public MainWindow()
+        public TestControls()
         {
             InitializeComponent();
-
-            vm = new MainViewModel();
-            DataContext = vm;
         }
     }
 }

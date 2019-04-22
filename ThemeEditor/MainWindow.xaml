@@ -6,22 +6,42 @@
                     xmlns:local="clr-namespace:ThemeEditor"
                     mc:Ignorable="d"
                     Icon="StyleSheet.ico"
-                    Title="Theme Editor" Height="450" Width="800">
+                    Title="Theme Editor" Height="640" Width="1080">
 
     <local:ThemedWindow.Resources>
     </local:ThemedWindow.Resources>
-    
+
     <local:ThemedWindow.Background>
         <DynamicResource ResourceKey="GradientBackground"/>
     </local:ThemedWindow.Background>
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition />
+            <ColumnDefinition Width="300"/>
+            <ColumnDefinition Width="300"/>
         </Grid.ColumnDefinitions>
-        
-        <local:ColorEditor Grid.Column="1" />
+
+        <Grid Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition  Height="Auto"/>
+            </Grid.RowDefinitions>
+            <ScrollViewer Grid.Row="0" HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible">
+                <local:TestControls HorizontalAlignment="Left" VerticalAlignment="Top">
+                    <local:TestControls.LayoutTransform>
+                        <ScaleTransform ScaleX="{Binding Value, ElementName=zoom}" ScaleY="{Binding Value, ElementName=zoom}"/>
+                    </local:TestControls.LayoutTransform>
+                </local:TestControls>
+            </ScrollViewer>
+
+            <Slider Grid.Row="1" x:Name="zoom" Margin="12,3"
+                    Minimum="1" Maximum="3" SmallChange="0.05" LargeChange="0.1" />
+
+        </Grid>
+
+        <local:BrushResourceList Grid.Column="1" DataContext="{Binding BrushResourceVM}"/>
+        <local:ColorEditor Grid.Column="2" DataContext="{Binding ColorEditorVM}"/>
 
     </Grid>
 

@@ -3,18 +3,21 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:ThemeEditor"
              StartupUri="MainWindow.xaml">
-    
+
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Themes\DarkBrushes.xaml" />
                 <ResourceDictionary Source="Themes\ThemedWindow.xaml" />
+                <ResourceDictionary Source="Themes\TextBox.xaml" />
                 <ResourceDictionary Source="Themes\Button.xaml" />
+                <ResourceDictionary Source="Themes\CheckBox.xaml" />
+                <ResourceDictionary Source="Themes\ComboBox.xaml" />
                 <ResourceDictionary Source="Themes\RadioButton.xaml" />
                 <ResourceDictionary Source="Themes\GroupBox.xaml" />
                 <ResourceDictionary Source="Themes\Styles.xaml" />
                 <ResourceDictionary Source="Themes\CustomTemplates.xaml" />
-                
+
                 <ResourceDictionary Source="Themes\ColorSlider.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>

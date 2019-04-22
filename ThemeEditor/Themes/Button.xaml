@@ -5,7 +5,7 @@
     <Style x:Key="ButtonBaseStyle" TargetType="Button">
         <Style.Triggers>
             <DataTrigger Binding="{Binding IsEnabled, RelativeSource={RelativeSource Self}}" Value="False">
-                <Setter Property="Foreground" Value="{DynamicResource DisabledControlTextBrush}" />
+                <Setter Property="Foreground" Value="{DynamicResource Button.Disabled.Foreground}" />
             </DataTrigger>
         </Style.Triggers>
         <Setter Property="Background" Value="{DynamicResource Button.Static.Background}" />
@@ -35,7 +35,7 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsDefaulted" Value="true">
-                            <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
+                            <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource Control.Accent}" />
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="true">
                             <Setter TargetName="border" Property="Background" Value="{DynamicResource Button.MouseOver.Background}" />
@@ -55,13 +55,18 @@
             </Setter.Value>
         </Setter>
     </Style>
+    
     <Style BasedOn="{StaticResource ButtonBaseStyle}" TargetType="Button" />
 
-    <Style
-        x:Key="BorderlessButtonStyle"
-        BasedOn="{StaticResource ButtonBaseStyle}"
-        TargetType="Button">
+    <Style x:Key="BorderlessButtonStyle" BasedOn="{StaticResource ButtonBaseStyle}" TargetType="Button"> 
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="BorderThickness" Value="0" />
     </Style>
+
+    <Style x:Key="FormButtonStyle" BasedOn="{StaticResource ButtonBaseStyle}" TargetType="Button"> 
+        <Setter Property="MinHeight" Value="24" />
+        <Setter Property="MinWidth" Value="80" />
+        <Setter Property="Margin" Value="3,0" />
+    </Style>
+    
 </ResourceDictionary>

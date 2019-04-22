@@ -3,6 +3,9 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Windows.Media;
 using System.Collections.ObjectModel;
+using System.Windows.Input;
+using System.Globalization;
+using System.Windows;
 
 namespace ThemeEditor
 {
@@ -14,8 +17,10 @@ namespace ThemeEditor
         {
             var webColors = GetWebColors();
             webColors.Sort(new HueComparer());
-
             WebColors = new ObservableCollection<NamedColor>(webColors);
+
+            var themeColors = GetThemeColors().OrderBy(nc => nc.Name);
+            ThemeColors = new ObservableCollection<NamedColor>(themeColors);
 
             var systemColors = GetSystemColors().OrderBy(nc => nc.Name);
             SystemColors = new ObservableCollection<NamedColor>(systemColors);
@@ -75,10 +80,12 @@ namespace ThemeEditor
                 color = value;
                 UpdateElements(color);
                 ColorBrush = new SolidColorBrush(color);
+                ColorARGB = string.Join(", ", color.A, color.R, color.G, color.B);
+                ColorHex = string.Format("#{0:X2}{1:X2}{2:X2}{3:X2}", color.A, color.R, color.G, color.B);
+                ColorBrightness = Brightness(color).ToString();
                 OnPropertyChanged("Color");
             }
         }
-
 
         private SolidColorBrush colorBrush = Brushes.White;
         public SolidColorBrush ColorBrush
@@ -91,6 +98,63 @@ namespace ThemeEditor
 
                 colorBrush = value;
                 OnPropertyChanged("ColorBrush");
+            }
+        }
+
+
+        private string colorInput = string.Empty;
+        public string ColorInput
+        {
+            get { return colorInput; }
+            set
+            {
+                if (colorInput == value)
+                    return;
+
+                colorInput = value;
+                OnPropertyChanged("ColorInput");
+            }
+        }
+
+        private string colorARGB = string.Empty;
+        public string ColorARGB
+        {
+            get { return colorARGB; }
+            set
+            {
+                if (colorARGB == value)
+                    return;
+
+                colorARGB = value;
+                OnPropertyChanged("ColorARGB");
+            }
+        }
+
+        private string colorHex = string.Empty;
+        public string ColorHex
+        {
+            get { return colorHex; }
+            set
+            {
+                if (colorHex == value)
+                    return;
+
+                colorHex = value;
+                OnPropertyChanged("ColorHex");
+            }
+        }
+
+        private string colorBrightness = string.Empty;
+        public string ColorBrightness
+        {
+            get { return colorBrightness; }
+            set
+            {
+                if (colorBrightness == value)
+                    return;
+
+                colorBrightness = value;
+                OnPropertyChanged("ColorBrightness");
             }
         }
 
@@ -281,6 +345,7 @@ namespace ThemeEditor
 
 
         public ObservableCollection<NamedColor> WebColors { get; }
+        public ObservableCollection<NamedColor> ThemeColors { get; }
         public ObservableCollection<NamedColor> SystemColors { get; }
 
 
@@ -334,6 +399,19 @@ namespace ThemeEditor
             return colors;
         }
 
+        private List<NamedColor> GetThemeColors()
+        {
+            List<NamedColor> colors = new List<NamedColor>();
+            var dictionary = Application.Current.Resources.MergedDictionaries[0];
+            foreach (object key in dictionary.Keys)
+            {
+                if (dictionary[key] is SolidColorBrush br)
+                    colors.Add(new NamedColor(key.ToString(), br.Color));
+            }
+
+            return colors;
+        }
+
         private List<NamedColor> GetSystemColors()
         {
             List<NamedColor> colors = new List<NamedColor>();
@@ -347,6 +425,97 @@ namespace ThemeEditor
                 }
             }
             return colors;
+        }
+
+        RelayCommand parseCommand;
+        public ICommand ParseCommand
+        {
+            get
+            {
+                if (parseCommand == null)
+                {
+                    parseCommand = new RelayCommand(
+                        p => ParseText(ColorInput),
+                        q => !string.IsNullOrWhiteSpace(ColorInput)
+                        );
+                }
+                return parseCommand;
+            }
+        }
+
+        private static int Brightness(Color c)
+        {
+            return (int)Math.Sqrt(
+               c.R * c.R * .241 +
+               c.G * c.G * .691 +
+               c.B * c.B * .068);
+        }
+
+        private void ParseText(string clr)
+        {
+            Color? color = null;
+
+            if (!string.IsNullOrEmpty(clr))
+            {
+                if (clr.StartsWith("#", StringComparison.OrdinalIgnoreCase) &&
+                    TryConvert(clr, out Color c1))
+                {
+                    color = c1;
+                }
+                //else if (clr.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
+                //{
+                //    clr = clr.Substring(2);
+                //    uint argb = uint.Parse(clr, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
+                //    if (argb < 0x01000000)
+                //        argb = 0xff000000 | argb; // add the alpha channel
+                //    color = Color.FromArgb();
+                //}
+                else if (TryConvert(clr, out Color c2))
+                {
+                    color = c2;
+                }
+                else if (!clr.Contains(","))
+                {
+                    color = (Color)ColorConverter.ConvertFromString("#" + clr);
+                }
+                else if (char.IsDigit(clr[0]))
+                {
+                    if (clr.Contains(","))
+                    {
+                        string[] splt = clr.Split(',');
+                        if (splt.Length > 3)
+                        {
+                            byte a = Convert.ToByte(splt[0], CultureInfo.InvariantCulture);
+                            byte r = Convert.ToByte(splt[1], CultureInfo.InvariantCulture);
+                            byte g = Convert.ToByte(splt[2], CultureInfo.InvariantCulture);
+                            byte b = Convert.ToByte(splt[3], CultureInfo.InvariantCulture);
+                            color = Color.FromArgb(a, r, g, b);
+                        }
+                        else if (splt.Length > 2)
+                        {
+                            byte r = Convert.ToByte(splt[0], CultureInfo.InvariantCulture);
+                            byte g = Convert.ToByte(splt[1], CultureInfo.InvariantCulture);
+                            byte b = Convert.ToByte(splt[2], CultureInfo.InvariantCulture);
+                            color = Color.FromArgb(255, r, g, b);
+                        }
+                    }
+                }
+            }
+
+            if (color.HasValue)
+                Color = color.Value;
+        }
+
+        private static bool TryConvert(string value, out Color color)
+        {
+            color = Colors.Transparent;
+            try
+            {
+                color = (Color)ColorConverter.ConvertFromString(value);
+                return true;
+            }
+            catch { }
+            return false;
         }
 
         class HueComparer : IComparer<NamedColor>
@@ -374,18 +543,56 @@ namespace ThemeEditor
         }
     }
 
-    public class NamedColor
+    public class NamedColor : ViewModelBase
     {
+        public NamedColor(object key, string name, Color color)
+        {
+            Key = key;
+            Name = name;
+            Color = color;
+            Brush = new SolidColorBrush(color);
+        }
+
         public NamedColor(string name, Color color)
         {
+            Key = name;
             Name = name;
             Color = color;
             Brush = new SolidColorBrush(color);
         }
 
         public string Name { get; private set; }
-        public Color Color { get; private set; }
-        public SolidColorBrush Brush { get; private set; }
+        public object Key { get; private set; }
+        public bool IsModified { get; set; }
+
+        private Color color = Colors.Black;
+        public Color Color
+        {
+            get { return color; }
+            set
+            {
+                if (color == value)
+                    return;
+
+                color = value;
+                Brush = new SolidColorBrush(color);
+                OnPropertyChanged("Color");
+            }
+        }
+
+        private SolidColorBrush brush = Brushes.Black;
+        public SolidColorBrush Brush
+        {
+            get { return brush; }
+            set
+            {
+                if (brush == value)
+                    return;
+
+                brush = value;
+                OnPropertyChanged("Brush");
+            }
+        }
 
         public override bool Equals(object obj)
         {

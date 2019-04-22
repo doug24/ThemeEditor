@@ -14,20 +14,20 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Grid x:Name="LayoutRoot" Background="Transparent" Width="44" Height="30">
+                    <Grid x:Name="LayoutRoot" Background="{DynamicResource Caption.Button.Background}" Width="44" Height="30">
                         <TextBlock x:Name="txt" Text="{TemplateBinding Content}" FontFamily="Marlett" FontSize="14" 
-                                   Foreground="{DynamicResource GrayTextBrush}" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                   Foreground="{DynamicResource Caption.Button.Foreground}" HorizontalAlignment="Center" VerticalAlignment="Center"
                                    RenderOptions.ClearTypeHint="Auto" TextOptions.TextRenderingMode="Aliased"  
                                    TextOptions.TextFormattingMode="Display"/>
                         <!-- Windows 10 only! <TextBlock x:Name="txt" Text="{TemplateBinding Content}" FontFamily="Segoe MDL2 Assets" FontSize="10" 
-                                   Foreground="{DynamicResource GrayTextBrush}" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                   Foreground="{DynamicResource Caption.Button.Foreground}" HorizontalAlignment="Center" VerticalAlignment="Center"
                                    RenderOptions.ClearTypeHint="Auto" TextOptions.TextRenderingMode="Aliased"  
                                    TextOptions.TextFormattingMode="Display"/>-->
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="LayoutRoot" Property="Background" Value="{DynamicResource SystemButton.MouseOver.Background}"/>
-                            <Setter TargetName="txt" Property="Foreground" Value="#000000"/>
+                            <Setter TargetName="LayoutRoot" Property="Background" Value="{DynamicResource Caption.Button.MouseOver.Background}"/>
+                            <Setter TargetName="txt" Property="Foreground" Value="{DynamicResource Caption.Button.MouseOver.Foreground}"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                     <ControlTemplate.Resources>
@@ -42,13 +42,13 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Grid x:Name="LayoutRoot" Background="Transparent" Width="44" Height="30">
+                    <Grid x:Name="LayoutRoot" Background="{DynamicResource Caption.Button.Background}" Width="44" Height="30">
                         <TextBlock x:Name="txt" Text="&#x2573;" FontFamily="Segoe UI Symbol" FontSize="12" 
-                                   Foreground="{DynamicResource GrayTextBrush}" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                   Foreground="{DynamicResource Caption.Button.Foreground}" HorizontalAlignment="Center" VerticalAlignment="Center"
                                    RenderOptions.ClearTypeHint="Auto" TextOptions.TextRenderingMode="Aliased"  
                                    TextOptions.TextFormattingMode="Display"/>
                         <!-- Windows 10 only! <TextBlock x:Name="txt" Text="&#xE8BB;" FontFamily="Segoe MDL2 Assets" FontSize="10" 
-                                   Foreground="{DynamicResource GrayTextBrush}" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                   Foreground="{DynamicResource Caption.Button.Foreground}" HorizontalAlignment="Center" VerticalAlignment="Center"
                                    RenderOptions.ClearTypeHint="Auto" TextOptions.TextRenderingMode="Aliased"  
                                    TextOptions.TextFormattingMode="Display"/>-->
                     </Grid>
@@ -96,14 +96,14 @@
                                     ResizeBorderThickness="5" />
             </Setter.Value>
         </Setter>
-        <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"/>
+        <!--<Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"/>-->
         <Setter Property="Control.Template">
             <Setter.Value>
                 <ControlTemplate TargetType="local:ThemedWindow">
                     <!-- This border lets the active-window highlighting (colored border around window) show through from the OS WindowChrome -->
                     <Border x:Name="root" Padding="1" UseLayoutRounding="True">
                         <DockPanel x:Name="innerRoot" Background="{TemplateBinding Background}">
-                            <DockPanel x:Name="titleBar" Background="{DynamicResource AlternateBackgroundBrush}" DockPanel.Dock="Top"
+                            <DockPanel x:Name="titleBar" Background="{DynamicResource Caption.BackgroundBrush}" DockPanel.Dock="Top"
                                        Height="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(shell:WindowChrome.WindowChrome).CaptionHeight, Mode=OneWay}">
 
                                 <Image DockPanel.Dock="Left"
@@ -127,7 +127,7 @@
                                             WindowChrome.IsHitTestVisibleInChrome="True" />
 
                                 </StackPanel>
- 
+
                                 <TextBlock  Margin="6,1,3,1"
                                             Text="{Binding Title, RelativeSource={RelativeSource TemplatedParent}}"
                                             ToolTip="{Binding Title, RelativeSource={RelativeSource TemplatedParent}}"
@@ -135,7 +135,7 @@
                                             HorizontalAlignment="Left"
                                             VerticalAlignment="Center"
                                             TextTrimming="CharacterEllipsis"
-                                            Foreground="{DynamicResource WindowTextBrush}"/>
+                                            Foreground="{DynamicResource Caption.TextBrush}"/>
 
                             </DockPanel>
                             <Border BorderThickness="{TemplateBinding Border.BorderThickness}" BorderBrush="{TemplateBinding Border.BorderBrush}">

@@ -3,8 +3,8 @@
 
 
     <Style x:Key="ThemedRadioButton" TargetType="RadioButton">
-        <Setter Property="Background" Value="{DynamicResource Radio.Normal.Background}"/>
-        <Setter Property="BorderBrush" Value="{DynamicResource Radio.Normal.Border}"/>
+        <Setter Property="Background" Value="{DynamicResource Radio.Static.Background}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Radio.Static.Border}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type RadioButton}">
@@ -20,10 +20,10 @@
                                 CornerRadius="100" 
                                 HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
                                 Margin="1,1,2,1" 
-                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+                                VerticalAlignment="Center">
                             <Grid x:Name="markGrid" Margin="2">
-                                <Ellipse x:Name="optionMark" Fill="{DynamicResource Radio.Normal.OptionMark}" 
-                                         MinWidth="6" MinHeight="6" Opacity="0"/>
+                                <Ellipse x:Name="optionMark" Fill="{DynamicResource Radio.Static.OptionMark}" 
+                                         MinWidth="9" MinHeight="9" Opacity="0"/>
                             </Grid>
                         </Border>
                         <ContentPresenter x:Name="contentPresenter" 
@@ -35,7 +35,7 @@
                                           Margin="{TemplateBinding Padding}" 
                                           RecognizesAccessKey="True" 
                                           SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" 
-                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                                          VerticalAlignment="Center"/>
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="HasContent" Value="True">
@@ -61,17 +61,17 @@
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter Property="Background" TargetName="radioButtonBorder" Value="{DynamicResource Radio.MouseOver.Background}"/>
                             <Setter Property="BorderBrush" TargetName="radioButtonBorder" Value="{DynamicResource Radio.MouseOver.Border}"/>
-                            <Setter Property="Fill" TargetName="optionMark" Value="{DynamicResource Radio.Normal.OptionMark}"/>
+                            <Setter Property="Fill" TargetName="optionMark" Value="{DynamicResource Radio.Static.OptionMark}"/>
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
-                            <Setter Property="Background" TargetName="radioButtonBorder" Value="{DynamicResource Radio.Enabled.Background}"/>
-                            <Setter Property="BorderBrush" TargetName="radioButtonBorder" Value="{DynamicResource Radio.Enabled.Border}"/>
-                            <Setter Property="Fill" TargetName="optionMark" Value="{DynamicResource Radio.Enabled.OptionMark}"/>
+                            <Setter Property="Background" TargetName="radioButtonBorder" Value="{DynamicResource Radio.Disabled.Background}"/>
+                            <Setter Property="BorderBrush" TargetName="radioButtonBorder" Value="{DynamicResource Radio.Disabled.Border}"/>
+                            <Setter Property="Fill" TargetName="optionMark" Value="{DynamicResource Radio.Disabled.OptionMark}"/>
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
                             <Setter Property="Background" TargetName="radioButtonBorder" Value="{DynamicResource Radio.Pressed.Background}"/>
                             <Setter Property="BorderBrush" TargetName="radioButtonBorder" Value="{DynamicResource Radio.Pressed.Border}"/>
-                            <Setter Property="Fill" TargetName="optionMark" Value="{DynamicResource Radio.Normal.OptionMark}"/>
+                            <Setter Property="Fill" TargetName="optionMark" Value="{DynamicResource Radio.Static.OptionMark}"/>
                         </Trigger>
                         <Trigger Property="IsChecked" Value="True">
                             <Setter Property="Opacity" TargetName="optionMark" Value="1"/>

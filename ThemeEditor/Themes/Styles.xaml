@@ -5,7 +5,7 @@
                     mc:Ignorable="d">
 
     <Style x:Key="TextBlockBaseStyle" TargetType="TextBlock">
-        <Setter Property="Foreground" Value="{DynamicResource WindowTextBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}" />
         <Setter Property="VerticalAlignment" Value="Center"/>
         <Setter Property="HorizontalAlignment" Value="Left"/>
     </Style>
@@ -13,7 +13,7 @@
         <Setter Property="TextWrapping" Value="NoWrap"/>
     </Style>
     <Style x:Key="GrayTextBlockStyle" TargetType="TextBlock" BasedOn="{StaticResource LabelTextBlockStyle}">
-        <Setter Property="Foreground" Value="{DynamicResource GrayTextBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
         <Setter Property="TextWrapping" Value="NoWrap"/>
     </Style>
     
@@ -23,7 +23,7 @@
         </Style.Setters>
         <Style.Triggers>
             <DataTrigger Binding="{Binding Path=FilePatternIgnore}" Value="">
-                <Setter Property="Foreground" Value="{DynamicResource GrayTextBrush}"/>
+                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
             </DataTrigger>
         </Style.Triggers>
     </Style>

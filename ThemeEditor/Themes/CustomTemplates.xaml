@@ -3,6 +3,7 @@
                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
                     xmlns:Microsoft_Windows_Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d">
+    
     <Style x:Key="ComboBoxFocusVisual">
         <Setter Property="Control.Template">
             <Setter.Value>
@@ -12,15 +13,17 @@
             </Setter.Value>
         </Setter>
     </Style>
-    <LinearGradientBrush x:Key="ButtonNormalBackground" EndPoint="0,1" StartPoint="0,0">
+    
+    <!--<LinearGradientBrush x:Key="ButtonNormalBackground" EndPoint="0,1" StartPoint="0,0">
         <GradientStop Color="#F3F3F3" Offset="0"/>
         <GradientStop Color="#EBEBEB" Offset="0.5"/>
         <GradientStop Color="#DDDDDD" Offset="0.5"/>
         <GradientStop Color="#CDCDCD" Offset="1"/>
-    </LinearGradientBrush>
-    <SolidColorBrush x:Key="ButtonNormalBorder" Color="#FF707070"/>
-    <Geometry x:Key="DownArrowGeometry">M 0 0 L 3.5 4 L 7 0 Z</Geometry>
-    <Style x:Key="ComboBoxReadonlyToggleButton" TargetType="{x:Type ToggleButton}">
+    </LinearGradientBrush>-->
+    <!--<SolidColorBrush x:Key="ButtonNormalBorder" Color="#FF707070"/>-->
+    <!--<Geometry x:Key="DownArrowGeometry">M 0 0 L 3.5 4 L 7 0 Z</Geometry>-->
+    
+    <!--<Style x:Key="ComboBoxReadonlyToggleButton" TargetType="{x:Type ToggleButton}">
         <Setter Property="OverridesDefaultStyle" Value="true"/>
         <Setter Property="IsTabStop" Value="false"/>
         <Setter Property="Focusable" Value="false"/>
@@ -44,12 +47,14 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-    </Style>
-    <LinearGradientBrush x:Key="TextBoxBorder" EndPoint="0,20" MappingMode="Absolute" StartPoint="0,0">
+    </Style>-->
+    
+    <!--<LinearGradientBrush x:Key="TextBoxBorder" EndPoint="0,20" MappingMode="Absolute" StartPoint="0,0">
         <GradientStop Color="#ABADB3" Offset="0.05"/>
         <GradientStop Color="#E2E3EA" Offset="0.07"/>
         <GradientStop Color="#E3E9EF" Offset="1"/>
     </LinearGradientBrush>
+    
     <Style x:Key="ComboBoxEditableTextBox" TargetType="{x:Type TextBox}">
         <Setter Property="OverridesDefaultStyle" Value="true"/>
         <Setter Property="AllowDrop" Value="true"/>
@@ -75,8 +80,9 @@
                 <Setter Property="AcceptsReturn" Value="False"/>
             </DataTrigger>
         </Style.Triggers>
-    </Style>
-    <Style x:Key="ComboBoxToggleButton" TargetType="{x:Type ToggleButton}">
+    </Style>-->
+    
+    <!--<Style x:Key="ComboBoxToggleButton" TargetType="{x:Type ToggleButton}">
         <Setter Property="OverridesDefaultStyle" Value="true"/>
         <Setter Property="IsTabStop" Value="false"/>
         <Setter Property="Focusable" Value="false"/>
@@ -98,8 +104,9 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-    </Style>
-    <ControlTemplate x:Key="ComboBoxEditableTemplate" TargetType="{x:Type ComboBox}">
+    </Style>-->
+    
+    <!--<ControlTemplate x:Key="ComboBoxEditableTemplate" TargetType="{x:Type ComboBox}">
         <Grid x:Name="Placement" SnapsToDevicePixels="true">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
@@ -124,7 +131,7 @@
                      IsReadOnly="{Binding IsReadOnly, RelativeSource={RelativeSource TemplatedParent}}" Margin="{TemplateBinding Padding}" 
                      Style="{StaticResource ComboBoxEditableTextBox}" VerticalScrollBarVisibility="Auto" 
                      VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
-            <ToggleButton Grid.Column="1" IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" Style="{StaticResource ComboBoxToggleButton}"/>
+            <ToggleButton Grid.Column="1" IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" Style="{StaticResource ComboBoxToggleButton2}"/>
         </Grid>
         <ControlTemplate.Triggers>
             <Trigger Property="IsKeyboardFocusWithin" Value="true">
@@ -152,16 +159,16 @@
                 <Setter Property="Canvas.Left" TargetName="OpaqueRect" Value="{Binding HorizontalOffset, ElementName=DropDownScrollViewer}"/>
             </Trigger>
         </ControlTemplate.Triggers>
-    </ControlTemplate>
-    <Style x:Key="MetroButton" TargetType="{x:Type CheckBox}">
-        <Setter Property="Width" Value="21"/>
-        <Setter Property="Height" Value="21"/>
-    </Style>
+    </ControlTemplate>-->
+
     <Style x:Key="MultilineComboBoxStyle" TargetType="{x:Type ComboBox}">
         <Setter Property="FocusVisualStyle" Value="{StaticResource ComboBoxFocusVisual}"/>
-        <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}"/>
+        <!--<Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}"/>
         <Setter Property="Background" Value="{StaticResource ButtonNormalBackground}"/>
-        <Setter Property="BorderBrush" Value="{StaticResource ButtonNormalBorder}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource ButtonNormalBorder}"/>-->
+        <Setter Property="Background" Value="{StaticResource ComboBox.Static.Background}" />
+        <Setter Property="BorderBrush" Value="{StaticResource ComboBox.Static.Border}" />
+        <Setter Property="Foreground" Value="{DynamicResource Control.Foreground}" />
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
         <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
@@ -191,7 +198,7 @@
                                 </Border>
                             </Microsoft_Windows_Themes:SystemDropShadowChrome>
                         </Popup>
-                        <ToggleButton BorderBrush="{TemplateBinding BorderBrush}" Background="{TemplateBinding Background}" Grid.ColumnSpan="2" IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" Style="{StaticResource ComboBoxReadonlyToggleButton}"/>
+                        <ToggleButton BorderBrush="{TemplateBinding BorderBrush}" Background="{TemplateBinding Background}" Grid.ColumnSpan="2" IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" Style="{StaticResource ComboBoxReadonlyToggleButton2}"/>
                         <ContentPresenter ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}" ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}" Content="{TemplateBinding SelectionBoxItem}" ContentStringFormat="{TemplateBinding SelectionBoxItemStringFormat}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" IsHitTestVisible="false" Margin="{TemplateBinding Padding}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
                     </Grid>
                     <ControlTemplate.Triggers>
@@ -219,35 +226,15 @@
         </Setter>
         <Style.Triggers>
             <Trigger Property="IsEditable" Value="true">
-                <Setter Property="BorderBrush" Value="{StaticResource TextBoxBorder}"/>
+                <!--<Setter Property="BorderBrush" Value="{StaticResource TextBoxBorder}"/>
                 <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"/>
                 <Setter Property="IsTabStop" Value="false"/>
                 <Setter Property="Padding" Value="3"/>
-                <Setter Property="Template" Value="{StaticResource ComboBoxEditableTemplate}"/>
+                <Setter Property="Template" Value="{StaticResource ComboBoxEditableTemplate}"/>-->
+                <Setter Property="IsTabStop" Value="false" />
+                <Setter Property="Padding" Value="2" />
+                <Setter Property="Template" Value="{StaticResource ComboBoxEditableTemplate}" />
             </Trigger>
         </Style.Triggers>
     </Style>
-    <ControlTemplate x:Key="FavsMetroButtonTemplate" TargetType="{x:Type CheckBox}">
-        <DockPanel Background="Transparent">
-            <Path DockPanel.Dock="Left" StrokeThickness="1" StrokeLineJoin="Round" Stroke="#FF3E3E3E" Fill="{TemplateBinding Background}" 
-                  Data="F1 M 12.5926,4.87357L 10.8135,10.5588L 5.02215,10.5473L 9.71401,14.0495L 7.9138,19.7276L 12.5926,16.2069L 17.2714,19.7276L 15.4711,14.0495L 20.163,10.5473L 14.3716,10.5588L 12.5926,4.87357 Z " 
-                  Stretch="Uniform" Height="22" Margin="2"/>
-            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
-                              VerticalAlignment="Center"
-                              Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" 
-                              SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
-        </DockPanel>
-        <ControlTemplate.Triggers>
-            <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Effect">
-                    <Setter.Value>
-                        <DropShadowEffect Color="LightGray" ShadowDepth="0" Opacity="1" BlurRadius="14"/>
-                    </Setter.Value>
-                </Setter>
-            </Trigger>
-            <Trigger Property="IsChecked" Value="True">
-                <Setter Property="Background" Value="#FFF9E61E"/>
-            </Trigger>
-        </ControlTemplate.Triggers>
-    </ControlTemplate>
 </ResourceDictionary>

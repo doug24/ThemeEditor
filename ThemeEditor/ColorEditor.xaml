@@ -6,13 +6,65 @@
         xmlns:local="clr-namespace:ThemeEditor"
         xmlns:ta="clr-namespace:TAlex.WPF.Controls;assembly=TAlex.WPF.Controls"
         mc:Ignorable="d"
-        d:DesignHeight="300" d:DesignWidth="300"
+        d:DesignHeight="440" d:DesignWidth="300"
         Background="#FFF0F0F0">
 
+    <UserControl.Resources>
+        <Style x:Key="rwText" TargetType="{x:Type TextBox}">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="Margin" Value="3"/>
+            <Setter Property="Width" Value="140"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+        </Style>
+        <Style x:Key="roText" TargetType="{x:Type TextBox}" BasedOn="{StaticResource rwText}">
+            <Setter Property="IsReadOnly" Value="True"/>
+            <Setter Property="Background" Value="WhiteSmoke"/>
+        </Style>
+        <Style x:Key="label" TargetType="{x:Type TextBlock}">
+            <Setter Property="Margin" Value="3"/>
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+        </Style>
+        <Style x:Key="PanelButtonStyle" TargetType="{x:Type Button}">
+            <Setter Property="Padding" Value="3"/>
+            <Setter Property="Margin" Value="3"/>
+            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="MinWidth" Value="80"/>
+        </Style>
+    </UserControl.Resources>
+
     <DockPanel>
+        <Grid DockPanel.Dock="Bottom" Background="Gainsboro">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="24"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition Height="18"/>
+            </Grid.RowDefinitions>
+
+            <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Margin="6" Width="240" Height="50" 
+                            BorderBrush="Black" BorderThickness="1"
+                            Background="{Binding ColorBrush, FallbackValue=White}"/>
+
+            <TextBlock Grid.Row="1" Grid.Column="1" Text="RGB" Style="{StaticResource label}"/>
+            <TextBox Grid.Row="1" Grid.Column="2" Text="{Binding ColorARGB}" Style="{StaticResource roText}"/>
+
+            <TextBlock Grid.Row="2" Grid.Column="1" Text="Hex" Style="{StaticResource label}"/>
+            <TextBox Grid.Row="2" Grid.Column="2" Text="{Binding ColorHex}" Style="{StaticResource roText}"/>
+
+            <TextBlock Grid.Row="3" Grid.Column="1" Text="Br" Style="{StaticResource label}"/>
+            <TextBox Grid.Row="3" Grid.Column="2" Text="{Binding ColorBrightness}" Style="{StaticResource roText}"/>
+
+        </Grid>
         <TabControl>
-            <TabItem Header="Sliders" >
-                <Grid>
+            <TabItem Header="Sliders">
+                <Grid Background="Gainsboro">
                     <Grid.Resources>
                         <Style TargetType="TextBlock">
                             <Setter Property="FontSize" Value="14"/>
@@ -74,15 +126,34 @@
                     <ta:NumericUpDown x:Name="udv" Grid.Row="6" Grid.Column="2" Minimum="0" Maximum="100" Value="{Binding ValueElem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                     <ta:NumericUpDown x:Name="uda" Grid.Row="8" Grid.Column="2" Minimum="0" Maximum="255" Value="{Binding AlphaElem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
-                    <Border Grid.Row="9" Grid.Column="1"  Margin="6" Width="140" Height="50" 
-                            BorderBrush="Black" BorderThickness="1"
-                            Background="{Binding ColorBrush, FallbackValue=White}"/>
-
+                    <StackPanel Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="3" Orientation="Horizontal" Margin="0,18,0,0" HorizontalAlignment="Center">
+                        <Button Content="Parse" Command="{Binding ParseCommand}" Style="{StaticResource PanelButtonStyle}"/>
+                        <TextBox Text="{Binding ColorInput, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                 Style="{StaticResource rwText}"/>
+                    </StackPanel>
                 </Grid>
             </TabItem>
 
             <TabItem Header="Web">
-                <ListBox ItemsSource="{Binding WebColors}" 
+                <ListBox ItemsSource="{Binding WebColors}" Background="Gainsboro"
+                         SelectedItem="{Binding SelectedWebColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Margin="0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="80"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Border Grid.Column="0" Background="{Binding Brush}" Margin="3,0" BorderBrush="Black" BorderThickness="1" />
+                                <TextBlock Grid.Column="1" Text="{Binding Name}" Margin="3,0"  Foreground="Black" />
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </TabItem>
+
+            <TabItem Header="Theme">
+                <ListBox ItemsSource="{Binding ThemeColors}" Background="Gainsboro"
                          SelectedItem="{Binding SelectedWebColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
@@ -100,7 +171,7 @@
             </TabItem>
 
             <TabItem Header="System">
-                <ListBox ItemsSource="{Binding SystemColors}"
+                <ListBox ItemsSource="{Binding SystemColors}" Background="Gainsboro"
                          SelectedItem="{Binding SelectedSystemColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                     <ListBox.ItemTemplate>
                         <DataTemplate>

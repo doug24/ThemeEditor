@@ -9,13 +9,13 @@
         <!--Setter Property="Controls:ControlsHelper.ContentCharacterCasing" Value="Upper" />
             <Setter Property="Controls:ControlsHelper.HeaderFontSize" Value="{DynamicResource ContentFontSize}" />
             <Setter Property="Controls:GroupBoxHelper.HeaderForeground" Value="{x:Null}" /> -->
-        <Setter Property="Foreground" Value="{DynamicResource WindowTextBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}" />
         <Setter Property="Padding" Value="4" />
         <Setter Property="SnapsToDevicePixels" Value="True" />
         <Setter Property="HeaderTemplate">
             <Setter.Value>
                 <DataTemplate>
-                    <TextBlock Text="{Binding}" Foreground="{DynamicResource WindowTextBrush}">
+                    <TextBlock Text="{Binding}" Foreground="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}">
                         <TextBlock.Style>
                             <Style TargetType="TextBlock">
                                 <Style.Triggers>
@@ -49,7 +49,7 @@
                             <RowDefinition Height="6"/>
                         </Grid.RowDefinitions>
                         <Border BorderBrush="Transparent" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Grid.ColumnSpan="4" Grid.Column="0" CornerRadius="4" Grid.Row="1" Grid.RowSpan="3"/>
-                        <Border BorderBrush="{DynamicResource GroupBox.Border.Upper}" BorderThickness="{TemplateBinding BorderThickness}" Grid.ColumnSpan="4" CornerRadius="4" Grid.Row="1" Grid.RowSpan="3">
+                        <Border BorderBrush="Transparent" BorderThickness="{TemplateBinding BorderThickness}" Grid.ColumnSpan="4" CornerRadius="4" Grid.Row="1" Grid.RowSpan="3">
                             <Border.OpacityMask>
                                 <MultiBinding ConverterParameter="7" UpdateSourceTrigger="Default">
                                     <MultiBinding.Converter>
@@ -60,8 +60,8 @@
                                     <Binding Path="ActualHeight" RelativeSource="{RelativeSource Self}"/>
                                 </MultiBinding>
                             </Border.OpacityMask>
-                            <Border BorderBrush="{DynamicResource GroupBox.Border.Middle}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="3">
-                                <Border BorderBrush="{DynamicResource GroupBox.Border.Lower}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="2"/>
+                            <Border BorderBrush="{DynamicResource GroupBox.Border}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="3">
+                                <Border BorderBrush="Transparent" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="2"/>
                             </Border>
                         </Border>
                         <Border x:Name="Header" Grid.Column="1" Padding="3,1,3,0" Grid.Row="0" Grid.RowSpan="2">
