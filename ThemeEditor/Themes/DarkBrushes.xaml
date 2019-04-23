@@ -83,7 +83,7 @@
     <SolidColorBrush x:Key="Control.Active.Border" Color="#252526"/>
 
 
-    <!-- import -->
+    <!-- ComboBox  -->
     <SolidColorBrush x:Key="ComboBox.Static.Glyph" Color="#B7B7B7" />
     <SolidColorBrush x:Key="ComboBox.Static.Background" Color="#282828" />
     <SolidColorBrush x:Key="ComboBox.Static.Border" Color="#606060" />
