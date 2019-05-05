@@ -5,6 +5,7 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media;
 
 namespace ThemeEditor
 {
@@ -13,5 +14,32 @@ namespace ThemeEditor
     /// </summary>
     public partial class App : Application
     {
+        private void Application_Startup(object sender, StartupEventArgs e)
+        {
+            string appTheme = "Dark";// appThemeSvc.CurrentTheme == WindowsTheme.Dark ? "Dark" : "Light";
+            Resources.MergedDictionaries[0].Source = new Uri($"/Themes/{appTheme}Brushes.xaml", UriKind.Relative);
+
+            //Invert(Colors.Navy);
+            //Invert(Colors.Yellow);
+            //Invert(Colors.White);
+            //Invert(Colors.Black);
+
+            MainWindow = new MainWindow();
+            MainWindow.Show();
+        }
+
+        //public static Color Invert(Color c)
+        //{
+        //    byte shift = (byte)(byte.MaxValue - Math.Min(c.R, Math.Min(c.G, c.B)) - Math.Max(c.R, Math.Max(c.G, c.B)));
+        //    Color result = new Color
+        //    {
+        //        A = c.A,
+        //        R = (byte)(shift + c.R),
+        //        G = (byte)(shift + c.G),
+        //        B = (byte)(shift + c.B),
+        //    };
+        //    return result;
+        //}
+
     }
 }

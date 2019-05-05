@@ -3,6 +3,7 @@
 
 
     <Style x:Key="ThemedRadioButton" TargetType="RadioButton">
+        <Setter Property="Foreground" Value="{DynamicResource Control.Foreground}"/>
         <Setter Property="Background" Value="{DynamicResource Radio.Static.Background}"/>
         <Setter Property="BorderBrush" Value="{DynamicResource Radio.Static.Border}"/>
         <Setter Property="Template">
@@ -23,7 +24,7 @@
                                 VerticalAlignment="Center">
                             <Grid x:Name="markGrid" Margin="2">
                                 <Ellipse x:Name="optionMark" Fill="{DynamicResource Radio.Static.OptionMark}" 
-                                         MinWidth="9" MinHeight="9" Opacity="0"/>
+                                         MinWidth="7" MinHeight="7" Opacity="0"/>
                             </Grid>
                         </Border>
                         <ContentPresenter x:Name="contentPresenter" 
@@ -84,7 +85,5 @@
             </Setter.Value>
         </Setter>
     </Style>
-
-    <Style BasedOn="{StaticResource ThemedRadioButton}" TargetType="RadioButton" />
 
 </ResourceDictionary>

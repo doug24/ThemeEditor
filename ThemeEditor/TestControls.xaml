@@ -15,6 +15,14 @@
 
     <Grid>
         <DockPanel>
+            <DockPanel.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Pick me!"/>
+                    <MenuItem Header="Bah"/>
+                    <Separator />
+                    <MenuItem Header="Last"/>
+                </ContextMenu>
+            </DockPanel.ContextMenu>
 
             <GroupBox DockPanel.Dock="Top" Header="Radio Group" Margin="3">
                 <StackPanel Orientation="Horizontal">
@@ -59,7 +67,7 @@
                           ItemsSource="{Binding FastSearchBookmarks}"
                           IsEditable="True" Width="340" />
             </StackPanel>
-            
+
             <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" VerticalAlignment="Center" Margin="3">
                 <TextBlock Margin="3,0,3,3" Text="Encoding:" Style="{StaticResource LabelTextBlockStyle}"/>
                 <ComboBox Width="224" Margin="3,0,3,3" 
@@ -95,6 +103,21 @@
 
             </StackPanel>
 
+            <!--<TreeView Width="280">
+                <TreeViewItem Header="Root">
+                    <TreeViewItem Header="One - the quick brown fox"/>
+                    <TreeViewItem Header="Two - jumps over the lazy dog"/>
+                </TreeViewItem>
+            </TreeView>-->
+
+            <Expander DockPanel.Dock="Top" Header="More..." IsExpanded="True">
+                <StackPanel Orientation="Horizontal">
+                    <DatePicker Margin="3"/>
+                    <DatePicker Margin="3" IsEnabled="False"/>
+                </StackPanel>
+            </Expander>
+
+            <Expander DockPanel.Dock="Top" Header="Disabled" IsEnabled="False"/>
 
             <Border/>
         </DockPanel>

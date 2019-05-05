@@ -6,7 +6,9 @@
                     xmlns:local="clr-namespace:ThemeEditor"
                     mc:Ignorable="d"
                     Icon="StyleSheet.ico"
-                    Title="Theme Editor" Height="640" Width="1080">
+                    Title="Theme Editor" 
+                    ResizeMode="CanResize"
+                    Height="640" Width="1080">
 
     <local:ThemedWindow.Resources>
     </local:ThemedWindow.Resources>
@@ -15,34 +17,63 @@
         <DynamicResource ResourceKey="GradientBackground"/>
     </local:ThemedWindow.Background>
 
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition />
-            <ColumnDefinition Width="300"/>
-            <ColumnDefinition Width="300"/>
-        </Grid.ColumnDefinitions>
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="_File">
+                <MenuItem Header="_New" />
+                <MenuItem Header="_Open" />
+                <MenuItem Header="_Save" IsEnabled="False"/>
+                <Separator />
+                <MenuItem Header="_Exit" />
+            </MenuItem>
+            <MenuItem Header="Enabled 1">
+                <MenuItem Header="Check1" IsCheckable="true"/>
+                <MenuItem Header="Check2" IsCheckable="true" IsChecked="True"/>
+                <MenuItem Header="Check3" IsCheckable="true" IsEnabled="False" IsChecked="True"/>
+            </MenuItem>
+            <MenuItem Header="Enabled 2"/>
+            <MenuItem Header="Disabled" IsEnabled="False"/>
+            <MenuItem Header="Enabled 3"/>
+        </Menu>
 
-        <Grid Grid.Column="0">
-            <Grid.RowDefinitions>
-                <RowDefinition />
-                <RowDefinition  Height="Auto"/>
-            </Grid.RowDefinitions>
-            <ScrollViewer Grid.Row="0" HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible">
-                <local:TestControls HorizontalAlignment="Left" VerticalAlignment="Top">
-                    <local:TestControls.LayoutTransform>
-                        <ScaleTransform ScaleX="{Binding Value, ElementName=zoom}" ScaleY="{Binding Value, ElementName=zoom}"/>
-                    </local:TestControls.LayoutTransform>
-                </local:TestControls>
-            </ScrollViewer>
+        <StatusBar DockPanel.Dock="Bottom">
+            <StatusBarItem>
+                <StackPanel Orientation="Horizontal">
+                    <ProgressBar Width="180" Height="18" IsIndeterminate="True" />
+                    <TextBlock Text="Ready!" Margin="6,0"/>
+                </StackPanel>
+            </StatusBarItem>
+        </StatusBar>
 
-            <Slider Grid.Row="1" x:Name="zoom" Margin="12,3"
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="300"/>
+                <ColumnDefinition Width="300"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition  Height="Auto"/>
+                </Grid.RowDefinitions>
+                <ScrollViewer Grid.Row="0" HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible">
+                    <local:TestControls HorizontalAlignment="Left" VerticalAlignment="Top">
+                        <local:TestControls.LayoutTransform>
+                            <ScaleTransform ScaleX="{Binding Value, ElementName=zoom}" ScaleY="{Binding Value, ElementName=zoom}"/>
+                        </local:TestControls.LayoutTransform>
+                    </local:TestControls>
+                </ScrollViewer>
+
+                <Slider Grid.Row="1" x:Name="zoom" Margin="12,3"
                     Minimum="1" Maximum="3" SmallChange="0.05" LargeChange="0.1" />
 
+            </Grid>
+
+            <local:BrushResourceList Grid.Column="1" DataContext="{Binding BrushResourceVM}"/>
+            <local:ColorEditor Grid.Column="2" DataContext="{Binding ColorEditorVM}"/>
+
         </Grid>
-
-        <local:BrushResourceList Grid.Column="1" DataContext="{Binding BrushResourceVM}"/>
-        <local:ColorEditor Grid.Column="2" DataContext="{Binding ColorEditorVM}"/>
-
-    </Grid>
+    </DockPanel>
 
 </local:ThemedWindow>
