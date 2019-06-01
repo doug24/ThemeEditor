@@ -24,6 +24,10 @@ namespace ThemeEditor
 
             var systemColors = GetSystemColors().OrderBy(nc => nc.Name);
             SystemColors = new ObservableCollection<NamedColor>(systemColors);
+
+            var sortedColors = GetThemeColors();
+            sortedColors.Sort(new HueComparer());
+            SortedColors = new ObservableCollection<NamedColor>(sortedColors);
         }
 
         private void UpdateElements(Color color)
@@ -347,6 +351,7 @@ namespace ThemeEditor
         public ObservableCollection<NamedColor> WebColors { get; }
         public ObservableCollection<NamedColor> ThemeColors { get; }
         public ObservableCollection<NamedColor> SystemColors { get; }
+        public ObservableCollection<NamedColor> SortedColors { get; }
 
 
         private NamedColor selectedWebColor = null;
@@ -380,6 +385,23 @@ namespace ThemeEditor
 
                 if (selectedSystemColor != null)
                     Color = selectedSystemColor.Color;
+            }
+        }
+
+        private NamedColor selectedSortedColor = null;
+        public NamedColor SelectedSortedColor
+        {
+            get { return selectedSortedColor; }
+            set
+            {
+                if (selectedSortedColor == value)
+                    return;
+
+                selectedSortedColor = value;
+                OnPropertyChanged("SelectedSortedColor");
+
+                if (selectedSortedColor != null)
+                    Color = selectedSortedColor.Color;
             }
         }
 
@@ -551,6 +573,7 @@ namespace ThemeEditor
             Name = name;
             Color = color;
             Brush = new SolidColorBrush(color);
+            Hex = string.Format("#{0:X2}{1:X2}{2:X2}{3:X2}", color.A, color.R, color.G, color.B);
         }
 
         public NamedColor(string name, Color color)
@@ -559,10 +582,12 @@ namespace ThemeEditor
             Name = name;
             Color = color;
             Brush = new SolidColorBrush(color);
+            Hex = string.Format("#{0:X2}{1:X2}{2:X2}{3:X2}", color.A, color.R, color.G, color.B);
         }
 
         public string Name { get; private set; }
         public object Key { get; private set; }
+        public string Hex { get; private set; }
         public bool IsModified { get; set; }
 
         private Color color = Colors.Black;

@@ -187,6 +187,26 @@
                     </ListBox.ItemTemplate>
                 </ListBox>
             </TabItem>
+
+            <TabItem Header="Sorted">
+                <ListBox ItemsSource="{Binding SortedColors}" Background="Gainsboro"
+                         SelectedItem="{Binding SelectedSortedColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Margin="0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="50"/>
+                                    <ColumnDefinition Width="80"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Border Grid.Column="0" Background="{Binding Brush}" Margin="3,0" BorderBrush="Black" BorderThickness="1" />
+                                <TextBlock Grid.Column="1" Text="{Binding Hex}" Margin="3,0"  Foreground="Black" />
+                                <TextBlock Grid.Column="2" Text="{Binding Name}" Margin="3,0"  Foreground="Black" />
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </TabItem>
         </TabControl>
     </DockPanel>
 </UserControl>
