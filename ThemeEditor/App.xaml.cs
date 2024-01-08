@@ -16,7 +16,7 @@ namespace ThemeEditor
     {
         private void Application_Startup(object sender, StartupEventArgs e)
         {
-            string appTheme = "Light";// appThemeSvc.CurrentTheme == WindowsTheme.Dark ? "Dark" : "Light";
+            string appTheme = "Dark";// appThemeSvc.CurrentTheme == WindowsTheme.Dark ? "Dark" : "Light";
             Resources.MergedDictionaries[0].Source = new Uri($"/Themes/{appTheme}Brushes.xaml", UriKind.Relative);
 
             //Invert(Colors.Navy);

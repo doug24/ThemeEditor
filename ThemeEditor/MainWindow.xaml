@@ -33,7 +33,7 @@
             </MenuItem>
             <MenuItem Header="Enabled 2"/>
             <MenuItem Header="Disabled" IsEnabled="False"/>
-            <MenuItem Header="Enabled 3"/>
+            <MenuItem Header="Color Shift" Click="ColorShift_Click"/>
         </Menu>
 
         <StatusBar DockPanel.Dock="Bottom">
@@ -47,12 +47,13 @@
 
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition />
+                <ColumnDefinition Width="263*" />
+                <ColumnDefinition Width="109*"/>
                 <ColumnDefinition Width="300"/>
                 <ColumnDefinition Width="400"/>
             </Grid.ColumnDefinitions>
 
-            <Grid Grid.Column="0">
+            <Grid Grid.Column="0" Grid.ColumnSpan="2">
                 <Grid.RowDefinitions>
                     <RowDefinition />
                     <RowDefinition  Height="Auto"/>
@@ -70,8 +71,8 @@
 
             </Grid>
 
-            <local:BrushResourceList Grid.Column="1" DataContext="{Binding BrushResourceVM}"/>
-            <local:ColorEditor Grid.Column="2" DataContext="{Binding ColorEditorVM}"/>
+            <local:BrushResourceList Grid.Column="2" DataContext="{Binding BrushResourceVM}"/>
+            <local:ColorEditor Grid.Column="3" DataContext="{Binding ColorEditorVM}"/>
 
         </Grid>
     </DockPanel>

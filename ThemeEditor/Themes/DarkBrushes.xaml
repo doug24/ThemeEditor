@@ -125,7 +125,7 @@
     <SolidColorBrush x:Key="Control.InfoBackground" Color="#FF000000" />
     <SolidColorBrush x:Key="Control.InfoForeground" Color="#FFF5F5F5" />
     <SolidColorBrush x:Key="Control.FrameBorder" Color="#FF3C7FB1" />
-    <SolidColorBrush x:Key="Control.Highlight" Color="#C0569DE5" />
+    <SolidColorBrush x:Key="Control.Highlight" Color="#FF569DE5"/>
 
     <!--  ComboBox  -->
     <SolidColorBrush x:Key="ComboBox.Static.Glyph" Color="#FFB8B8B8" />
