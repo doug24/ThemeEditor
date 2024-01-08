@@ -14,7 +14,7 @@ namespace ThemeEditor
     /// </summary>
     public partial class MainWindow : ThemedWindow
     {
-        private MainViewModel vm;
+        private readonly MainViewModel vm;
 
         public MainWindow()
         {
