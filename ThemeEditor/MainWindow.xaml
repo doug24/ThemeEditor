@@ -8,14 +8,12 @@
                     Icon="StyleSheet.ico"
                     Title="Theme Editor" 
                     ResizeMode="CanResize"
-                    Height="640" Width="1080">
+                    Background="{DynamicResource GradientBackground}"
+                    CaptionBackground="{DynamicResource Caption.Background}"
+                    Height="640" Width="1200">
 
     <local:ThemedWindow.Resources>
     </local:ThemedWindow.Resources>
-
-    <local:ThemedWindow.Background>
-        <DynamicResource ResourceKey="GradientBackground"/>
-    </local:ThemedWindow.Background>
 
     <DockPanel>
         <Menu DockPanel.Dock="Top">

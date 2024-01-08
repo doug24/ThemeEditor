@@ -43,6 +43,7 @@
     <Reference Include="PresentationFramework.Classic" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -66,6 +67,15 @@
     <Compile Include="BrushResourceList.xaml.cs">
       <DependentUpon>BrushResourceList.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\DepthTextBox.cs" />
+    <Compile Include="Controls\MultilineComboBox.cs" />
+    <Compile Include="Controls\RadioMenuItem.cs" />
+    <Compile Include="Controls\SplitButton.cs" />
+    <Compile Include="Controls\TextBoxCommands.cs" />
+    <Compile Include="MVHelpers\PercentValueConverter.cs" />
+    <Compile Include="MVHelpers\ResizeModeConverter.cs" />
+    <Compile Include="Native.cs" />
+    <Compile Include="SystemSymbols.cs" />
     <Compile Include="TestControls.xaml.cs">
       <DependentUpon>TestControls.xaml</DependentUpon>
     </Compile>
@@ -101,6 +111,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="ThemedControls\DataGrid.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="ThemedControls\DatePicker.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -125,6 +139,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="ThemedControls\SplitButton.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="ThemedControls\StatusBar.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -142,6 +160,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="ThemedControls\TextBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ThemedControls\ToggleButton.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -186,6 +208,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="ThemedControls\ThemedWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\Sunset.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
