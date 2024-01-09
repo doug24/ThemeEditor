@@ -129,7 +129,7 @@ namespace ThemeEditor
             {
                 Color c = namedColor.Color;
                 string color = string.Format("#{0:X2}{1:X2}{2:X2}{3:X2}", c.A, c.R, c.G, c.B);
-                changes.Add($"<SolidColorBrush x:Key=\"{namedColor.Name}\" Color=\"{color}\"/>");
+                changes.Add($"<SolidColorBrush x:Key=\"{namedColor.Name}\" po:Freeze=\"true\" Color=\"{color}\"/>");
             }
             Clipboard.SetText(string.Join(Environment.NewLine, changes));
         }
