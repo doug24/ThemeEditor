@@ -34,6 +34,7 @@ When you have something you would like to try in dnGrep, make a copy of the them
 - If you have a portable version of dnGrep (zip download), then it is the "Themes" subdirectory where you extracted the dnGrep.exe files.
 
 In either case, you should see the Sunset.xaml file there already.
+
 Modify the theme.xaml file to change the toggle button images (for the Bookmarks dialog) to this so it they will load correctly when the theme is loaded dynamically:
 ```
     <BitmapImage x:Key="pinBitmap" UriSource="pack://application:,,,/dnGrep;component/Images/pinDark.png" />
@@ -44,8 +45,15 @@ Or use the light images if your theme is light
     <BitmapImage x:Key="pinBitmap" UriSource="pack://application:,,,/dnGrep;component/Images/pin.png" />
     <BitmapImage x:Key="unpinBitmap" UriSource="pack://application:,,,/dnGrep;component/Images/unpin.png" />
 ```
+
 Start dnGrep, open the Options dialog (F8), and select your new theme in the drop down. With your theme file loaded in dnGrep, you can edit the theme file,
 and reload it using the `Reload` button in the dnGrep Options dialog, or clicking ctrl+F5.
 
-Note: for the syntax coloring in the preview window, you have the option of light coloring or dark coloring based on the colors specified in the syntax *.xshd files.  The dark syntax colors are a color inversion of the light colors in the xshd files.
+Note: for the syntax coloring in the preview window, you have the option of light coloring or dark coloring based on the colors specified in the syntax *.xshd files.  The dark syntax colors are a color inversion of the light colors in the xshd files. Set this value to true for the preview window with a dark background:
+```
+    <sys:Boolean x:Key="AvalonEdit.SyntaxColor.Invert">true</sys:Boolean>
+```
+
+You can change any of the colors from SolidColorBrush to GradientBrush - see the LinearGradientBrush in the existing themes as examples.  Gradient brushes are visible but not editable in the Theme Editor.
+
 
