@@ -292,7 +292,7 @@ namespace ThemeEditor
             {
                 Application.Current.Resources.Clear();
                 Application.Current.Resources.MergedDictionaries[0].Source = new Uri($"/Themes/{name}Brushes.xaml", UriKind.Relative);
-                BrushResourceVM.InitializeColors(false);
+                BrushResourceVM.InitializeColors();
                 BrushResourceVM.CanEdit = false;
 
                 WindowTitle = $"Theme Editor - {name}";
@@ -318,7 +318,7 @@ namespace ThemeEditor
                 Application.Current.Resources.MergedDictionaries[0].Source =
                     new Uri(EditFile, UriKind.Absolute);
 
-                BrushResourceVM.ResetEditColors();
+                BrushResourceVM.InitializeColors();
                 BrushResourceVM.CanEdit = true;
                 WindowTitle = $"Theme Editor - {EditThemeName}";
             }

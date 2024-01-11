@@ -15,10 +15,10 @@ namespace ThemeEditor
 
         public BrushResourceViewModel()
         {
-            InitializeColors(false);
+            InitializeColors();
         }
 
-        internal void InitializeColors(bool forEdit)
+        internal void InitializeColors()
         {
             string selectionName = string.Empty;
             if (selectedResource != null)
@@ -26,13 +26,6 @@ namespace ThemeEditor
                 selectionName = selectedResource.Name;
             }
 
-            if (forEdit && EditColors != null && EditColors.Count > 0)
-            {
-                ResourceColors = EditColors;
-                OnPropertyChanged(nameof(ResourceColors));
-            }
-            else
-            {
                 List<NamedColor> names = new List<NamedColor>();
                 var dictionary = Application.Current.Resources.MergedDictionaries[0];
                 foreach (object key in dictionary.Keys)
@@ -44,12 +37,6 @@ namespace ThemeEditor
                 ResourceColors = new ObservableCollection<NamedColor>(names.OrderBy(nc => nc.Name));
                 OnPropertyChanged(nameof(ResourceColors));
 
-                if (forEdit)
-                {
-                    EditColors = new ObservableCollection<NamedColor>(names.OrderBy(nc => nc.Name));
-                    OnPropertyChanged(nameof(EditColors));
-                }
-            }
 
             bool set = false;
             if (!string.IsNullOrEmpty(selectionName))
@@ -67,22 +54,6 @@ namespace ThemeEditor
             {
                 SelectedResource = ResourceColors[0];
             }
-        }
-
-        internal void LoadEditColors()
-        {
-            if (EditColors != null && EditColors.Count > 0)
-            {
-                ResourceColors = EditColors;
-                OnPropertyChanged(nameof(ResourceColors));
-                SelectedResource = ResourceColors[0];
-            }
-        }
-
-        internal void ResetEditColors()
-        {
-            EditColors = null;
-            InitializeColors(true);
         }
 
         internal void Save(Color color)
@@ -103,7 +74,6 @@ namespace ThemeEditor
             SelectedResource.Color != CurrentColor;
 
         public ObservableCollection<NamedColor> ResourceColors { get; private set; }
-        public ObservableCollection<NamedColor> EditColors { get; private set; }
 
 
         private NamedColor selectedResource = null;
