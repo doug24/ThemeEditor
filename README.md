@@ -25,7 +25,7 @@ However, it is best to re-use the same colors as much as possible for a consiste
 shows all the colors in the theme, sorted by color.  This gives you an indication of what colors you have re-used, and possibly where else you may want to copy
 a new color as you modify the theme.
 
-When the checkbox "Synchronize changes to matching colors" is checked, all named colors starting with the same color value will be updated together when the select color is changed.  They will be committed together when "Commit color change" button is clicked.
+When the checkbox `Synchronize changes to matching colors` is checked, all named colors starting with the same color value will be updated together when the select color is changed.  They will be committed together when `Commit color change` button is clicked.
 
 Some controls (like the dark group box) have more details (outlines) in them than are visible using the current theme files because colors are set to transparent or to the 
 same color as an adjoining element. Making these details a different color can add these details back into the controls.
