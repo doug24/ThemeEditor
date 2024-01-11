@@ -7,15 +7,18 @@ The main window has three parts:
 - The set of named colors in the middle panel
 - Color editor controls in the right panel.
 
+To begin, copy an existing theme file (DarkBrushes.xaml, LightBrushes.xaml, or Sunset.xaml) and name the file using your new theme name. Put the new file in a location where it can be both read and written.
+
+In the Theme Editor do File - Open and select your theme file.  That file will be loaded automatically each time you start the Theme Editor or until you open a different theme file for editing.
+
 To edit a color, select the color in the middle panel and adjust it using the color sliders, choosing a web color, copying the color from another named color in the theme, or select a system color.
 Note you can use transparent or partially transparent colors.
 
-When the color is modified, but not yet committed, click the `Revert` button to restore it to the previous value.
+When the color is modified, but not yet committed, click the `Revert color change` button to restore it to the previous value.
 
-To commit the color change, click the `Save` button - this just saves it the runtime, not to file!
+To commit the color change, click the `Commit color change` button - this just saves it the runtime, not to file!
 
-When you have a set of changes you want to keep, click the `To Clipboard` button, and the changed values are copied to the clipboard. Paste those lines back into the theme file,
-recompile, and restart the Theme Editor.
+When you have a set of changes you want to keep, click File - Save, or ctrl+S to write the changes back to the source file.
 
 There are separate named colors for most controls. This follows the pattern in the standard WPF controls and allows full flexibility for adjusting colors.
 However, it is best to re-use the same colors as much as possible for a consistent and uniform appearance.  The last tab on the left of the Theme Editor
@@ -25,13 +28,9 @@ a new color as you modify the theme.
 Some controls (like the dark group box) have more details (outlines) in them than are visible using the current theme files because colors are set to transparent or to the 
 same color as an adjoining element. Making these details a different color can add these details back into the controls.
 
-To create a new theme, copy one of the existing theme files (DarkBrushes.xaml, LightBrushes.xaml, or Sunset.xaml) into the same directory and name it using your theme name.
-Edit the `App.xaml.cs` file in the Theme Editor application and change the `appTheme` string to the name of your file (less the file extension).
-Start the Theme Editor, modify values, copy the changes to the clipboard, update your theme file, rebuild, and repeat.
-
 When you have something you would like to try in dnGrep, make a copy of the theme xaml file and put it in theme directory:
-- If dnGrep is installed from the msi, then it is %appdata%\dnGREP (C:\Users\_user_\AppData\Roaming\dnGREP).
-- If you have a portable version of dnGrep (zip download), then it is the "Themes" subdirectory where you extracted the dnGrep.exe files.
+- If dnGrep is installed from the msi to Program Files, then it is %appdata%\dnGREP (C:\Users\_user_\AppData\Roaming\dnGREP).
+- If you have a portable version of dnGrep (zip download) or installed outside Program Files, then it is the "Themes" subdirectory where you extracted the dnGrep.exe files.
 
 In either case, you should see the Sunset.xaml file there already.
 
