@@ -27,6 +27,11 @@ namespace ThemeEditor
             {
                 double sz = FontSize;
             };
+
+            Closing += (s, e) =>
+            {
+                e.Cancel = vm.Closing();
+            };
         }
 
         private void ColorShift_Click(object sender, RoutedEventArgs e)
@@ -93,5 +98,11 @@ namespace ThemeEditor
                 }
             }
         }
+
+        private void Close_MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
+
     }
 }

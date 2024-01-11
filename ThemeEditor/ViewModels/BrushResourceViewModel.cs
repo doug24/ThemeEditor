@@ -15,18 +15,74 @@ namespace ThemeEditor
 
         public BrushResourceViewModel()
         {
-            List<NamedColor> names = new List<NamedColor>();
-            var dictionary = Application.Current.Resources.MergedDictionaries[0];
-            foreach (object key in dictionary.Keys)
+            InitializeColors(false);
+        }
+
+        internal void InitializeColors(bool forEdit)
+        {
+            string selectionName = string.Empty;
+            if (selectedResource != null)
             {
-                if (dictionary[key] is SolidColorBrush br)
-                    names.Add(new NamedColor(key, key.ToString(), br.Color));
+                selectionName = selectedResource.Name;
             }
 
-            ResourceColors = new ObservableCollection<NamedColor>(names.OrderBy(nc => nc.Name));
+            if (forEdit && EditColors != null && EditColors.Count > 0)
+            {
+                ResourceColors = EditColors;
+                OnPropertyChanged(nameof(ResourceColors));
+            }
+            else
+            {
+                List<NamedColor> names = new List<NamedColor>();
+                var dictionary = Application.Current.Resources.MergedDictionaries[0];
+                foreach (object key in dictionary.Keys)
+                {
+                    if (dictionary[key] is SolidColorBrush br)
+                        names.Add(new NamedColor(key, key.ToString(), br.Color));
+                }
 
-            if (ResourceColors.Count > 0)
+                ResourceColors = new ObservableCollection<NamedColor>(names.OrderBy(nc => nc.Name));
+                OnPropertyChanged(nameof(ResourceColors));
+
+                if (forEdit)
+                {
+                    EditColors = new ObservableCollection<NamedColor>(names.OrderBy(nc => nc.Name));
+                    OnPropertyChanged(nameof(EditColors));
+                }
+            }
+
+            bool set = false;
+            if (!string.IsNullOrEmpty(selectionName))
+            {
+                var item = ResourceColors.FirstOrDefault(r => r.Name == selectionName);
+
+                if (item != null)
+                {
+                    SelectedResource = item;
+                    set = true;
+                }
+            }
+            
+            if (!set && ResourceColors.Count > 0)
+            {
                 SelectedResource = ResourceColors[0];
+            }
+        }
+
+        internal void LoadEditColors()
+        {
+            if (EditColors != null && EditColors.Count > 0)
+            {
+                ResourceColors = EditColors;
+                OnPropertyChanged(nameof(ResourceColors));
+                SelectedResource = ResourceColors[0];
+            }
+        }
+
+        internal void ResetEditColors()
+        {
+            EditColors = null;
+            InitializeColors(true);
         }
 
         internal void Save(Color color)
@@ -38,7 +94,16 @@ namespace ThemeEditor
             }
         }
 
+        /// <summary>
+        /// Gets the color currently set by the color selector
+        /// </summary>
+        public Color CurrentColor { get; internal set; }
+
+        public bool IsColorChanged => SelectedResource != null &&
+            SelectedResource.Color != CurrentColor;
+
         public ObservableCollection<NamedColor> ResourceColors { get; private set; }
+        public ObservableCollection<NamedColor> EditColors { get; private set; }
 
 
         private NamedColor selectedResource = null;
@@ -75,6 +140,21 @@ namespace ThemeEditor
             }
         }
 
+        private bool canEdit;
+        public bool CanEdit
+        {
+            get { return canEdit; }
+            set
+            {
+                if (value == canEdit)
+                    return;
+
+                canEdit = value;
+
+                OnPropertyChanged(() => CanEdit);
+            }
+        }
+
         RelayCommand saveCommand;
         public ICommand SaveCommand
         {
@@ -84,7 +164,7 @@ namespace ThemeEditor
                 {
                     saveCommand = new RelayCommand(
                         p => SaveBrush?.Invoke(this, EventArgs.Empty),
-                        q => SelectedResource != null
+                        q => CanEdit && IsColorChanged
                         );
                 }
                 return saveCommand;
@@ -99,39 +179,12 @@ namespace ThemeEditor
                 if (revertCommand == null)
                 {
                     revertCommand = new RelayCommand(
-                        p => RevertBrush?.Invoke(this, EventArgs.Empty)
+                        p => RevertBrush?.Invoke(this, EventArgs.Empty),
+                        q => CanEdit && IsColorChanged
                         );
                 }
                 return revertCommand;
             }
-        }
-
-        RelayCommand exportCommand;
-        public ICommand ExportCommand
-        {
-            get
-            {
-                if (exportCommand == null)
-                {
-                    exportCommand = new RelayCommand(
-                        p => Export(),
-                        q => ResourceColors.Any(nc => nc.IsModified)
-                        );
-                }
-                return exportCommand;
-            }
-        }
-
-        private void Export()
-        {
-            List<string> changes = new List<string>();
-            foreach (var namedColor in ResourceColors.Where(nc => nc.IsModified))
-            {
-                Color c = namedColor.Color;
-                string color = string.Format("#{0:X2}{1:X2}{2:X2}{3:X2}", c.A, c.R, c.G, c.B);
-                changes.Add($"<SolidColorBrush x:Key=\"{namedColor.Name}\" po:Freeze=\"true\" Color=\"{color}\"/>");
-            }
-            Clipboard.SetText(string.Join(Environment.NewLine, changes));
         }
     }
 }

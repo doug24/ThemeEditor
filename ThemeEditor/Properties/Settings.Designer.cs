@@ -22,5 +22,17 @@ namespace ThemeEditor.Properties {
                 return defaultInstance;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string CurrentEditFile {
+            get {
+                return ((string)(this["CurrentEditFile"]));
+            }
+            set {
+                this["CurrentEditFile"] = value;
+            }
+        }
     }
 }

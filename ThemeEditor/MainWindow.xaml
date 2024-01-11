@@ -6,7 +6,7 @@
                     xmlns:local="clr-namespace:ThemeEditor"
                     mc:Ignorable="d"
                     Icon="StyleSheet.ico"
-                    Title="Theme Editor" 
+                    Title="{Binding WindowTitle}" 
                     ResizeMode="CanResize"
                     Background="{DynamicResource GradientBackground}"
                     CaptionBackground="{DynamicResource Caption.Background}"
@@ -15,14 +15,24 @@
     <local:ThemedWindow.Resources>
     </local:ThemedWindow.Resources>
 
+    <local:ThemedWindow.InputBindings>
+        <KeyBinding Gesture="Ctrl+O" Command="{Binding OpenXamlCommand}"/>
+        <KeyBinding Gesture="Ctrl+S" Command="{Binding SaveXamlCommand}"/>
+    </local:ThemedWindow.InputBindings>
+
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_File">
-                <MenuItem Header="_New" />
-                <MenuItem Header="_Open" />
-                <MenuItem Header="_Save" IsEnabled="False"/>
+                <MenuItem Header="_New" IsEnabled="False" />
+                <MenuItem Header="_Open" Command="{Binding OpenXamlCommand}" InputGestureText="Ctrl+0"/>
+                <MenuItem Header="_Save" Command="{Binding SaveXamlCommand}" InputGestureText="Ctrl+S"/>
                 <Separator />
-                <MenuItem Header="_Exit" />
+                <MenuItem Header="Themes">
+                    <MenuItem Header="{Binding EditThemeName}" Command="{Binding EditThemeCommand}"/>
+                    <MenuItem Header="Dark (read-only)" Command="{Binding DarkThemeCommand}"/>
+                    <MenuItem Header="Light (read-only)" Command="{Binding LightThemeCommand}"/>
+                </MenuItem>
+                <MenuItem Header="_Exit" Click="Close_MenuItem_Click"/>
             </MenuItem>
             <MenuItem Header="Enabled 1">
                 <MenuItem Header="Check1" IsCheckable="true"/>

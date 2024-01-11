@@ -9,7 +9,7 @@
 
     <UserControl.Resources>
         <Style x:Key="PanelButtonStyle" TargetType="{x:Type Button}">
-            <Setter Property="Padding" Value="3"/>
+            <Setter Property="Padding" Value="8,3"/>
             <Setter Property="Margin" Value="3"/>
             <Setter Property="Foreground" Value="Black"/>
             <Setter Property="MinWidth" Value="80"/>
@@ -53,9 +53,8 @@
     <DockPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
 
         <DockPanel DockPanel.Dock="Bottom">
-            <Button DockPanel.Dock="Left" Content="Save" Command="{Binding SaveCommand}" Style="{StaticResource PanelButtonStyle}"/>
-            <Button DockPanel.Dock="Left" Content="Revert" Command="{Binding RevertCommand}" Style="{StaticResource PanelButtonStyle}"/>
-            <Button DockPanel.Dock="Right" Content="To Clipboard" Command="{Binding ExportCommand}" Style="{StaticResource PanelButtonStyle}"/>
+            <Button DockPanel.Dock="Left" Content="Commit color change" Command="{Binding SaveCommand}" Style="{StaticResource PanelButtonStyle}"/>
+            <Button DockPanel.Dock="Left" Content="Revert color change" Command="{Binding RevertCommand}" Style="{StaticResource PanelButtonStyle}"/>
             <Border/>
         </DockPanel>
 

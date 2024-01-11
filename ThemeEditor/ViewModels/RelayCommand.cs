@@ -32,17 +32,14 @@ namespace ThemeEditor
         /// <param name="canExecute">The execution status logic.</param>
         public RelayCommand(Action<object> execute, Predicate<object> canExecute)
         {
-            if (execute == null)
-                throw new ArgumentNullException("execute");
-
-            this.execute = execute;
+            this.execute = execute ?? throw new ArgumentNullException("execute");
             this.canExecute = canExecute;
         }
 
         [DebuggerStepThrough]
         public bool CanExecute(object parameter)
         {
-            return canExecute == null ? true : canExecute(parameter);
+            return canExecute == null || canExecute(parameter);
         }
 
         public event EventHandler CanExecuteChanged
