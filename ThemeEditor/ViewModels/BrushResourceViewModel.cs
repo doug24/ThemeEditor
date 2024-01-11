@@ -26,16 +26,16 @@ namespace ThemeEditor
                 selectionName = selectedResource.Name;
             }
 
-                List<NamedColor> names = new List<NamedColor>();
-                var dictionary = Application.Current.Resources.MergedDictionaries[0];
-                foreach (object key in dictionary.Keys)
-                {
-                    if (dictionary[key] is SolidColorBrush br)
-                        names.Add(new NamedColor(key, key.ToString(), br.Color));
-                }
+            List<NamedColor> names = new List<NamedColor>();
+            var dictionary = Application.Current.Resources.MergedDictionaries[0];
+            foreach (object key in dictionary.Keys)
+            {
+                if (dictionary[key] is SolidColorBrush br)
+                    names.Add(new NamedColor(key, key.ToString(), br.Color));
+            }
 
-                ResourceColors = new ObservableCollection<NamedColor>(names.OrderBy(nc => nc.Name));
-                OnPropertyChanged(nameof(ResourceColors));
+            ResourceColors = new ObservableCollection<NamedColor>(names.OrderBy(nc => nc.Name));
+            OnPropertyChanged(nameof(ResourceColors));
 
 
             bool set = false;
@@ -49,10 +49,25 @@ namespace ThemeEditor
                     set = true;
                 }
             }
-            
+
             if (!set && ResourceColors.Count > 0)
             {
                 SelectedResource = ResourceColors[0];
+            }
+        }
+
+        private void UpdateColorGroup(NamedColor value)
+        {
+            ColorGroup.Clear();
+
+            if (value != null)
+            {
+                var group = ResourceColors.Where(r => r.Color == value.Color).ToList();
+
+                foreach (NamedColor item in group)
+                {
+                    ColorGroup.Add(item);
+                }
             }
         }
 
@@ -62,6 +77,29 @@ namespace ThemeEditor
             {
                 SelectedResource.Color = color;
                 SelectedResource.IsModified = true;
+
+                if (SyncColors)
+                {
+                    foreach (var item in ColorGroup)
+                    {
+                        item.Color = color;
+                        item.IsModified = true;
+                    }
+                }
+                else
+                {
+                    // revert changes that may have been visible if the
+                    // checkbox was unchecked just before save
+                    foreach (var item in ColorGroup)
+                    {
+                        if (Application.Current.Resources[item.Key] is Brush)
+                        {
+                            Application.Current.Resources[item.Key] = new SolidColorBrush(item.Color);
+                        }
+                    }
+                }
+
+                UpdateColorGroup(SelectedResource);
             }
         }
 
@@ -75,6 +113,7 @@ namespace ThemeEditor
 
         public ObservableCollection<NamedColor> ResourceColors { get; private set; }
 
+        public ObservableCollection<NamedColor> ColorGroup { get; } = new ObservableCollection<NamedColor>();
 
         private NamedColor selectedResource = null;
         public NamedColor SelectedResource
@@ -86,6 +125,7 @@ namespace ThemeEditor
                     return;
 
                 selectedResource = value;
+                UpdateColorGroup(value);
 
                 if (selectedResource != null)
                     SelectedBrush = selectedResource.Brush;
@@ -122,6 +162,21 @@ namespace ThemeEditor
                 canEdit = value;
 
                 OnPropertyChanged(() => CanEdit);
+            }
+        }
+
+        private bool syncColors;
+        public bool SyncColors
+        {
+            get { return syncColors; }
+            set
+            {
+                if (value == syncColors)
+                    return;
+
+                syncColors = value;
+
+                OnPropertyChanged(() => SyncColors);
             }
         }
 

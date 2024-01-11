@@ -19,15 +19,30 @@ namespace ThemeEditor
             webColors.Sort(new HueComparer());
             WebColors = new ObservableCollection<NamedColor>(webColors);
 
-            var themeColors = GetThemeColors().OrderBy(nc => nc.Name);
-            ThemeColors = new ObservableCollection<NamedColor>(themeColors);
-
             var systemColors = GetSystemColors().OrderBy(nc => nc.Name);
             SystemColors = new ObservableCollection<NamedColor>(systemColors);
 
+            ThemeColors = new ObservableCollection<NamedColor>();
+            SortedColors = new ObservableCollection<NamedColor>();
+            InitializeThemeColors();
+        }
+
+        internal void InitializeThemeColors()
+        {
+            ThemeColors.Clear();
+            var themeColors = GetThemeColors().OrderBy(nc => nc.Name);
+            foreach (var color in themeColors)
+            {
+                ThemeColors.Add(color);
+            }
+
+            SortedColors.Clear();
             var sortedColors = GetThemeColors();
             sortedColors.Sort(new HueComparer());
-            SortedColors = new ObservableCollection<NamedColor>(sortedColors);
+            foreach (var color in sortedColors)
+            {
+                SortedColors.Add(color);
+            }
         }
 
         private void UpdateElements(Color color)

@@ -46,13 +46,17 @@ namespace ThemeEditor
         private void BrushResourceVM_SaveBrush(object sender, EventArgs e)
         {
             if (BrushResourceVM.SelectedBrush != null)
+            {
                 BrushResourceVM.Save(ColorEditorVM.Color);
+            }
         }
 
         private void BrushResourceVM_RevertBrush(object sender, EventArgs e)
         {
             if (BrushResourceVM.SelectedBrush != null)
+            {
                 ColorEditorVM.Color = BrushResourceVM.SelectedBrush.Color;
+            }
         }
 
         private void BrushResourceViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -70,6 +74,17 @@ namespace ThemeEditor
                 if (Application.Current.Resources[BrushResourceVM.SelectedResource.Key] is Brush)
                 {
                     Application.Current.Resources[BrushResourceVM.SelectedResource.Key] = ColorEditorVM.ColorBrush;
+                }
+
+                if (BrushResourceVM.SyncColors)
+                {
+                    foreach (var item in BrushResourceVM.ColorGroup)
+                    {
+                        if (Application.Current.Resources[item.Key] is Brush)
+                        {
+                            Application.Current.Resources[item.Key] = ColorEditorVM.ColorBrush;
+                        }
+                    }
                 }
             }
             else if (e.PropertyName == nameof(ColorEditorVM.Color))
@@ -292,8 +307,10 @@ namespace ThemeEditor
             {
                 Application.Current.Resources.Clear();
                 Application.Current.Resources.MergedDictionaries[0].Source = new Uri($"/Themes/{name}Brushes.xaml", UriKind.Relative);
+                
                 BrushResourceVM.InitializeColors();
                 BrushResourceVM.CanEdit = false;
+                ColorEditorVM.InitializeThemeColors();
 
                 WindowTitle = $"Theme Editor - {name}";
 
@@ -320,6 +337,8 @@ namespace ThemeEditor
 
                 BrushResourceVM.InitializeColors();
                 BrushResourceVM.CanEdit = true;
+                ColorEditorVM.InitializeThemeColors();
+
                 WindowTitle = $"Theme Editor - {EditThemeName}";
             }
             catch (Exception ex)

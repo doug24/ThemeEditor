@@ -57,6 +57,12 @@
             <Button DockPanel.Dock="Left" Content="Revert color change" Command="{Binding RevertCommand}" Style="{StaticResource PanelButtonStyle}"/>
             <Border/>
         </DockPanel>
+        <DockPanel DockPanel.Dock="Bottom">
+            <CheckBox DockPanel.Dock="Left" Margin="12,3"
+                      Content="Synchronize changes to matching colors" 
+                      IsChecked="{Binding SyncColors}"/>
+            <Border/>
+        </DockPanel>
 
         <Border BorderBrush="Black" BorderThickness="1">
             <ListBox ItemsSource="{Binding ResourceColors}" Background="Gainsboro"
