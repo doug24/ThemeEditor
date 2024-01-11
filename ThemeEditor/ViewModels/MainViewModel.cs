@@ -353,6 +353,12 @@ namespace ThemeEditor
             }
 
             File.WriteAllLines(EditFile, lines);
+
+            var list = BrushResourceVM.ResourceColors.Where(nc => nc.IsModified).ToList();
+            foreach (var item in list)
+            {
+                item.IsModified = false;
+            }
         }
 
         internal bool Closing()
