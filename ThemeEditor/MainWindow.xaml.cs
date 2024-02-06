@@ -36,7 +36,7 @@ namespace ThemeEditor
 
         private void ColorShift_Click(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog dlg = new OpenFileDialog
+            OpenFileDialog dlg = new()
             {
                 DefaultExt = ".xaml",
                 CheckFileExists = true,
@@ -45,17 +45,17 @@ namespace ThemeEditor
 
             if (dlg.ShowDialog(this) ?? false)
             {
-                XDocument doc = null;
+                XDocument? doc = null;
                 using (FileStream fs = File.OpenRead(dlg.FileName))
                 {
                     doc = XDocument.Load(fs);
                 }
 
-                if (doc != null)
+                if (doc != null && doc.Root != null)
                 {
                     foreach (XElement elem in doc.Root.Elements())
                     {
-                        XAttribute attr = elem.Attribute("Color");
+                        XAttribute? attr = elem.Attribute("Color");
                         if (attr != null)
                         {
                             string hex = attr.Value;
@@ -77,24 +77,20 @@ namespace ThemeEditor
                         }
                     }
 
-                    string outFile = Path.Combine(Path.GetDirectoryName(dlg.FileName),
+                    string outFile = Path.Combine(Path.GetDirectoryName(dlg.FileName) ?? string.Empty,
                         Path.GetFileNameWithoutExtension(dlg.FileName) + "_out.xaml");
 
-                    using (FileStream fs = File.OpenWrite(outFile))
+                    using FileStream fs = File.OpenWrite(outFile);
+                    XmlWriterSettings settings = new()
                     {
-                        XmlWriterSettings settings = new XmlWriterSettings
-                        {
-                            Indent = true,
-                            IndentChars = "    ",
-                            NewLineChars = Environment.NewLine,
-                            Encoding = Encoding.UTF8
-                        };
+                        Indent = true,
+                        IndentChars = "    ",
+                        NewLineChars = Environment.NewLine,
+                        Encoding = Encoding.UTF8
+                    };
 
-                        using (XmlWriter writer = XmlWriter.Create(fs, settings))
-                        {
-                            doc.WriteTo(writer);
-                        }
-                    }
+                    using XmlWriter writer = XmlWriter.Create(fs, settings);
+                    doc.WriteTo(writer);
                 }
             }
         }

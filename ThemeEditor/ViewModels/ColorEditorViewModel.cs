@@ -6,10 +6,11 @@ using System.Collections.ObjectModel;
 using System.Windows.Input;
 using System.Globalization;
 using System.Windows;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace ThemeEditor
 {
-    public class ColorEditorViewModel : ViewModelBase
+    public partial class ColorEditorViewModel : ObservableObject
     {
         private bool lockUpdates = false;
 
@@ -22,8 +23,8 @@ namespace ThemeEditor
             var systemColors = GetSystemColors().OrderBy(nc => nc.Name);
             SystemColors = new ObservableCollection<NamedColor>(systemColors);
 
-            ThemeColors = new ObservableCollection<NamedColor>();
-            SortedColors = new ObservableCollection<NamedColor>();
+            ThemeColors = [];
+            SortedColors = [];
             InitializeThemeColors();
         }
 
@@ -86,281 +87,231 @@ namespace ThemeEditor
             }
         }
 
-
+        [ObservableProperty]
         private Color color = Colors.White;
-        public Color Color
+        partial void OnColorChanging(Color value)
         {
-            get { return color; }
-            set
-            {
-                if (color == value || lockUpdates)
-                    return;
-
-                color = value;
-                UpdateElements(color);
-                ColorBrush = new SolidColorBrush(color);
-                ColorARGB = string.Join(", ", color.A, color.R, color.G, color.B);
-                ColorHex = string.Format("#{0:X2}{1:X2}{2:X2}{3:X2}", color.A, color.R, color.G, color.B);
-                ColorBrightness = Brightness(color).ToString();
-                OnPropertyChanged("Color");
-            }
+            UpdateElements(value);
+            ColorBrush = new SolidColorBrush(value);
+            ColorARGB = string.Join(", ", value.A, value.R, value.G, value.B);
+            ColorHex = string.Format("#{0:X2}{1:X2}{2:X2}{3:X2}", value.A, value.R, value.G, value.B);
+            ColorBrightness = Brightness(value).ToString();
         }
+        //public Color Color
+        //{
+        //    get { return color; }
+        //    set
+        //    {
+        //        if (color == value || lockUpdates)
+        //            return;
 
+        //        color = value;
+        //        UpdateElements(color);
+        //        ColorBrush = new SolidColorBrush(color);
+        //        ColorARGB = string.Join(", ", color.A, color.R, color.G, color.B);
+        //        ColorHex = string.Format("#{0:X2}{1:X2}{2:X2}{3:X2}", color.A, color.R, color.G, color.B);
+        //        ColorBrightness = Brightness(color).ToString();
+        //        OnPropertyChanged("Color");
+        //    }
+        //}
+
+        [ObservableProperty]
         private SolidColorBrush colorBrush = Brushes.White;
-        public SolidColorBrush ColorBrush
-        {
-            get { return colorBrush; }
-            set
-            {
-                if (colorBrush == value)
-                    return;
 
-                colorBrush = value;
-                OnPropertyChanged("ColorBrush");
-            }
-        }
-
-
+        [ObservableProperty]
         private string colorInput = string.Empty;
-        public string ColorInput
-        {
-            get { return colorInput; }
-            set
-            {
-                if (colorInput == value)
-                    return;
 
-                colorInput = value;
-                OnPropertyChanged("ColorInput");
-            }
-        }
-
+        [ObservableProperty]
         private string colorARGB = string.Empty;
-        public string ColorARGB
-        {
-            get { return colorARGB; }
-            set
-            {
-                if (colorARGB == value)
-                    return;
 
-                colorARGB = value;
-                OnPropertyChanged("ColorARGB");
-            }
-        }
-
+        [ObservableProperty]
         private string colorHex = string.Empty;
-        public string ColorHex
-        {
-            get { return colorHex; }
-            set
-            {
-                if (colorHex == value)
-                    return;
 
-                colorHex = value;
-                OnPropertyChanged("ColorHex");
-            }
-        }
-
+        [ObservableProperty]
         private string colorBrightness = string.Empty;
-        public string ColorBrightness
-        {
-            get { return colorBrightness; }
-            set
-            {
-                if (colorBrightness == value)
-                    return;
 
-                colorBrightness = value;
-                OnPropertyChanged("ColorBrightness");
-            }
-        }
-
+        [ObservableProperty]
         private byte alphaElem = 255;
-        public byte AlphaElem
+        partial void OnAlphaElemChanged(byte value)
         {
-            get { return alphaElem; }
-            set
-            {
-                if (alphaElem == value)
-                    return;
-
-                alphaElem = value;
-                OnPropertyChanged("AlphaElem");
-
-                Color = Color.FromArgb(AlphaElem, RedElem, GreenElem, BlueElem);
-            }
+            Color = Color.FromArgb(AlphaElem, RedElem, GreenElem, BlueElem);
         }
 
+        [ObservableProperty]
         private byte redElem = 255;
-        public byte RedElem
+        partial void OnRedElemChanged(byte value)
         {
-            get { return redElem; }
-            set
-            {
-                if (redElem == value)
-                    return;
-
-                redElem = value;
-                OnPropertyChanged("RedElem");
-
-                Color = Color.FromArgb(AlphaElem, RedElem, GreenElem, BlueElem);
-            }
+            Color = Color.FromArgb(AlphaElem, RedElem, GreenElem, BlueElem);
         }
 
+        [ObservableProperty]
         private byte greenElem = 255;
-        public byte GreenElem
+        partial void OnGreenElemChanged(byte value)
         {
-            get { return greenElem; }
-            set
-            {
-                if (greenElem == value)
-                    return;
-
-                greenElem = value;
-                OnPropertyChanged("GreenElem");
-
-                Color = Color.FromArgb(AlphaElem, RedElem, GreenElem, BlueElem);
-            }
+            Color = Color.FromArgb(AlphaElem, RedElem, GreenElem, BlueElem);
         }
 
+        [ObservableProperty]
         private byte blueElem = 255;
-        public byte BlueElem
+        partial void OnBlueElemChanged(byte value)
         {
-            get { return blueElem; }
-            set
-            {
-                if (blueElem == value)
-                    return;
-
-                blueElem = value;
-                OnPropertyChanged("BlueElem");
-
-                Color = Color.FromArgb(AlphaElem, RedElem, GreenElem, BlueElem);
-            }
+            Color = Color.FromArgb(AlphaElem, RedElem, GreenElem, BlueElem);
         }
 
+        [ObservableProperty]
         private int hueElem = 0;
-        public int HueElem
+        partial void OnHueElemChanged(int value)
         {
-            get { return hueElem; }
-            set
-            {
-                if (hueElem == value)
-                    return;
-
-                if (value == -1)
-                    hueElem = 359;
-                else if (value == 360)
-                    hueElem = 0;
-                else
-                    hueElem = value;
-
-                OnPropertyChanged("HueElem");
-
-                Color = ColorHSV.ConvertToColor(
-                    HueElem / 360d,
-                    SaturationElem / 100d,
-                    ValueElem / 100d);
-            }
+            //if (value == -1)
+            //    hueElem = 359;
+            //else if (value == 360)
+            //    hueElem = 0;
+            //else
+            //    hueElem = value;
+            Color = ColorHSV.ConvertToColor(
+                HueElem / 360d,
+                SaturationElem / 100d,
+                ValueElem / 100d);
         }
+        //public int HueElem
+        //{
+        //    get { return hueElem; }
+        //    set
+        //    {
+        //        if (hueElem == value)
+        //            return;
 
+        //        if (value == -1)
+        //            hueElem = 359;
+        //        else if (value == 360)
+        //            hueElem = 0;
+        //        else
+        //            hueElem = value;
+
+        //        OnPropertyChanged("HueElem");
+
+        //        Color = ColorHSV.ConvertToColor(
+        //            HueElem / 360d,
+        //            SaturationElem / 100d,
+        //            ValueElem / 100d);
+        //    }
+        //}
+
+        [ObservableProperty]
         private int saturationElem = 0;
-        public int SaturationElem
+        partial void OnSaturationElemChanged(int value)
         {
-            get { return saturationElem; }
-            set
-            {
-                if (saturationElem == value)
-                    return;
-
-                saturationElem = value;
-                OnPropertyChanged("SaturationElem");
-
-                Color = ColorHSV.ConvertToColor(
-                    HueElem / 360d,
-                    SaturationElem / 100d,
-                    ValueElem / 100d);
-            }
+            Color = ColorHSV.ConvertToColor(
+                HueElem / 360d,
+                SaturationElem / 100d,
+                ValueElem / 100d);
         }
+        //public int SaturationElem
+        //{
+        //    get { return saturationElem; }
+        //    set
+        //    {
+        //        if (saturationElem == value)
+        //            return;
 
+        //        saturationElem = value;
+        //        OnPropertyChanged("SaturationElem");
+
+        //        Color = ColorHSV.ConvertToColor(
+        //            HueElem / 360d,
+        //            SaturationElem / 100d,
+        //            ValueElem / 100d);
+        //    }
+        //}
+
+        [ObservableProperty]
         private int valueElem = 100;
-        public int ValueElem
+        partial void OnValueElemChanged(int value)
         {
-            get { return valueElem; }
-            set
-            {
-                if (valueElem == value)
-                    return;
-
-                valueElem = value;
-                OnPropertyChanged("ValueElem");
-
-                Color = ColorHSV.ConvertToColor(
-                    HueElem / 360d,
-                    SaturationElem / 100d,
-                    ValueElem / 100d);
-            }
+            Color = ColorHSV.ConvertToColor(
+                HueElem / 360d,
+                SaturationElem / 100d,
+                ValueElem / 100d);
         }
+        //public int ValueElem
+        //{
+        //    get { return valueElem; }
+        //    set
+        //    {
+        //        if (valueElem == value)
+        //            return;
+
+        //        valueElem = value;
+        //        OnPropertyChanged("ValueElem");
+
+        //        Color = ColorHSV.ConvertToColor(
+        //            HueElem / 360d,
+        //            SaturationElem / 100d,
+        //            ValueElem / 100d);
+        //    }
+        //}
 
 
+        [ObservableProperty]
         private Color minSaturationColor = Colors.White;
-        public Color MinSaturationColor
-        {
-            get { return minSaturationColor; }
-            set
-            {
-                if (minSaturationColor == value)
-                    return;
+        //public Color MinSaturationColor
+        //{
+        //    get { return minSaturationColor; }
+        //    set
+        //    {
+        //        if (minSaturationColor == value)
+        //            return;
 
-                minSaturationColor = value;
-                OnPropertyChanged("MinSaturationColor");
-            }
-        }
+        //        minSaturationColor = value;
+        //        OnPropertyChanged("MinSaturationColor");
+        //    }
+        //}
 
 
+        [ObservableProperty]
         private Color maxSaturationColor = Colors.Black;
-        public Color MaxSaturationColor
-        {
-            get { return maxSaturationColor; }
-            set
-            {
-                if (maxSaturationColor == value)
-                    return;
+        //public Color MaxSaturationColor
+        //{
+        //    get { return maxSaturationColor; }
+        //    set
+        //    {
+        //        if (maxSaturationColor == value)
+        //            return;
 
-                maxSaturationColor = value;
-                OnPropertyChanged("MaxSaturationColor");
-            }
-        }
+        //        maxSaturationColor = value;
+        //        OnPropertyChanged("MaxSaturationColor");
+        //    }
+        //}
 
+        [ObservableProperty]
         private Color minValueColor = Colors.Black;
-        public Color MinValueColor
-        {
-            get { return minValueColor; }
-            set
-            {
-                if (minValueColor == value)
-                    return;
+        //public Color MinValueColor
+        //{
+        //    get { return minValueColor; }
+        //    set
+        //    {
+        //        if (minValueColor == value)
+        //            return;
 
-                minValueColor = value;
-                OnPropertyChanged("MinValueColor");
-            }
-        }
+        //        minValueColor = value;
+        //        OnPropertyChanged("MinValueColor");
+        //    }
+        //}
 
+        [ObservableProperty]
         private Color maxValueColor = Colors.White;
-        public Color MaxValueColor
-        {
-            get { return maxValueColor; }
-            set
-            {
-                if (maxValueColor == value)
-                    return;
+        //public Color MaxValueColor
+        //{
+        //    get { return maxValueColor; }
+        //    set
+        //    {
+        //        if (maxValueColor == value)
+        //            return;
 
-                maxValueColor = value;
-                OnPropertyChanged("MaxValueColor");
-            }
-        }
+        //        maxValueColor = value;
+        //        OnPropertyChanged("MaxValueColor");
+        //    }
+        //}
 
 
         public ObservableCollection<NamedColor> WebColors { get; }
@@ -369,65 +320,37 @@ namespace ThemeEditor
         public ObservableCollection<NamedColor> SortedColors { get; }
 
 
-        private NamedColor selectedWebColor = null;
-        public NamedColor SelectedWebColor
+        [ObservableProperty]
+        private NamedColor? selectedWebColor = null;
+        partial void OnSelectedWebColorChanged(NamedColor? value)
         {
-            get { return selectedWebColor; }
-            set
-            {
-                if (selectedWebColor == value)
-                    return;
-
-                selectedWebColor = value;
-                OnPropertyChanged("SelectedWebColor");
-
-                if (selectedWebColor != null)
-                    Color = selectedWebColor.Color;
-            }
+            if (value != null)
+                Color = value.Color;
         }
 
-        private NamedColor selectedSystemColor = null;
-        public NamedColor SelectedSystemColor
+        [ObservableProperty]
+        private NamedColor? selectedSystemColor = null;
+        partial void OnSelectedSystemColorChanged(NamedColor? value)
         {
-            get { return selectedSystemColor; }
-            set
-            {
-                if (selectedSystemColor == value)
-                    return;
-
-                selectedSystemColor = value;
-                OnPropertyChanged("SelectedSystemColor");
-
-                if (selectedSystemColor != null)
-                    Color = selectedSystemColor.Color;
-            }
+            if (value != null)
+                Color = value.Color;
         }
 
-        private NamedColor selectedSortedColor = null;
-        public NamedColor SelectedSortedColor
+        [ObservableProperty]
+        private NamedColor? selectedSortedColor = null;
+        partial void OnSelectedSortedColorChanged(NamedColor? value)
         {
-            get { return selectedSortedColor; }
-            set
-            {
-                if (selectedSortedColor == value)
-                    return;
-
-                selectedSortedColor = value;
-                OnPropertyChanged("SelectedSortedColor");
-
-                if (selectedSortedColor != null)
-                    Color = selectedSortedColor.Color;
-            }
+            if (value != null)
+                Color = value.Color;
         }
 
-
-        private List<NamedColor> GetWebColors()
+        private static List<NamedColor> GetWebColors()
         {
-            List<NamedColor> colors = new List<NamedColor>();
-            Type type = typeof(System.Windows.Media.Colors);
+            List<NamedColor> colors = [];
+            Type type = typeof(Colors);
             foreach (var p in type.GetProperties())
             {
-                if (p.GetValue(null, null) is System.Windows.Media.Color color)
+                if (p.GetValue(null, null) is Color color)
                 {
                     Color c = Color.FromArgb(color.A, color.R, color.G, color.B);
                     colors.Add(new NamedColor(p.Name, c));
@@ -436,26 +359,26 @@ namespace ThemeEditor
             return colors;
         }
 
-        private List<NamedColor> GetThemeColors()
+        private static List<NamedColor> GetThemeColors()
         {
-            List<NamedColor> colors = new List<NamedColor>();
+            List<NamedColor> colors = [];
             var dictionary = Application.Current.Resources.MergedDictionaries[0];
             foreach (object key in dictionary.Keys)
             {
                 if (dictionary[key] is SolidColorBrush br)
-                    colors.Add(new NamedColor(key.ToString(), br.Color));
+                    colors.Add(new NamedColor(key.ToString() ?? string.Empty, br.Color));
             }
 
             return colors;
         }
 
-        private List<NamedColor> GetSystemColors()
+        private static List<NamedColor> GetSystemColors()
         {
-            List<NamedColor> colors = new List<NamedColor>();
-            Type type = typeof(System.Windows.SystemColors);
+            List<NamedColor> colors = [];
+            Type type = typeof(SystemColors);
             foreach (var p in type.GetProperties())
             {
-                if (p.GetValue(null, null) is System.Windows.Media.Color color)
+                if (p.GetValue(null, null) is Color color)
                 {
                     Color c = Color.FromArgb(color.A, color.R, color.G, color.B);
                     colors.Add(new NamedColor(p.Name.Replace("Color", ""), c));
@@ -464,21 +387,9 @@ namespace ThemeEditor
             return colors;
         }
 
-        RelayCommand parseCommand;
-        public ICommand ParseCommand
-        {
-            get
-            {
-                if (parseCommand == null)
-                {
-                    parseCommand = new RelayCommand(
-                        p => ParseText(ColorInput),
-                        q => !string.IsNullOrWhiteSpace(ColorInput)
-                        );
-                }
-                return parseCommand;
-            }
-        }
+        public ICommand ParseCommand => new RelayCommand(
+            p => ParseText(ColorInput),
+            q => !string.IsNullOrWhiteSpace(ColorInput));
 
         private static int Brightness(Color c)
         {
@@ -511,13 +422,13 @@ namespace ThemeEditor
                 {
                     color = c2;
                 }
-                else if (!clr.Contains(","))
+                else if (!clr.Contains(','))
                 {
                     color = (Color)ColorConverter.ConvertFromString("#" + clr);
                 }
                 else if (char.IsDigit(clr[0]))
                 {
-                    if (clr.Contains(","))
+                    if (clr.Contains(','))
                     {
                         string[] splt = clr.Split(',');
                         if (splt.Length > 3)
@@ -557,8 +468,12 @@ namespace ThemeEditor
 
         class HueComparer : IComparer<NamedColor>
         {
-            public int Compare(NamedColor x, NamedColor y)
+            public int Compare(NamedColor? x, NamedColor? y)
             {
+                if (x == null && y == null) return 0;
+                if (x == null) return -1;
+                if (y == null) return 1;
+
                 if (x.Color.A == 0 && y.Color.A == 0) return 0;
                 if (x.Color.A == 0) return -1;
                 if (y.Color.A == 0) return 1;
@@ -580,7 +495,7 @@ namespace ThemeEditor
         }
     }
 
-    public class NamedColor : ViewModelBase
+    public partial class NamedColor : ObservableObject
     {
         public NamedColor(object key, string name, Color color)
         {
@@ -605,36 +520,17 @@ namespace ThemeEditor
         public string Hex { get; private set; }
         public bool IsModified { get; set; }
 
+        [ObservableProperty]
         private Color color = Colors.Black;
-        public Color Color
+        partial void OnColorChanged(Color value)
         {
-            get { return color; }
-            set
-            {
-                if (color == value)
-                    return;
-
-                color = value;
-                Brush = new SolidColorBrush(color);
-                OnPropertyChanged("Color");
-            }
+            Brush = new SolidColorBrush(value);
         }
 
+        [ObservableProperty]
         private SolidColorBrush brush = Brushes.Black;
-        public SolidColorBrush Brush
-        {
-            get { return brush; }
-            set
-            {
-                if (brush == value)
-                    return;
 
-                brush = value;
-                OnPropertyChanged("Brush");
-            }
-        }
-
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (obj is NamedColor other)
             {

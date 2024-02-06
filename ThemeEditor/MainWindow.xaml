@@ -12,13 +12,10 @@
                     CaptionBackground="{DynamicResource Caption.Background}"
                     Height="640" Width="1200">
 
-    <local:ThemedWindow.Resources>
-    </local:ThemedWindow.Resources>
-
-    <local:ThemedWindow.InputBindings>
+    <Window.InputBindings>
         <KeyBinding Gesture="Ctrl+o" Command="{Binding OpenXamlCommand}"/>
         <KeyBinding Gesture="Ctrl+s" Command="{Binding SaveXamlCommand}"/>
-    </local:ThemedWindow.InputBindings>
+    </Window.InputBindings>
 
     <DockPanel>
         <Menu DockPanel.Dock="Top">

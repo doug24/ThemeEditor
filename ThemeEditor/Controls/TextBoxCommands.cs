@@ -35,9 +35,9 @@ namespace ThemeEditor
             if (FocusManager.GetFocusedElement(sender as DependencyObject) is TextBox tb)
             {
                 int start = tb.SelectionStart, length = tb.SelectionLength;
-                string leading = tb.Text.Substring(0,start);
-                string changing = tb.Text.Substring(start, start + length).ToLower(CultureInfo.CurrentCulture);
-                string trailing = tb.Text.Substring(start + length);
+                string leading = tb.Text[..start];
+                string changing = tb.Text[start..(start + length)].ToLower(CultureInfo.CurrentCulture);
+                string trailing = tb.Text[(start + length)..];
                 tb.Text = leading + changing + trailing;
                 tb.SelectionStart = start;
                 tb.SelectionLength = length;
@@ -57,9 +57,9 @@ namespace ThemeEditor
             if (FocusManager.GetFocusedElement(sender as DependencyObject) is TextBox tb)
             {
                 int start = tb.SelectionStart, length = tb.SelectionLength;
-                string leading = tb.Text.Substring(0, start);
-                string changing = tb.Text.Substring(start, start + length).ToUpper(CultureInfo.CurrentCulture);
-                string trailing = tb.Text.Substring(start + length);
+                string leading = tb.Text[..start];
+                string changing = tb.Text[start..(start + length)].ToUpper(CultureInfo.CurrentCulture);
+                string trailing = tb.Text[(start + length)..];
                 tb.Text = leading + changing + trailing;
                 tb.SelectionStart = start;
                 tb.SelectionLength = length;

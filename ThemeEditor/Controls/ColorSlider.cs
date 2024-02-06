@@ -52,8 +52,8 @@ namespace ThemeEditor
         {
             if (IsHue)
             {
-                Background = new LinearGradientBrush(new GradientStopCollection()
-                {
+                Background = new LinearGradientBrush(
+                [
                     new GradientStop(Color.FromArgb(255, 255, 0, 0), 0.0),
                     new GradientStop(Color.FromArgb(255, 255, 255, 0), 1.0 / 6.0),
                     new GradientStop(Color.FromArgb(255, 0, 255, 0), 2.0 / 6.0),
@@ -62,7 +62,7 @@ namespace ThemeEditor
                     new GradientStop(Color.FromArgb(255, 255, 0, 255), 5.0 / 6.0),
                     new GradientStop(Color.FromArgb(255, 255, 0, 0), 1.0),
 
-                }, 0.0);
+                ], 0.0);
             }
             else
             {

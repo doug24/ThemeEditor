@@ -100,11 +100,11 @@ namespace ThemeEditor
                 minimizeButton.Click += (s, e) => WindowState = WindowState.Minimized;
         }
 
-        public string WindowChromeFontFamily { get; set; } = SystemSymbols.WindowChromeFontFamily;
-        public float WindowChromeFontSize { get; set; } = SystemSymbols.WindowChromeFontSize;
-        public string MinimizeCharacter { get; set; } = SystemSymbols.MinimizeCharacter;
-        public string MaximizeCharacter { get; set; } = SystemSymbols.MaximizeCharacter;
-        public string RestoreCharacter { get; set; } = SystemSymbols.RestoreCharacter;
-        public string CloseCharacter { get; set; } = SystemSymbols.CloseCharacter;
+        public string WindowChromeFontFamily { get; set; } = "Segoe Fluent Icons";
+        public float WindowChromeFontSize { get; set; } = 10f;
+        public string MinimizeCharacter { get; set; } = char.ConvertFromUtf32(0xE921);
+        public string MaximizeCharacter { get; set; } = char.ConvertFromUtf32(0xE922);
+        public string RestoreCharacter { get; set; } = char.ConvertFromUtf32(0xE923);
+        public string CloseCharacter { get; set; } = char.ConvertFromUtf32(0xE8BB);
     }
 }

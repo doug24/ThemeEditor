@@ -8,11 +8,12 @@ using System.Text;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Win32;
 
 namespace ThemeEditor
 {
-    public class MainViewModel : ViewModelBase
+    public partial class MainViewModel : ObservableObject
     {
         public MainViewModel()
         {
@@ -36,6 +37,12 @@ namespace ThemeEditor
                 EditThemeName = Path.GetFileNameWithoutExtension(EditFile);
                 LoadXaml();
             }
+            else
+            {
+                EditFile = string.Empty;
+                Properties.Settings.Default.CurrentEditFile = string.Empty;
+                Properties.Settings.Default.Save();
+            }
         }
 
         public string EditFile { get; private set; }
@@ -43,7 +50,7 @@ namespace ThemeEditor
         public BrushResourceViewModel BrushResourceVM { get; private set; }
         public ColorEditorViewModel ColorEditorVM { get; private set; }
 
-        private void BrushResourceVM_SaveBrush(object sender, EventArgs e)
+        private void BrushResourceVM_SaveBrush(object? sender, EventArgs e)
         {
             if (BrushResourceVM.SelectedBrush != null)
             {
@@ -51,7 +58,7 @@ namespace ThemeEditor
             }
         }
 
-        private void BrushResourceVM_RevertBrush(object sender, EventArgs e)
+        private void BrushResourceVM_RevertBrush(object? sender, EventArgs e)
         {
             if (BrushResourceVM.SelectedBrush != null)
             {
@@ -59,7 +66,7 @@ namespace ThemeEditor
             }
         }
 
-        private void BrushResourceViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void BrushResourceViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == "SelectedResource" && BrushResourceVM.SelectedResource != null)
             {
@@ -67,13 +74,13 @@ namespace ThemeEditor
             }
         }
 
-        private void ColorEditorViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void ColorEditorViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(ColorEditorVM.ColorBrush))
             {
-                if (Application.Current.Resources[BrushResourceVM.SelectedResource.Key] is Brush)
+                if (Application.Current.Resources[BrushResourceVM.SelectedResource?.Key] is Brush)
                 {
-                    Application.Current.Resources[BrushResourceVM.SelectedResource.Key] = ColorEditorVM.ColorBrush;
+                    Application.Current.Resources[BrushResourceVM.SelectedResource?.Key] = ColorEditorVM.ColorBrush;
                 }
 
                 if (BrushResourceVM.SyncColors)
@@ -95,28 +102,16 @@ namespace ThemeEditor
 
 
 
-        public ObservableCollection<KeyValuePair<string, int>> Encodings { get; } = new ObservableCollection<KeyValuePair<string, int>>();
+        public ObservableCollection<KeyValuePair<string, int>> Encodings { get; } = [];
 
+        [ObservableProperty]
         private int codePage = -1;
-        public int CodePage
-        {
-            get { return codePage; }
-            set
-            {
-                if (value == codePage)
-                    return;
-
-                codePage = value;
-
-                OnPropertyChanged(() => CodePage);
-            }
-        }
 
         private void PopulateEncodings()
         {
-            KeyValuePair<string, int> defaultValue = new KeyValuePair<string, int>("Auto detection (default)", -1);
+            KeyValuePair<string, int> defaultValue = new("Auto detection (default)", -1);
 
-            List<KeyValuePair<string, int>> tempEnc = new List<KeyValuePair<string, int>>();
+            List<KeyValuePair<string, int>> tempEnc = [];
             foreach (EncodingInfo ei in Encoding.GetEncodings())
             {
                 Encoding e = ei.GetEncoding();
@@ -129,150 +124,49 @@ namespace ThemeEditor
                 Encodings.Add(enc);
         }
 
+        [ObservableProperty]
         private string editThemeName = string.Empty;
-        public string EditThemeName
+        partial void OnEditThemeNameChanged(string value)
         {
-            get { return editThemeName; }
-            set
-            {
-                if (value == editThemeName)
-                    return;
-
-                editThemeName = value;
-                WindowTitle = string.IsNullOrEmpty(editThemeName) ?
-                    "Theme Editor" : $"Theme Editor - {editThemeName}";
-
-                OnPropertyChanged(() => EditThemeName);
-            }
+            WindowTitle = string.IsNullOrEmpty(value) ?
+                "Theme Editor" : $"Theme Editor - {value}";
         }
 
+        [ObservableProperty]
         private string windowTitle = string.Empty;
-        public string WindowTitle
-        {
-            get { return windowTitle; }
-            set
-            {
-                if (value == windowTitle)
-                    return;
 
-                windowTitle = value;
-
-                OnPropertyChanged(() => WindowTitle);
-            }
-        }
-
+        [ObservableProperty]
         private bool multiline;
-        public bool Multiline
-        {
-            get { return multiline; }
-            set
-            {
-                if (value == multiline)
-                    return;
 
-                multiline = value;
-
-                OnPropertyChanged(() => Multiline);
-            }
-        }
-
+        [ObservableProperty]
         private string searchFor = "string";
-        public string SearchFor
-        {
-            get { return searchFor; }
-            set
-            {
-                if (value == searchFor)
-                    return;
 
-                searchFor = value;
-
-                OnPropertyChanged(() => SearchFor);
-            }
-        }
-
-        public ObservableCollection<string> FastSearchBookmarks { get; } = new ObservableCollection<string>
-        {
+        public ObservableCollection<string> FastSearchBookmarks { get; } =
+        [
             "text", "unique", "watch", "xeon", "yesterday", "zoom"
-        };
+        ];
 
 
-        RelayCommand editThemeCommand;
-        public ICommand EditThemeCommand
-        {
-            get
-            {
-                if (editThemeCommand == null)
-                {
-                    editThemeCommand = new RelayCommand(
-                        p => LoadXaml(),
-                        q => !string.IsNullOrEmpty(EditFile) && File.Exists(EditFile));
-                }
-                return editThemeCommand;
-            }
-        }
+        public ICommand EditThemeCommand => new RelayCommand(
+            p => LoadXaml(),
+            q => !string.IsNullOrEmpty(EditFile) && File.Exists(EditFile));
 
-        RelayCommand darkThemeCommand;
-        public ICommand DarkThemeCommand
-        {
-            get
-            {
-                if (darkThemeCommand == null)
-                {
-                    darkThemeCommand = new RelayCommand(
-                        p => LoadResource("Dark"));
-                }
-                return darkThemeCommand;
-            }
-        }
+        public ICommand DarkThemeCommand => new RelayCommand(
+            p => LoadResource("Dark"));
 
-        RelayCommand lightThemeCommand;
-        public ICommand LightThemeCommand
-        {
-            get
-            {
-                if (lightThemeCommand == null)
-                {
-                    lightThemeCommand = new RelayCommand(
-                        p => LoadResource("Light"));
-                }
-                return lightThemeCommand;
-            }
-        }
+        public ICommand LightThemeCommand => new RelayCommand(
+            p => LoadResource("Light"));
 
-        RelayCommand openXamlCommand;
-        public ICommand OpenXamlCommand
-        {
-            get
-            {
-                if (openXamlCommand == null)
-                {
-                    openXamlCommand = new RelayCommand(
-                        p => OpenXaml());
-                }
-                return openXamlCommand;
-            }
-        }
+        public ICommand OpenXamlCommand => new RelayCommand(
+            p => OpenXaml());
 
-        RelayCommand saveXamlCommand;
-        public ICommand SaveXamlCommand
-        {
-            get
-            {
-                if (saveXamlCommand == null)
-                {
-                    saveXamlCommand = new RelayCommand(
-                        p => SaveXaml(),
-                        q => BrushResourceVM.ResourceColors.Any(r => r.IsModified)
-                        );
-                }
-                return saveXamlCommand;
-            }
-        }
+        public ICommand SaveXamlCommand => new RelayCommand(
+            p => SaveXaml(),
+            q => BrushResourceVM.ResourceColors.Any(r => r.IsModified));
 
         private void OpenXaml()
         {
-            OpenFileDialog dlg = new OpenFileDialog
+            OpenFileDialog dlg = new()
             {
                 Filter = "Xaml files|*.xaml",
                 DefaultExt = ".xaml",
@@ -307,7 +201,7 @@ namespace ThemeEditor
             {
                 Application.Current.Resources.Clear();
                 Application.Current.Resources.MergedDictionaries[0].Source = new Uri($"/Themes/{name}Brushes.xaml", UriKind.Relative);
-                
+
                 BrushResourceVM.InitializeColors();
                 BrushResourceVM.CanEdit = false;
                 ColorEditorVM.InitializeThemeColors();
@@ -321,10 +215,10 @@ namespace ThemeEditor
         {
             if (BrushResourceVM.ResourceColors.Any(r => r.IsModified))
             {
-                var ans = MessageBox.Show("Data has been changed - save changes?", "Theme Editor", 
+                var ans = MessageBox.Show("Data has been changed - save changes?", "Theme Editor",
                     MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.Yes);
-                if (ans == MessageBoxResult.Yes) 
-                { 
+                if (ans == MessageBoxResult.Yes)
+                {
                     SaveXaml();
                 }
             }
@@ -353,7 +247,7 @@ namespace ThemeEditor
 
         private void SaveXaml()
         {
-            List<string> lines = File.ReadAllLines(EditFile).ToList();
+            List<string> lines = [.. File.ReadAllLines(EditFile)];
 
             foreach (var namedColor in BrushResourceVM.ResourceColors.Where(nc => nc.IsModified))
             {
@@ -362,7 +256,7 @@ namespace ThemeEditor
                 string color = string.Format("#{0:X2}{1:X2}{2:X2}{3:X2}", c.A, c.R, c.G, c.B);
                 string update = $"    <SolidColorBrush x:Key=\"{namedColor.Name}\" po:Freeze=\"true\" Color=\"{color}\"/>";
 
-                string line = lines.FirstOrDefault(l => l.IndexOf(key, StringComparison.OrdinalIgnoreCase) > -1);
+                string? line = lines.FirstOrDefault(l => l.IndexOf(key, StringComparison.OrdinalIgnoreCase) > -1);
                 if (!string.IsNullOrEmpty(line))
                 {
                     int index = lines.IndexOf(line);
@@ -386,7 +280,7 @@ namespace ThemeEditor
             {
                 var ans = MessageBox.Show("Data has been changed - save changes?", "Theme Editor",
                     MessageBoxButton.YesNoCancel, MessageBoxImage.Question, MessageBoxResult.Yes);
-                
+
                 if (ans == MessageBoxResult.Yes)
                 {
                     SaveXaml();

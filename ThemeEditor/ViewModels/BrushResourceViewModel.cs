@@ -5,13 +5,14 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace ThemeEditor
 {
-    public class BrushResourceViewModel : ViewModelBase
+    public partial class BrushResourceViewModel : ObservableObject
     {
-        public event EventHandler SaveBrush;
-        public event EventHandler RevertBrush;
+        public event EventHandler? SaveBrush;
+        public event EventHandler? RevertBrush;
 
         public BrushResourceViewModel()
         {
@@ -21,17 +22,17 @@ namespace ThemeEditor
         internal void InitializeColors()
         {
             string selectionName = string.Empty;
-            if (selectedResource != null)
+            if (SelectedResource != null)
             {
-                selectionName = selectedResource.Name;
+                selectionName = SelectedResource.Name;
             }
 
-            List<NamedColor> names = new List<NamedColor>();
+            List<NamedColor> names = [];
             var dictionary = Application.Current.Resources.MergedDictionaries[0];
             foreach (object key in dictionary.Keys)
             {
                 if (dictionary[key] is SolidColorBrush br)
-                    names.Add(new NamedColor(key, key.ToString(), br.Color));
+                    names.Add(new NamedColor(key, key.ToString() ?? string.Empty, br.Color));
             }
 
             ResourceColors = new ObservableCollection<NamedColor>(names.OrderBy(nc => nc.Name));
@@ -111,105 +112,41 @@ namespace ThemeEditor
         public bool IsColorChanged => SelectedResource != null &&
             SelectedResource.Color != CurrentColor;
 
-        public ObservableCollection<NamedColor> ResourceColors { get; private set; }
+        public ObservableCollection<NamedColor> ResourceColors { get; private set; } = [];
 
-        public ObservableCollection<NamedColor> ColorGroup { get; } = new ObservableCollection<NamedColor>();
+        public ObservableCollection<NamedColor> ColorGroup { get; } = [];
 
-        private NamedColor selectedResource = null;
-        public NamedColor SelectedResource
+        [ObservableProperty]
+        private NamedColor? selectedResource = null;
+
+        partial void OnSelectedResourceChanged(NamedColor? value)
         {
-            get { return selectedResource; }
-            set
+            if (value != null)
             {
-                if (selectedResource == value)
-                    return;
-
-                selectedResource = value;
                 UpdateColorGroup(value);
-
-                if (selectedResource != null)
-                    SelectedBrush = selectedResource.Brush;
-                else
-                    SelectedBrush = null;
-
-                OnPropertyChanged("SelectedResource");
+                SelectedBrush = value.Brush;
             }
-        }
-
-        private SolidColorBrush selectedBrush = null;
-        public SolidColorBrush SelectedBrush
-        {
-            get { return selectedBrush; }
-            set
+            else
             {
-                if (selectedBrush == value)
-                    return;
-
-                selectedBrush = value;
-                OnPropertyChanged("SelectedBrush");
+                SelectedBrush = null;
             }
         }
 
+        [ObservableProperty]
+        private SolidColorBrush? selectedBrush = null;
+
+        [ObservableProperty]
         private bool canEdit;
-        public bool CanEdit
-        {
-            get { return canEdit; }
-            set
-            {
-                if (value == canEdit)
-                    return;
 
-                canEdit = value;
-
-                OnPropertyChanged(() => CanEdit);
-            }
-        }
-
+        [ObservableProperty]
         private bool syncColors;
-        public bool SyncColors
-        {
-            get { return syncColors; }
-            set
-            {
-                if (value == syncColors)
-                    return;
 
-                syncColors = value;
+        public ICommand SaveCommand => new RelayCommand(
+            p => SaveBrush?.Invoke(this, EventArgs.Empty),
+            q => CanEdit && IsColorChanged);
 
-                OnPropertyChanged(() => SyncColors);
-            }
-        }
-
-        RelayCommand saveCommand;
-        public ICommand SaveCommand
-        {
-            get
-            {
-                if (saveCommand == null)
-                {
-                    saveCommand = new RelayCommand(
-                        p => SaveBrush?.Invoke(this, EventArgs.Empty),
-                        q => CanEdit && IsColorChanged
-                        );
-                }
-                return saveCommand;
-            }
-        }
-
-        RelayCommand revertCommand;
-        public ICommand RevertCommand
-        {
-            get
-            {
-                if (revertCommand == null)
-                {
-                    revertCommand = new RelayCommand(
-                        p => RevertBrush?.Invoke(this, EventArgs.Empty),
-                        q => CanEdit && IsColorChanged
-                        );
-                }
-                return revertCommand;
-            }
-        }
+        public ICommand RevertCommand => new RelayCommand(
+            p => RevertBrush?.Invoke(this, EventArgs.Empty),
+            q => CanEdit && IsColorChanged);
     }
 }

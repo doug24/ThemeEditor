@@ -3,18 +3,11 @@ using System.Windows.Media;
 
 namespace ThemeEditor
 {
-    public struct ColorHSV
+    public class ColorHSV(double h, double s, double v)
     {
-        double _hue;
-        double _saturation;
-        double _value;
-
-        public ColorHSV(double h, double s, double v)
-        {
-            _hue = h;
-            _saturation = s;
-            _value = v;
-        }
+        private double _hue = h;
+        private double _saturation = s;
+        private double _value = v;
 
         public double Hue
         {
@@ -34,7 +27,7 @@ namespace ThemeEditor
             set { if (value >= 0 && value <= 1.0) _value = value; }
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (obj is ColorHSV x)
             {
@@ -48,14 +41,7 @@ namespace ThemeEditor
 
         public override int GetHashCode()
         {
-            unchecked // Overflow is fine, just wrap
-            {
-                int hash = 17;
-                hash = hash * 23 + _hue.GetHashCode();
-                hash = hash * 23 + _saturation.GetHashCode();
-                hash = hash * 23 + _value.GetHashCode();
-                return hash;
-            }
+            return HashCode.Combine(_hue, _saturation, _value);
         }
 
         public static bool operator ==(ColorHSV left, ColorHSV right)

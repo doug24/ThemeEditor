@@ -30,7 +30,7 @@ namespace ThemeEditor
         {
             if (e.DataObject.GetDataPresent(typeof(string)))
             {
-                string text = e.DataObject.GetData(typeof(string)) as string;
+                string? text = e.DataObject.GetData(typeof(string)) as string;
                 if (!string.IsNullOrEmpty(text) && int.TryParse(text, out int result) && result == 0)
                 {
                     e.CancelCommand();

@@ -24,17 +24,17 @@ namespace ThemeEditor
         /// <summary>
         /// Stores a reference to the split element.
         /// </summary>
-        private UIElement _splitElement;
+        private UIElement? _splitElement;
 
         /// <summary>
         /// Stores a reference to the ContextMenu.
         /// </summary>
-        private ContextMenu _contextMenu;
+        private ContextMenu? _contextMenu;
 
         /// <summary>
         /// Stores a reference to the ancestor of the ContextMenu added as a logical child.
         /// </summary>
-        private DependencyObject _logicalChild;
+        private DependencyObject? _logicalChild;
 
         /// <summary>
         /// Stores the initial location of the ContextMenu.
@@ -121,7 +121,7 @@ namespace ThemeEditor
             if ((Key.Down == e.Key) || (Key.Up == e.Key))
             {
                 // WPF requires this to happen via BeginInvoke
-                Dispatcher.BeginInvoke((Action)(() => OpenButtonMenu()));
+                Dispatcher.BeginInvoke(() => OpenButtonMenu());
             }
             else
             {
@@ -210,7 +210,7 @@ namespace ThemeEditor
         /// </summary>
         /// <param name="sender">Event source.</param>
         /// <param name="e">Event arguments.</param>
-        private void SplitButton_LayoutUpdated(object sender, EventArgs e)
+        private void SplitButton_LayoutUpdated(object? sender, EventArgs e)
         {
             UpdateContextMenuOffsets();
         }
@@ -224,7 +224,7 @@ namespace ThemeEditor
             {
 
                 // Calculate desired offset to put the ContextMenu below and left-aligned to the Button
-                Point currentOffset = new Point();
+                Point currentOffset = new();
                 Point desiredOffset = _contextMenuInitialOffset;
 
                 _contextMenu.HorizontalOffset = desiredOffset.X - currentOffset.X;

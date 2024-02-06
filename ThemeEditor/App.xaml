@@ -9,7 +9,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <!--<ResourceDictionary Source="pack://application:,,,/Themes/DarkBrushes.xaml" />-->
                 <ResourceDictionary Source="pack://application:,,,/Themes/LightBrushes.xaml" />
-                
+
                 <ResourceDictionary Source="pack://application:,,,/ThemedControls/ThemedWindow.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/ThemedControls/TextBox.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/ThemedControls/Button.xaml" />
@@ -32,7 +32,7 @@
 
                 <ResourceDictionary Source="pack://application:,,,/ThemedControls/Styles.xaml" />
 
-                <ResourceDictionary Source="Themes\ColorSlider.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/Themes/ColorSlider.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

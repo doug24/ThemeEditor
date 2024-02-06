@@ -9,7 +9,7 @@ namespace ThemeEditor
     /// </summary>
     public class MultilineComboBox : ComboBox
     {
-        private TextBox editTextBox;
+        private TextBox? editTextBox;
 
         public MultilineComboBox()
             : base()
