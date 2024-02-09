@@ -3,17 +3,18 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:ae="http://icsharpcode.net/sharpdevelop/avalonedit"
              xmlns:local="clr-namespace:ThemeEditor"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="800" d:DesignWidth="800">
 
     <UserControl.Resources>
     </UserControl.Resources>
     <UserControl.Background>
-        <DynamicResource ResourceKey="GradientBackground"/>
+        <DynamicResource ResourceKey="Window.Background"/>
     </UserControl.Background>
 
-    <Grid>
+    <Grid Margin="3">
         <DockPanel>
             <DockPanel.ContextMenu>
                 <ContextMenu>
@@ -103,22 +104,65 @@
 
             </StackPanel>
 
-            <!--<TreeView Width="280">
-                <TreeViewItem Header="Root">
-                    <TreeViewItem Header="One - the quick brown fox"/>
-                    <TreeViewItem Header="Two - jumps over the lazy dog"/>
+            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+                <Expander DockPanel.Dock="Top" Header="More..." IsExpanded="True">
+                    <StackPanel Orientation="Horizontal">
+                        <DatePicker Margin="3"/>
+                        <DatePicker Margin="3" IsEnabled="False"/>
+                    </StackPanel>
+                </Expander>
+                <Expander DockPanel.Dock="Top" Header="Disabled" IsEnabled="False"/>
+            </StackPanel>
+
+            <Label Content="TreeView" DockPanel.Dock="Top" />
+            <TreeView Height="70" DockPanel.Dock="Top" Margin="3,3,0,3"
+                      x:Name="tree">
+                <TreeViewItem Header="Star Trek (3 matches on 2 lines)" IsExpanded="True">
+                    <TreeViewItem Header="1  Space, the final frontier."/>
+                    <TreeViewItem Header="2  These are the voyages of the Starship Enterprise."/>
                 </TreeViewItem>
-            </TreeView>-->
+            </TreeView>
 
-            <Expander DockPanel.Dock="Top" Header="More..." IsExpanded="True">
-                <StackPanel Orientation="Horizontal">
-                    <DatePicker Margin="3"/>
-                    <DatePicker Margin="3" IsEnabled="False"/>
-                </StackPanel>
-            </Expander>
+            <Label Content="DataGrid" DockPanel.Dock="Top" />
+            <DataGrid DockPanel.Dock="Top" Margin="3,3,0,3"
+                      Height="110" HorizontalAlignment="Stretch"
+                      ItemsSource="{Binding Students}"
+                      AutoGenerateColumns="False" SelectionMode="Single" SelectionUnit="FullRow"
+                      CanUserReorderColumns="True" CanUserResizeColumns="True"
+                      CanUserSortColumns="True"
+                      Style="{StaticResource ThemedDataGrid}"
+                      ColumnHeaderStyle="{StaticResource ThemedDataGridColumnHeader}"
+                      CellStyle="{StaticResource ThemedDataGridCell}"
+                      RowHeaderStyle="{StaticResource ThemedDataGridRowHeader}">
+                <DataGrid.Columns>
+                    <DataGridTextColumn MinWidth="120" Header="First Name" IsReadOnly="True"
+                                    Binding="{Binding FirstName}" />
+                    <DataGridTextColumn MinWidth="120" Header="Last Name" IsReadOnly="True"
+                                    Binding="{Binding LastName}" />
+                    <DataGridTextColumn MinWidth="120" Header="Email" IsReadOnly="True"
+                                    Binding="{Binding Email}" />
 
-            <Expander DockPanel.Dock="Top" Header="Disabled" IsEnabled="False"/>
+                </DataGrid.Columns>
+                <DataGrid.RowStyle>
+                    <Style TargetType="{x:Type DataGridRow}" BasedOn="{StaticResource ThemedDataGridRow}"/>
+                </DataGrid.RowStyle>
+            </DataGrid>
 
+            <Label Content="AvalonEdit" DockPanel.Dock="Top" />
+            <ae:TextEditor DockPanel.Dock="Top" x:Name="textEditor" 
+                           Margin="3,3,3,0"
+                           Height="120" 
+                           Width="460"
+                           HorizontalAlignment="Left"
+                           Style="{StaticResource ThemedMarkerTextEditor}"
+                           FontFamily="Consolas"
+                           FontSize="12"
+                           Foreground="{DynamicResource AvalonEdit.Foreground}"
+                           Background="{DynamicResource AvalonEdit.Background}"
+                           ShowLineNumbers="True" 
+                           IsReadOnly="True"
+                           WordWrap="True"/>
+                        
             <Border/>
         </DockPanel>
     </Grid>

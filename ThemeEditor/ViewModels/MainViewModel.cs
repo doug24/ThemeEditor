@@ -15,6 +15,8 @@ namespace ThemeEditor
 {
     public partial class MainViewModel : ObservableObject
     {
+        public EventHandler? ThemeColorChanged;
+
         public MainViewModel()
         {
             BrushResourceVM = new BrushResourceViewModel();
@@ -29,6 +31,9 @@ namespace ThemeEditor
             ColorEditorVM.PropertyChanged += ColorEditorViewModel_PropertyChanged;
 
             PopulateEncodings();
+
+            //AddMarker(3, 80, 40, MarkerType.Global);
+            AddMarker(10, 40, 40, MarkerType.Local);
 
             EditThemeName = "(none)";
             EditFile = Properties.Settings.Default.CurrentEditFile;
@@ -63,6 +68,7 @@ namespace ThemeEditor
             if (BrushResourceVM.SelectedBrush != null)
             {
                 ColorEditorVM.Color = BrushResourceVM.SelectedBrush.Color;
+                ThemeColorChanged?.Invoke(this, EventArgs.Empty);
             }
         }
 
@@ -71,32 +77,38 @@ namespace ThemeEditor
             if (e.PropertyName == "SelectedResource" && BrushResourceVM.SelectedResource != null)
             {
                 ColorEditorVM.Color = BrushResourceVM.SelectedResource.Color;
+                ThemeColorChanged?.Invoke(this, EventArgs.Empty);
             }
         }
 
         private void ColorEditorViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(ColorEditorVM.ColorBrush))
+            if (BrushResourceVM.CanEdit)
             {
-                if (Application.Current.Resources[BrushResourceVM.SelectedResource?.Key] is Brush)
+                if (e.PropertyName == nameof(ColorEditorVM.ColorBrush))
                 {
-                    Application.Current.Resources[BrushResourceVM.SelectedResource?.Key] = ColorEditorVM.ColorBrush;
-                }
-
-                if (BrushResourceVM.SyncColors)
-                {
-                    foreach (var item in BrushResourceVM.ColorGroup)
+                    if (Application.Current.Resources[BrushResourceVM.SelectedResource?.Key] is Brush)
                     {
-                        if (Application.Current.Resources[item.Key] is Brush)
+                        Application.Current.Resources[BrushResourceVM.SelectedResource?.Key] = ColorEditorVM.ColorBrush;
+                    }
+
+                    if (BrushResourceVM.SyncColors)
+                    {
+                        foreach (var item in BrushResourceVM.ColorGroup)
                         {
-                            Application.Current.Resources[item.Key] = ColorEditorVM.ColorBrush;
+                            if (Application.Current.Resources[item.Key] is Brush)
+                            {
+                                Application.Current.Resources[item.Key] = ColorEditorVM.ColorBrush;
+                            }
                         }
                     }
+
+                    ThemeColorChanged?.Invoke(this, EventArgs.Empty);
                 }
-            }
-            else if (e.PropertyName == nameof(ColorEditorVM.Color))
-            {
-                BrushResourceVM.CurrentColor = ColorEditorVM.Color;
+                else if (e.PropertyName == nameof(ColorEditorVM.Color))
+                {
+                    BrushResourceVM.CurrentColor = ColorEditorVM.Color;
+                }
             }
         }
 
@@ -145,6 +157,34 @@ namespace ThemeEditor
         [
             "text", "unique", "watch", "xeon", "yesterday", "zoom"
         ];
+
+        // dummy data for DataGrid
+        public record Student(string FirstName, string LastName, string Email) { }
+
+        public ObservableCollection<Student> Students { get; } =
+        [
+            new Student("Holly", "Perrinchief", "hperrinchief4@prlog.org"),
+            new Student("Booth", "Hamil", "bhamil9@squidoo.com"),
+            new Student("Livvyy", "Cornall", "lcornall0@google.com.au")
+        ];
+
+        public ObservableCollection<Marker> Markers { get; } = [];
+
+        internal void BeginUpdateMarkers()
+        {
+            Markers.Clear();
+        }
+
+        internal void AddMarker(double linePosition, double documentHeight, double trackHeight, MarkerType markerType)
+        {
+            double position = (documentHeight < trackHeight) ? linePosition : linePosition * trackHeight / documentHeight;
+            Markers.Add(new Marker(position, markerType));
+        }
+
+        internal void EndUpdateMarkers()
+        {
+            OnPropertyChanged(nameof(Markers));
+        }
 
 
         public ICommand EditThemeCommand => new RelayCommand(
@@ -207,7 +247,7 @@ namespace ThemeEditor
                 ColorEditorVM.InitializeThemeColors();
 
                 WindowTitle = $"Theme Editor - {name}";
-
+                ThemeColorChanged?.Invoke(this, EventArgs.Empty);
             }
         }
 
@@ -234,6 +274,7 @@ namespace ThemeEditor
                 ColorEditorVM.InitializeThemeColors();
 
                 WindowTitle = $"Theme Editor - {EditThemeName}";
+                ThemeColorChanged?.Invoke(this, EventArgs.Empty);
             }
             catch (Exception ex)
             {
@@ -293,5 +334,12 @@ namespace ThemeEditor
             }
             return false;
         }
+    }
+    public enum MarkerType { Global, Local }
+
+    public class Marker(double position, MarkerType markerType)
+    {
+        public double Position { get; private set; } = position;
+        public MarkerType MarkerType { get; private set; } = markerType;
     }
 }

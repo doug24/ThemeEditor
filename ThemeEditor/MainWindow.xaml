@@ -8,9 +8,10 @@
                     Icon="StyleSheet.ico"
                     Title="{Binding WindowTitle}" 
                     ResizeMode="CanResize"
-                    Background="{DynamicResource GradientBackground}"
+                    WindowStartupLocation="CenterScreen"
+                    Background="{DynamicResource Window.Background}"
                     CaptionBackground="{DynamicResource Caption.Background}"
-                    Height="640" Width="1200">
+                    Height="900" Width="1200">
 
     <Window.InputBindings>
         <KeyBinding Gesture="Ctrl+o" Command="{Binding OpenXamlCommand}"/>
@@ -52,13 +53,12 @@
 
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="263*" />
-                <ColumnDefinition Width="109*"/>
+                <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="300"/>
                 <ColumnDefinition Width="400"/>
             </Grid.ColumnDefinitions>
 
-            <Grid Grid.Column="0" Grid.ColumnSpan="2">
+            <Grid Grid.Column="0">
                 <Grid.RowDefinitions>
                     <RowDefinition />
                     <RowDefinition  Height="Auto"/>
@@ -76,8 +76,8 @@
 
             </Grid>
 
-            <local:BrushResourceList Grid.Column="2" DataContext="{Binding BrushResourceVM}"/>
-            <local:ColorEditor Grid.Column="3" DataContext="{Binding ColorEditorVM}"/>
+            <local:BrushResourceList Grid.Column="1" DataContext="{Binding BrushResourceVM}"/>
+            <local:ColorEditor Grid.Column="2" DataContext="{Binding ColorEditorVM}"/>
 
         </Grid>
     </DockPanel>
