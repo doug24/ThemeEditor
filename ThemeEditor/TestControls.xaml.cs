@@ -44,6 +44,7 @@ namespace ThemeEditor
                 if (ViewModel != null)
                 {
                     ViewModel.ThemeColorChanged += OnThemeColorChanged;
+                    OnThemeColorChanged(this, EventArgs.Empty);
                 }
             };
         }

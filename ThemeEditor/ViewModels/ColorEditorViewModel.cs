@@ -97,23 +97,6 @@ namespace ThemeEditor
             ColorHex = string.Format("#{0:X2}{1:X2}{2:X2}{3:X2}", value.A, value.R, value.G, value.B);
             ColorBrightness = Brightness(value).ToString();
         }
-        //public Color Color
-        //{
-        //    get { return color; }
-        //    set
-        //    {
-        //        if (color == value || lockUpdates)
-        //            return;
-
-        //        color = value;
-        //        UpdateElements(color);
-        //        ColorBrush = new SolidColorBrush(color);
-        //        ColorARGB = string.Join(", ", color.A, color.R, color.G, color.B);
-        //        ColorHex = string.Format("#{0:X2}{1:X2}{2:X2}{3:X2}", color.A, color.R, color.G, color.B);
-        //        ColorBrightness = Brightness(color).ToString();
-        //        OnPropertyChanged("Color");
-        //    }
-        //}
 
         [ObservableProperty]
         private SolidColorBrush colorBrush = Brushes.White;
@@ -158,44 +141,26 @@ namespace ThemeEditor
             Color = Color.FromArgb(AlphaElem, RedElem, GreenElem, BlueElem);
         }
 
-        [ObservableProperty]
         private int hueElem = 0;
-        partial void OnHueElemChanged(int value)
-        {
-            //if (value == -1)
-            //    hueElem = 359;
-            //else if (value == 360)
-            //    hueElem = 0;
-            //else
-            //    hueElem = value;
-            Color = ColorHSV.ConvertToColor(
-                HueElem / 360d,
-                SaturationElem / 100d,
-                ValueElem / 100d);
+        public int HueElem
+        { 
+            get { return hueElem; } 
+            set 
+            {
+                int newValue = value;
+                if (value == -1)
+                    newValue = 359;
+                else if (value == 360)
+                    newValue = 0;
+
+                SetProperty(ref hueElem, newValue);
+
+                Color = ColorHSV.ConvertToColor(
+                    HueElem / 360d,
+                    SaturationElem / 100d,
+                    ValueElem / 100d);
+            }
         }
-        //public int HueElem
-        //{
-        //    get { return hueElem; }
-        //    set
-        //    {
-        //        if (hueElem == value)
-        //            return;
-
-        //        if (value == -1)
-        //            hueElem = 359;
-        //        else if (value == 360)
-        //            hueElem = 0;
-        //        else
-        //            hueElem = value;
-
-        //        OnPropertyChanged("HueElem");
-
-        //        Color = ColorHSV.ConvertToColor(
-        //            HueElem / 360d,
-        //            SaturationElem / 100d,
-        //            ValueElem / 100d);
-        //    }
-        //}
 
         [ObservableProperty]
         private int saturationElem = 0;
@@ -206,23 +171,6 @@ namespace ThemeEditor
                 SaturationElem / 100d,
                 ValueElem / 100d);
         }
-        //public int SaturationElem
-        //{
-        //    get { return saturationElem; }
-        //    set
-        //    {
-        //        if (saturationElem == value)
-        //            return;
-
-        //        saturationElem = value;
-        //        OnPropertyChanged("SaturationElem");
-
-        //        Color = ColorHSV.ConvertToColor(
-        //            HueElem / 360d,
-        //            SaturationElem / 100d,
-        //            ValueElem / 100d);
-        //    }
-        //}
 
         [ObservableProperty]
         private int valueElem = 100;
@@ -233,86 +181,18 @@ namespace ThemeEditor
                 SaturationElem / 100d,
                 ValueElem / 100d);
         }
-        //public int ValueElem
-        //{
-        //    get { return valueElem; }
-        //    set
-        //    {
-        //        if (valueElem == value)
-        //            return;
-
-        //        valueElem = value;
-        //        OnPropertyChanged("ValueElem");
-
-        //        Color = ColorHSV.ConvertToColor(
-        //            HueElem / 360d,
-        //            SaturationElem / 100d,
-        //            ValueElem / 100d);
-        //    }
-        //}
-
 
         [ObservableProperty]
         private Color minSaturationColor = Colors.White;
-        //public Color MinSaturationColor
-        //{
-        //    get { return minSaturationColor; }
-        //    set
-        //    {
-        //        if (minSaturationColor == value)
-        //            return;
-
-        //        minSaturationColor = value;
-        //        OnPropertyChanged("MinSaturationColor");
-        //    }
-        //}
-
 
         [ObservableProperty]
         private Color maxSaturationColor = Colors.Black;
-        //public Color MaxSaturationColor
-        //{
-        //    get { return maxSaturationColor; }
-        //    set
-        //    {
-        //        if (maxSaturationColor == value)
-        //            return;
-
-        //        maxSaturationColor = value;
-        //        OnPropertyChanged("MaxSaturationColor");
-        //    }
-        //}
 
         [ObservableProperty]
         private Color minValueColor = Colors.Black;
-        //public Color MinValueColor
-        //{
-        //    get { return minValueColor; }
-        //    set
-        //    {
-        //        if (minValueColor == value)
-        //            return;
-
-        //        minValueColor = value;
-        //        OnPropertyChanged("MinValueColor");
-        //    }
-        //}
 
         [ObservableProperty]
         private Color maxValueColor = Colors.White;
-        //public Color MaxValueColor
-        //{
-        //    get { return maxValueColor; }
-        //    set
-        //    {
-        //        if (maxValueColor == value)
-        //            return;
-
-        //        maxValueColor = value;
-        //        OnPropertyChanged("MaxValueColor");
-        //    }
-        //}
-
 
         public ObservableCollection<NamedColor> WebColors { get; }
         public ObservableCollection<NamedColor> ThemeColors { get; }
