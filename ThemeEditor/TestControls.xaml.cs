@@ -53,6 +53,7 @@ namespace ThemeEditor
         {
             textEditor.TextArea.TextView.LinkTextForegroundBrush = Application.Current.Resources["AvalonEdit.Link"] as Brush;
             UpdatePositionMarkers();
+            textEditor.TextArea.TextView.Redraw();// redraw needed for big ellipsis
         }
 
         private void SetText()

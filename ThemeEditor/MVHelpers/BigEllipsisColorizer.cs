@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.Versioning;
 using System.Windows;
 using System.Windows.Media;
 using ICSharpCode.AvalonEdit.Document;
@@ -10,6 +11,7 @@ namespace dnGREP.WPF
     {
         public static readonly string ellipsis = "•••";
 
+        [SupportedOSPlatform("windows")]
         protected override void ColorizeLine(DocumentLine line)
         {
             Brush foreground = Application.Current.Resources["AvalonEdit.BigEllipsis"] as Brush ?? Brushes.DeepSkyBlue;

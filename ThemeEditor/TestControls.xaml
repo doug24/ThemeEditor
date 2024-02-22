@@ -14,17 +14,25 @@
         <DynamicResource ResourceKey="Window.Background"/>
     </UserControl.Background>
 
+    <UserControl.ContextMenu>
+        <ContextMenu>
+            <MenuItem Header="Sample"/>
+            <MenuItem Header="Second">
+                <MenuItem Header="Choice One"/>
+                <MenuItem Header="Choice Two"/>
+                <MenuItem Header="Choice Three"/>
+            </MenuItem>
+            <MenuItem Header="Disabled" IsEnabled="False"/>
+            <Separator/>
+            <MenuItem Header="Check One" IsCheckable="True"/>
+            <MenuItem Header="Check Two" IsCheckable="True" IsChecked="True"/>
+            <MenuItem Header="Check Three" IsCheckable="True" IsChecked="True" IsEnabled="False"/>
+        </ContextMenu>
+    </UserControl.ContextMenu>
+
     <Grid Margin="3">
         <DockPanel>
-            <DockPanel.ContextMenu>
-                <ContextMenu>
-                    <MenuItem Header="Pick me!"/>
-                    <MenuItem Header="Bah"/>
-                    <Separator />
-                    <MenuItem Header="Last"/>
-                </ContextMenu>
-            </DockPanel.ContextMenu>
-
+            
             <GroupBox DockPanel.Dock="Top" Header="Radio Group" Margin="3">
                 <StackPanel Orientation="Horizontal">
                     <RadioButton Content="One" Margin="3"/>

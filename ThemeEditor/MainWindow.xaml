@@ -37,9 +37,16 @@
                 <MenuItem Header="Check2" IsCheckable="true" IsChecked="True"/>
                 <MenuItem Header="Check3" IsCheckable="true" IsEnabled="False" IsChecked="True"/>
             </MenuItem>
-            <MenuItem Header="Enabled 2"/>
+            <MenuItem Header="Enabled 2">
+                <MenuItem Header="Sample" InputGestureText="Ctrl+B"/>
+                <MenuItem Header="Child"/>
+                <MenuItem Header="Menu"/>
+                <Separator/>
+                <MenuItem Header="Section"/>
+                <MenuItem Header="Two"/>
+            </MenuItem>
             <MenuItem Header="Disabled" IsEnabled="False"/>
-            <MenuItem Header="Color Shift" Click="ColorShift_Click"/>
+            <!--<MenuItem Header="Color Shift" Click="ColorShift_Click"/>-->
         </Menu>
 
         <StatusBar DockPanel.Dock="Bottom">
@@ -76,8 +83,8 @@
 
             </Grid>
 
-            <local:BrushResourceList Grid.Column="1" DataContext="{Binding BrushResourceVM}"/>
-            <local:ColorEditor Grid.Column="2" DataContext="{Binding ColorEditorVM}"/>
+            <local:ThemeResourceList Grid.Column="1" DataContext="{Binding ThemeResourceVM}"/>
+            <local:BrushEditor Grid.Column="2" DataContext="{Binding BrushEditorVM}"/>
 
         </Grid>
     </DockPanel>

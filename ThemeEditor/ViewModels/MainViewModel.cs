@@ -2,12 +2,17 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Effects;
+using System.Xml;
+using System.Xml.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Win32;
 
@@ -15,24 +20,22 @@ namespace ThemeEditor
 {
     public partial class MainViewModel : ObservableObject
     {
+        private const string Indent = "    ";
+        private const string Newline = "\n";
         public EventHandler? ThemeColorChanged;
 
         public MainViewModel()
         {
-            BrushResourceVM = new BrushResourceViewModel();
-            ColorEditorVM = new ColorEditorViewModel();
+            ThemeResourceVM = new ThemeResourceViewModel();
+            BrushEditorVM = new BrushEditorViewModel();
 
-            if (BrushResourceVM.SelectedBrush != null)
-                ColorEditorVM.Color = BrushResourceVM.SelectedBrush.Color;
-
-            BrushResourceVM.PropertyChanged += BrushResourceViewModel_PropertyChanged;
-            BrushResourceVM.SaveBrush += BrushResourceVM_SaveBrush;
-            BrushResourceVM.RevertBrush += BrushResourceVM_RevertBrush;
-            ColorEditorVM.PropertyChanged += ColorEditorViewModel_PropertyChanged;
+            ThemeResourceVM.PropertyChanged += ThemeResourceViewModel_PropertyChanged;
+            ThemeResourceVM.SaveBrush += ThemeResourceVM_SaveBrush;
+            ThemeResourceVM.RevertBrush += ThemeResourceVM_RevertBrush;
+            BrushEditorVM.PropertyChanged += BrushEditorViewModel_PropertyChanged;
 
             PopulateEncodings();
 
-            //AddMarker(3, 80, 40, MarkerType.Global);
             AddMarker(10, 40, 40, MarkerType.Local);
 
             EditThemeName = "(none)";
@@ -52,62 +55,122 @@ namespace ThemeEditor
 
         public string EditFile { get; private set; }
 
-        public BrushResourceViewModel BrushResourceVM { get; private set; }
-        public ColorEditorViewModel ColorEditorVM { get; private set; }
+        public ThemeResourceViewModel ThemeResourceVM { get; private set; }
+        public BrushEditorViewModel BrushEditorVM { get; private set; }
 
-        private void BrushResourceVM_SaveBrush(object? sender, EventArgs e)
+        private void ThemeResourceVM_SaveBrush(object? sender, EventArgs e)
         {
-            if (BrushResourceVM.SelectedBrush != null)
+            if (ThemeResourceVM.SelectedResource != null)
             {
-                BrushResourceVM.Save(ColorEditorVM.Color);
-            }
-        }
-
-        private void BrushResourceVM_RevertBrush(object? sender, EventArgs e)
-        {
-            if (BrushResourceVM.SelectedBrush != null)
-            {
-                ColorEditorVM.Color = BrushResourceVM.SelectedBrush.Color;
-                ThemeColorChanged?.Invoke(this, EventArgs.Empty);
-            }
-        }
-
-        private void BrushResourceViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == "SelectedResource" && BrushResourceVM.SelectedResource != null)
-            {
-                ColorEditorVM.Color = BrushResourceVM.SelectedResource.Color;
-                ThemeColorChanged?.Invoke(this, EventArgs.Empty);
-            }
-        }
-
-        private void ColorEditorViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
-        {
-            if (BrushResourceVM.CanEdit)
-            {
-                if (e.PropertyName == nameof(ColorEditorVM.ColorBrush))
+                if (BrushEditorVM.BrushType == BrushType.SolidColorBrush)
                 {
-                    if (Application.Current.Resources[BrushResourceVM.SelectedResource?.Key] is Brush)
+                    ThemeResourceVM.Save(BrushEditorVM.ColorBrush);
+                }
+                else if (BrushEditorVM.BrushType == BrushType.LinearGradientBrush)
+                {
+                    ThemeResourceVM.Save(BrushEditorVM.GradientBrush);
+                }
+                else if (BrushEditorVM.BrushType == BrushType.DropShadowEffect)
+                {
+                    ThemeResourceVM.Save(BrushEditorVM.DropShadowEffect);
+                }
+            }
+        }
+
+        private void ThemeResourceVM_RevertBrush(object? sender, EventArgs e)
+        {
+            if (ThemeResourceVM.SelectedResource != null)
+            {
+                if (ThemeResourceVM.SelectedResource.BrushType == BrushType.SolidColorBrush)
+                {
+                    BrushEditorVM.ColorBrush = ThemeResourceVM.SelectedResource.ColorBrush;
+                    ThemeResourceVM.SelectedResource.HasPendingChange = false;
+                }
+                else if (ThemeResourceVM.SelectedResource.BrushType == BrushType.LinearGradientBrush)
+                {
+                    BrushEditorVM.GradientBrush = ThemeResourceVM.SelectedResource.GradientBrush;
+                    ThemeResourceVM.SelectedResource.HasPendingChange = false;
+                }
+                else if (ThemeResourceVM.SelectedResource.BrushType == BrushType.DropShadowEffect)
+                {
+                    BrushEditorVM.DropShadowEffect = ThemeResourceVM.SelectedResource.DropShadowEffect;
+                    ThemeResourceVM.SelectedResource.HasPendingChange = false;
+                }
+
+                ThemeColorChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        private void ThemeResourceViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(ThemeResourceViewModel.SelectedResource) &&
+                ThemeResourceVM.SelectedResource != null)
+            {
+                // disconnect handler to break feedback loop from resource selection
+                BrushEditorVM.PropertyChanged -= BrushEditorViewModel_PropertyChanged;
+
+                BrushEditorVM.SelectedName = ThemeResourceVM.SelectedResource.Name;
+                if (ThemeResourceVM.SelectedResource.BrushType == BrushType.SolidColorBrush)
+                {
+                    BrushEditorVM.ColorBrush = ThemeResourceVM.SelectedResource.ColorBrush;
+                }
+                else if (ThemeResourceVM.SelectedResource.BrushType == BrushType.LinearGradientBrush)
+                {
+                    BrushEditorVM.GradientBrush = ThemeResourceVM.SelectedResource.GradientBrush;
+                }
+                else if (ThemeResourceVM.SelectedResource.BrushType == BrushType.DropShadowEffect)
+                {
+                    BrushEditorVM.DropShadowEffect = ThemeResourceVM.SelectedResource.DropShadowEffect;
+                }
+
+                BrushEditorVM.PropertyChanged += BrushEditorViewModel_PropertyChanged;
+                ThemeColorChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        private void BrushEditorViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (ThemeResourceVM.CanEdit && ThemeResourceVM.SelectedResource != null)
+            {
+                if (e.PropertyName == nameof(BrushEditorVM.ColorBrush))
+                {
+                    if (Application.Current.Resources[ThemeResourceVM.SelectedResource.Name] is Brush)
                     {
-                        Application.Current.Resources[BrushResourceVM.SelectedResource?.Key] = ColorEditorVM.ColorBrush;
+                        ThemeResourceVM.SelectedResource.HasPendingChange = true;
+                        Application.Current.Resources[ThemeResourceVM.SelectedResource.Name] = BrushEditorVM.ColorBrush;
                     }
 
-                    if (BrushResourceVM.SyncColors)
+                    if (ThemeResourceVM.SyncColors)
                     {
-                        foreach (var item in BrushResourceVM.ColorGroup)
+                        foreach (var item in ThemeResourceVM.ColorGroup)
                         {
-                            if (Application.Current.Resources[item.Key] is Brush)
+                            if (Application.Current.Resources[item.Name] is Brush)
                             {
-                                Application.Current.Resources[item.Key] = ColorEditorVM.ColorBrush;
+                                item.HasPendingChange = true;
+                                Application.Current.Resources[item.Name] = BrushEditorVM.ColorBrush;
                             }
                         }
                     }
 
                     ThemeColorChanged?.Invoke(this, EventArgs.Empty);
                 }
-                else if (e.PropertyName == nameof(ColorEditorVM.Color))
+                else if (e.PropertyName == nameof(BrushEditorVM.GradientBrush))
                 {
-                    BrushResourceVM.CurrentColor = ColorEditorVM.Color;
+                    if (Application.Current.Resources[ThemeResourceVM.SelectedResource.Name] is Brush)
+                    {
+                        ThemeResourceVM.SelectedResource.HasPendingChange = true;
+                        Application.Current.Resources[ThemeResourceVM.SelectedResource.Name] = BrushEditorVM.GradientBrush;
+                    }
+
+                    ThemeColorChanged?.Invoke(this, EventArgs.Empty);
+                }
+                else if (e.PropertyName == nameof(BrushEditorVM.DropShadowEffect))
+                {
+                    if (Application.Current.Resources[ThemeResourceVM.SelectedResource.Name] is DropShadowEffect)
+                    {
+                        ThemeResourceVM.SelectedResource.HasPendingChange = true;
+                        Application.Current.Resources[ThemeResourceVM.SelectedResource.Name] = BrushEditorVM.DropShadowEffect;
+                    }
                 }
             }
         }
@@ -155,7 +218,7 @@ namespace ThemeEditor
 
         public ObservableCollection<string> FastSearchBookmarks { get; } =
         [
-            "text", "unique", "watch", "xeon", "yesterday", "zoom"
+            "text", "unique", "watch", "xenon", "yesterday", "zoom"
         ];
 
         // dummy data for DataGrid
@@ -202,7 +265,7 @@ namespace ThemeEditor
 
         public ICommand SaveXamlCommand => new RelayCommand(
             p => SaveXaml(),
-            q => BrushResourceVM.ResourceColors.Any(r => r.IsModified));
+            q => ThemeResourceVM.IsModified);
 
         private void OpenXaml()
         {
@@ -227,7 +290,7 @@ namespace ThemeEditor
 
         private void LoadResource(string name)
         {
-            if (BrushResourceVM.ResourceColors.Any(r => r.IsModified))
+            if (ThemeResourceVM.IsModified)
             {
                 var ans = MessageBox.Show("Data has been changed - save changes?", "Theme Editor",
                     MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.Yes);
@@ -242,9 +305,9 @@ namespace ThemeEditor
                 Application.Current.Resources.Clear();
                 Application.Current.Resources.MergedDictionaries[0].Source = new Uri($"/Themes/{name}Brushes.xaml", UriKind.Relative);
 
-                BrushResourceVM.InitializeColors();
-                BrushResourceVM.CanEdit = false;
-                ColorEditorVM.InitializeThemeColors();
+                ThemeResourceVM.InitializeColors();
+                ThemeResourceVM.CanEdit = false;
+                BrushEditorVM.InitializeThemeBrushes();
 
                 WindowTitle = $"Theme Editor - {name}";
                 ThemeColorChanged?.Invoke(this, EventArgs.Empty);
@@ -253,7 +316,7 @@ namespace ThemeEditor
 
         private void LoadXaml()
         {
-            if (BrushResourceVM.ResourceColors.Any(r => r.IsModified))
+            if (ThemeResourceVM.IsModified)
             {
                 var ans = MessageBox.Show("Data has been changed - save changes?", "Theme Editor",
                     MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.Yes);
@@ -269,9 +332,9 @@ namespace ThemeEditor
                 Application.Current.Resources.MergedDictionaries[0].Source =
                     new Uri(EditFile, UriKind.Absolute);
 
-                BrushResourceVM.InitializeColors();
-                BrushResourceVM.CanEdit = true;
-                ColorEditorVM.InitializeThemeColors();
+                ThemeResourceVM.InitializeColors();
+                ThemeResourceVM.CanEdit = true;
+                BrushEditorVM.InitializeThemeBrushes();
 
                 WindowTitle = $"Theme Editor - {EditThemeName}";
                 ThemeColorChanged?.Invoke(this, EventArgs.Empty);
@@ -282,42 +345,142 @@ namespace ThemeEditor
                 MessageBox.Show($"Error loading xaml file {EditFile} : {ex.Message}",
                     "Theme Editor", MessageBoxButton.OK, MessageBoxImage.Error);
 
-                BrushResourceVM.CanEdit = false;
+                ThemeResourceVM.CanEdit = false;
             }
         }
 
         private void SaveXaml()
         {
-            List<string> lines = [.. File.ReadAllLines(EditFile)];
+            XNamespace ns = "http://schemas.microsoft.com/winfx/2006/xaml/presentation";
+            XNamespace x = "http://schemas.microsoft.com/winfx/2006/xaml";
+            XNamespace sys = "clr-namespace:System;assembly=mscorlib";
+            XNamespace mc = "http://schemas.openxmlformats.org/markup-compatibility/2006";
+            XNamespace po = "http://schemas.microsoft.com/winfx/2006/xaml/presentation/options";
 
-            foreach (var namedColor in BrushResourceVM.ResourceColors.Where(nc => nc.IsModified))
+            XDocument doc = XDocument.Load(EditFile, LoadOptions.PreserveWhitespace);
+
+            if (doc != null && doc.Root != null)
             {
-                string key = $"x:Key=\"{namedColor.Name}\"";
-                Color c = namedColor.Color;
-                string color = string.Format("#{0:X2}{1:X2}{2:X2}{3:X2}", c.A, c.R, c.G, c.B);
-                string update = $"    <SolidColorBrush x:Key=\"{namedColor.Name}\" po:Freeze=\"true\" Color=\"{color}\"/>";
-
-                string? line = lines.FirstOrDefault(l => l.IndexOf(key, StringComparison.OrdinalIgnoreCase) > -1);
-                if (!string.IsNullOrEmpty(line))
+                foreach (ThemeBrush themeBrush in ThemeResourceVM.ResourceBrushes.Where(nc => nc.IsModified))
                 {
-                    int index = lines.IndexOf(line);
-                    lines.RemoveAt(index);
-                    lines.Insert(index, update);
+                    XElement? original = doc.Root.Elements()
+                        .FirstOrDefault(el => el.Attribute(x + "Key")?.Value == themeBrush.Name);
+
+                    if (original != null)
+                    {
+                        if (themeBrush.BrushType == BrushType.SolidColorBrush)
+                        {
+                            Color c = themeBrush.ColorBrush.Color;
+                            string color = string.Format("#{0:X2}{1:X2}{2:X2}{3:X2}", c.A, c.R, c.G, c.B);
+
+                            XElement elem = new(ns + "SolidColorBrush");
+                            elem.Add(new XAttribute(x + "Key", themeBrush.Name));
+                            elem.Add(new XAttribute(po + "Freeze", true));
+                            elem.Add(new XAttribute("Color", color));
+
+                            original.ReplaceWith(elem);
+                        }
+                        else if (themeBrush.BrushType == BrushType.LinearGradientBrush)
+                        {
+                            string startPoint = themeBrush.GradientBrush.StartPoint.ToString(CultureInfo.InvariantCulture);
+                            string endPoint = themeBrush.GradientBrush.EndPoint.ToString(CultureInfo.InvariantCulture);
+                            string opacity = themeBrush.GradientBrush.Opacity.ToString(CultureInfo.InvariantCulture);
+
+                            XElement elem = new(ns + "LinearGradientBrush");
+                            elem.Add(new XAttribute(x + "Key", themeBrush.Name));
+                            elem.Add(new XAttribute(po + "Freeze", true));
+                            elem.Add(new XAttribute("StartPoint", startPoint));
+                            elem.Add(new XAttribute("EndPoint", endPoint));
+                            if (themeBrush.GradientBrush.Opacity != 1.0)
+                                elem.Add(new XAttribute("Opacity", opacity));
+
+                            foreach (GradientStop stop in themeBrush.GradientBrush.GradientStops)
+                            {
+                                Color c = stop.Color;
+                                string color = string.Format("#{0:X2}{1:X2}{2:X2}{3:X2}", c.A, c.R, c.G, c.B);
+                                string offset = stop.Offset.ToString(CultureInfo.InvariantCulture);
+
+                                XElement stopElem = new(ns + "GradientStop");
+                                stopElem.Add(new XAttribute(po + "Freeze", true));
+                                stopElem.Add(new XAttribute("Color", color));
+                                stopElem.Add(new XAttribute("Offset", offset));
+
+                                elem.Add(Newline + Indent + Indent);
+                                elem.Add(stopElem);
+                            }
+                            elem.Add(Newline + Indent);
+
+                            original.ReplaceWith(elem);
+                        }
+                        else if (themeBrush.BrushType == BrushType.DropShadowEffect)
+                        {
+                            Color c = themeBrush.DropShadowEffect.Color;
+                            string color = string.Format("#{0:X2}{1:X2}{2:X2}{3:X2}", c.A, c.R, c.G, c.B);
+                            string blur = themeBrush.DropShadowEffect.BlurRadius.ToString(CultureInfo.InvariantCulture);
+                            string depth = themeBrush.DropShadowEffect.ShadowDepth.ToString(CultureInfo.InvariantCulture);
+                            string opacity = themeBrush.DropShadowEffect.Opacity.ToString(CultureInfo.InvariantCulture);
+                            string direction = themeBrush.DropShadowEffect.Direction.ToString(CultureInfo.InvariantCulture);
+
+                            XElement elem = new(ns + "DropShadowEffect");
+                            elem.Add(new XAttribute(x + "Key", themeBrush.Name));
+                            elem.Add(new XAttribute(po + "Freeze", true));
+                            elem.Add(new XAttribute(po + "Freeze", true));
+                            if (themeBrush.DropShadowEffect.ShadowDepth != 5.0)
+                                elem.Add(new XAttribute("ShadowDepth", depth));
+                            if (themeBrush.DropShadowEffect.BlurRadius != 5.0)
+                                elem.Add(new XAttribute("BlurRadius", blur));
+                            if (themeBrush.DropShadowEffect.Opacity != 1.0)
+                                elem.Add(new XAttribute("Opacity", opacity));
+                            if (themeBrush.DropShadowEffect.Direction != 315.0)
+                                elem.Add(new XAttribute("Direction", direction));
+                            elem.Add(new XAttribute("Color", color));
+
+                            original.ReplaceWith(elem);
+                        }
+                    }
+
+                    themeBrush.IsModified = false;
+                    themeBrush.HasPendingChange = false;
                 }
-            }
 
-            File.WriteAllLines(EditFile, lines);
+                if (ThemeResourceVM.ButtonImageFlagChanged)
+                {
+                    XElement? original = doc.Root.Elements().FirstOrDefault(
+                        el => el.Attribute(x + "Key")?.Value == ThemeResourceViewModel.ButtonImageFlagKey);
+                    if (original != null)
+                    {
+                        original.Value = ThemeResourceVM.ButtonImageFlag.ToString(CultureInfo.InvariantCulture).ToLowerInvariant();
+                        Application.Current.Resources[ThemeResourceViewModel.ButtonImageFlagKey] = ThemeResourceVM.ButtonImageFlag;
+                    }
+                }
+                if (ThemeResourceVM.SyntaxColorFlagChanged)
+                {
+                    XElement? original = doc.Root.Elements().FirstOrDefault(
+                        el => el.Attribute(x + "Key")?.Value == ThemeResourceViewModel.SyntaxColorFlagKey);
+                    if (original != null)
+                    {
+                        original.Value = ThemeResourceVM.SyntaxColorFlag.ToString(CultureInfo.InvariantCulture).ToLowerInvariant();
+                        Application.Current.Resources[ThemeResourceViewModel.SyntaxColorFlagKey] = ThemeResourceVM.SyntaxColorFlag;
+                    }
+                }
 
-            var list = BrushResourceVM.ResourceColors.Where(nc => nc.IsModified).ToList();
-            foreach (var item in list)
-            {
-                item.IsModified = false;
+                XmlWriterSettings settings = new()
+                {
+                    Encoding = Encoding.UTF8,
+                    Indent = true,
+                    IndentChars = Indent,
+                    NewLineChars = Newline,
+                    OmitXmlDeclaration = true,
+                };
+
+                using XmlWriter writer = XmlWriter.Create(EditFile, settings);
+                doc.Save(writer);
             }
         }
 
         internal bool Closing()
         {
-            if (BrushResourceVM.ResourceColors.Any(r => r.IsModified))
+            if (ThemeResourceVM.IsModified)
             {
                 var ans = MessageBox.Show("Data has been changed - save changes?", "Theme Editor",
                     MessageBoxButton.YesNoCancel, MessageBoxImage.Question, MessageBoxResult.Yes);

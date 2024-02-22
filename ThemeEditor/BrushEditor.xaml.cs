@@ -3,11 +3,11 @@
 namespace ThemeEditor
 {
     /// <summary>
-    /// Interaction logic for BrushResourceList.xaml
+    /// Interaction logic for BrushEditor.xaml
     /// </summary>
-    public partial class BrushResourceList : UserControl
+    public partial class BrushEditor : UserControl
     {
-        public BrushResourceList()
+        public BrushEditor()
         {
             InitializeComponent();
         }

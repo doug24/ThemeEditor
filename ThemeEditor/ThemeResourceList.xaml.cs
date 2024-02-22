@@ -3,11 +3,11 @@
 namespace ThemeEditor
 {
     /// <summary>
-    /// Interaction logic for ColorEditor.xaml
+    /// Interaction logic for ThemeResourceList.xaml
     /// </summary>
-    public partial class ColorEditor : UserControl
+    public partial class ThemeResourceList : UserControl
     {
-        public ColorEditor()
+        public ThemeResourceList()
         {
             InitializeComponent();
         }

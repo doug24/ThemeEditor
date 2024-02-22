@@ -85,7 +85,7 @@ namespace ThemeEditor
                     {
                         Indent = true,
                         IndentChars = "    ",
-                        NewLineChars = Environment.NewLine,
+                        NewLineChars = "\n",
                         Encoding = Encoding.UTF8
                     };
 

@@ -17,6 +17,9 @@
     <None Remove="Images\unpinDark.png" />
   </ItemGroup>
   <ItemGroup>
+    <Page Remove="Themes\Sunset.xaml" />
+  </ItemGroup>
+  <ItemGroup>
     <Resource Include="Images\pin.png" />
     <Resource Include="Images\pinDark.png" />
     <Resource Include="Images\unpin.png" />
@@ -28,9 +31,6 @@
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="TAlex.WPF.Controls" Version="3.0.3" />
-  </ItemGroup>
-  <ItemGroup>
-    <Page Remove="Themes\Sunset.xaml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Properties\Settings.Designer.cs">

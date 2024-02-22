@@ -1,15 +1,20 @@
-﻿<UserControl x:Class="ThemeEditor.ColorEditor"
+﻿<UserControl x:Class="ThemeEditor.BrushEditor"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ThemeEditor"
+        xmlns:po="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options"
         xmlns:ta="clr-namespace:TAlex.WPF.Controls;assembly=TAlex.WPF.Controls"
         mc:Ignorable="d"
-        d:DesignHeight="440" d:DesignWidth="300"
+        d:DesignHeight="800" d:DesignWidth="300"
         Background="#FFF0F0F0">
 
     <UserControl.Resources>
+        <local:EnumBooleanConverter x:Key="ebc" />
+        <local:NotEnumBooleanConverter x:Key="not_ebc" />
+        <local:EnumVisibilityConverter x:Key="evc" />
+
         <Style x:Key="rwText" TargetType="{x:Type TextBox}">
             <Setter Property="Background" Value="White"/>
             <Setter Property="Foreground" Value="Black"/>
@@ -31,6 +36,9 @@
             <Setter Property="Foreground" Value="Black"/>
             <Setter Property="MinWidth" Value="80"/>
         </Style>
+        <Style TargetType="{x:Type ScrollBar}" BasedOn="{x:Null}"/>
+        <Style TargetType="{x:Type ListBox}" BasedOn="{x:Null}"/>
+        <SolidColorBrush x:Key="ScrollBar.Static.Background" po:Freeze="true" Color="#FFF0F0F0" />
     </UserControl.Resources>
 
     <DockPanel>
@@ -49,8 +57,8 @@
             </Grid.RowDefinitions>
 
             <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Margin="6" Width="240" Height="50" 
-                            BorderBrush="Black" BorderThickness="1"
-                            Background="{Binding ColorBrush, FallbackValue=White}"/>
+                    BorderBrush="Black" BorderThickness="1"
+                    Background="{Binding EditColor, FallbackValue=Transparent}"/>
 
             <TextBlock Grid.Row="1" Grid.Column="1" Text="RGB" Style="{StaticResource label}"/>
             <TextBox Grid.Row="1" Grid.Column="2" Text="{Binding ColorARGB}" Style="{StaticResource roText}"/>
@@ -92,6 +100,10 @@
                         <RowDefinition Height="10"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
@@ -131,6 +143,36 @@
                         <TextBox Text="{Binding ColorInput, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                                  Style="{StaticResource rwText}"/>
                     </StackPanel>
+                    
+                    <StackPanel Grid.Row="10" Grid.Column="0" Grid.ColumnSpan="3"
+                                Orientation="Horizontal" Margin="8,18,0,0"
+                                IsEnabled="{Binding BrushType, Converter={StaticResource not_ebc}, ConverterParameter=DropShadowEffect}">
+                        <RadioButton Content="Solid Color" Margin="3"
+                                     GroupName="BrushType"
+                                     IsChecked="{Binding BrushType, Converter={StaticResource ebc}, ConverterParameter=SolidColorBrush}"
+                                     Style="{x:Null}"/>
+                        <RadioButton Content="Gradient" Margin="3"
+                                     GroupName="BrushType"
+                                     IsChecked="{Binding BrushType, Converter={StaticResource ebc}, ConverterParameter=LinearGradientBrush}"
+                                     Style="{x:Null}"/>
+                    </StackPanel>
+                    
+                    <Border Grid.Row="11" Grid.Column="0" Grid.ColumnSpan="3"
+                            BorderBrush="Gray" BorderThickness="1" CornerRadius="3"
+                            Margin="3,3,3,3" Padding="0"
+                            Visibility="{Binding BrushType, Converter={StaticResource evc}, ConverterParameter=LinearGradientBrush}"
+                            IsEnabled="{Binding BrushType, Converter={StaticResource ebc}, ConverterParameter=LinearGradientBrush}" >
+                        <local:LinearGradientBrushControl
+                            DataContext="{Binding LinearGradientBrushVM}"/>
+                    </Border>
+
+                    <Border Grid.Row="13" Grid.Column="0" Grid.ColumnSpan="3"
+                            BorderBrush="Gray" BorderThickness="1" CornerRadius="3"
+                            Margin="3" Padding="0"
+                            Visibility="{Binding BrushType, Converter={StaticResource evc}, ConverterParameter=DropShadowEffect}"
+                            IsEnabled="{Binding BrushType, Converter={StaticResource ebc}, ConverterParameter=DropShadowEffect}">
+                        <local:DropShadowEffectControl DataContext="{Binding DropShadowEffectVM}"/>
+                    </Border>
                 </Grid>
             </TabItem>
 
@@ -154,7 +196,7 @@
 
             <TabItem Header="Theme">
                 <ListBox ItemsSource="{Binding ThemeColors}" Background="Gainsboro"
-                         SelectedItem="{Binding SelectedWebColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                         SelectedItem="{Binding SelectedThemeColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <Grid Margin="0">
