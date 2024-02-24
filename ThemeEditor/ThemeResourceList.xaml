@@ -10,56 +10,62 @@
              Background="Gainsboro">
 
     <UserControl.Resources>
-        <Style x:Key="PanelButtonStyle" TargetType="{x:Type Button}">
-            <Setter Property="Padding" Value="8,3"/>
-            <Setter Property="Margin" Value="3"/>
-            <Setter Property="Foreground" Value="Black"/>
-            <Setter Property="MinWidth" Value="80"/>
-        </Style>
-        <Style x:Key="RadioButtonStyle" TargetType="{x:Type RadioButton}">
-            <Setter Property="BorderBrush" Value="Black"/>
-        </Style>
-        <Style TargetType="{x:Type CheckBox}" BasedOn="{x:Null}"/>
-        <Style TargetType="{x:Type ScrollBar}" BasedOn="{x:Null}"/>
-        <Style TargetType="{x:Type ListBox}" BasedOn="{x:Null}"/>
-        <SolidColorBrush x:Key="ScrollBar.Static.Background" po:Freeze="true" Color="#FFF0F0F0" />
-        <SolidColorBrush x:Key="GroupBox.Foreground" po:Freeze="true" Color="#FF000000" />
-        <SolidColorBrush x:Key="GroupBox.Border" po:Freeze="true" Color="#FFE6E6E6" />
-        <SolidColorBrush x:Key="GroupBox.Border.Inner" po:Freeze="true" Color="#FF333333" />
-        <SolidColorBrush x:Key="GroupBox.Border.Outer" po:Freeze="true" Color="Transparent" />
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Themes/LightBrushes.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            
+            <Style x:Key="PanelButtonStyle" TargetType="{x:Type Button}">
+                <Setter Property="Padding" Value="8,3"/>
+                <Setter Property="Margin" Value="3"/>
+                <!--<Setter Property="Foreground" Value="Black"/>-->
+                <Setter Property="MinWidth" Value="80"/>
+            </Style>
+            <Style x:Key="RadioButtonStyle" TargetType="{x:Type RadioButton}">
+                <Setter Property="BorderBrush" Value="Black"/>
+            </Style>
+            <!--<Style TargetType="{x:Type CheckBox}" BasedOn="{x:Null}"/>
+            <Style TargetType="{x:Type ScrollBar}" BasedOn="{x:Null}"/>
+            <Style TargetType="{x:Type ListBox}" BasedOn="{x:Null}"/>
+            <SolidColorBrush x:Key="ScrollBar.Static.Background" po:Freeze="true" Color="#FFF0F0F0" />-->
+            <SolidColorBrush x:Key="GroupBox.Foreground" po:Freeze="true" Color="#FF000000" />
+            <SolidColorBrush x:Key="GroupBox.Border" po:Freeze="true" Color="#FFE6E6E6" />
+            <SolidColorBrush x:Key="GroupBox.Border.Inner" po:Freeze="true" Color="#FF333333" />
+            <SolidColorBrush x:Key="GroupBox.Border.Outer" po:Freeze="true" Color="Transparent" />
 
 
-        <Style x:Key="RadioButtonListBoxStyle" TargetType="{x:Type ListBox}" BasedOn="{x:Null}">
-            <Setter Property="BorderBrush" Value="Transparent"/>
-            <Setter Property="KeyboardNavigation.DirectionalNavigation" Value="Cycle" />
-            <Setter Property="ItemContainerStyle">
-                <Setter.Value>
-                    <Style TargetType="{x:Type ListBoxItem}" >
-                        <Setter Property="Margin" Value="2,2,2,0" />
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate>
-                                    <Border Background="Transparent">
-                                        <RadioButton VerticalAlignment="Center" 
+            <Style x:Key="RadioButtonListBoxStyle" TargetType="{x:Type ListBox}">
+                <Setter Property="BorderBrush" Value="Transparent"/>
+                <Setter Property="KeyboardNavigation.DirectionalNavigation" Value="Cycle" />
+                <Setter Property="ItemContainerStyle">
+                    <Setter.Value>
+                        <Style TargetType="{x:Type ListBoxItem}" >
+                            <Setter Property="Margin" Value="2,2,2,0" />
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate>
+                                        <Border Background="Transparent">
+                                            <RadioButton VerticalAlignment="Center" 
                                                      Style="{StaticResource RadioButtonStyle}"
                                                      IsChecked="{Binding Path=IsSelected, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}">
-                                            <Grid Margin="0">
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="32"/>
-                                                    <ColumnDefinition Width="*"/>
-                                                </Grid.ColumnDefinitions>
-                                                <Border Grid.Column="0" Background="{Binding Brush}" Margin="3,0" BorderBrush="Black" BorderThickness="1" />
-                                                <TextBlock Grid.Column="1" Text="{Binding Name}" Margin="3,0"  Foreground="Black" />
-                                            </Grid>
-                                        </RadioButton>
-                                    </Border>
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-                </Setter.Value>
-            </Setter>
-        </Style>
+                                                <Grid Margin="0">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="32"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <Border Grid.Column="0" Background="{Binding Brush}" Margin="3,0" BorderBrush="Black" BorderThickness="1" />
+                                                    <TextBlock Grid.Column="1" Text="{Binding Name}" Margin="3,0"  Foreground="Black" />
+                                                </Grid>
+                                            </RadioButton>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </ResourceDictionary>
     </UserControl.Resources>
 
     <DockPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
@@ -85,7 +91,7 @@
             <Border/>
         </DockPanel>
 
-        <Border BorderBrush="Black" BorderThickness="1">
+        <Border BorderBrush="DarkGray" BorderThickness="1">
             <ListBox ItemsSource="{Binding ResourceBrushes}" Background="Gainsboro"
                      SelectedItem="{Binding SelectedResource, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                      Style="{StaticResource RadioButtonListBoxStyle}"/>

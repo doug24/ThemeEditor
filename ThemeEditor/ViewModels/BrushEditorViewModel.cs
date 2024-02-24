@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Windows;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Effects;
@@ -44,7 +45,13 @@ namespace ThemeEditor
             SystemColors = new ObservableCollection<NamedColor>(systemColors);
 
             ThemeColors = [];
+            themeColorsView = CollectionViewSource.GetDefaultView(ThemeColors);
+            themeColorsView.Filter = (o) => string.IsNullOrEmpty(ThemeFilter) || ((NamedColor)o).Name.Contains(ThemeFilter);
+
             SortedColors = [];
+            sortedColorsView = CollectionViewSource.GetDefaultView(SortedColors);
+            sortedColorsView.Filter = (o) => string.IsNullOrEmpty(SortedFilter) || ((NamedColor)o).Name.Contains(SortedFilter);
+
             InitializeThemeBrushes();
 
             LinearGradientBrushVM = new(this);
@@ -406,8 +413,25 @@ namespace ThemeEditor
         public ObservableCollection<NamedColor> WebColors { get; }
         public ObservableCollection<NamedColor> SystemColors { get; }
         public ObservableCollection<NamedColor> ThemeColors { get; }
+
+        private readonly ICollectionView themeColorsView;
         public ObservableCollection<NamedColor> SortedColors { get; }
 
+        private readonly ICollectionView sortedColorsView;
+
+        [ObservableProperty]
+        private string themeFilter = string.Empty;
+        partial void OnThemeFilterChanged(string value)
+        {
+            themeColorsView.Refresh();
+        }
+
+        [ObservableProperty]
+        private string sortedFilter = string.Empty;
+        partial void OnSortedFilterChanged(string value)
+        {
+            sortedColorsView.Refresh();
+        }
 
         [ObservableProperty]
         private NamedColor? selectedWebColor = null;

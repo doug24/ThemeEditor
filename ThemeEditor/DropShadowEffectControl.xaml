@@ -15,7 +15,7 @@
         <Style TargetType="{x:Type Label}">
             <Setter Property="HorizontalAlignment" Value="Right"/>
         </Style>
-        <Style TargetType="{x:Type Button}" BasedOn="{x:Null}">
+        <Style TargetType="{x:Type Button}">
             <Setter Property="Margin" Value="3"/>
             <Setter Property="Padding" Value="12,1"/>
         </Style>
@@ -89,7 +89,7 @@
                             <Setter Property="Padding" Value="3" />
                         </Style>
                     </DockPanel.Resources>
-                    
+
                     <StackPanel DockPanel.Dock="Top" Orientation="Horizontal"
                                 Background="{DynamicResource Menu.TopLevel.Background}">
                         <Label Content="File"/>
@@ -126,7 +126,7 @@
                                     <Border Width="28" BorderThickness="0,0,1,0" 
                                             BorderBrush="{DynamicResource Menu.Separator.Border}"/>
                                     <Label Content="Paste" Padding="3"/>
-                            </StackPanel>
+                                </StackPanel>
                             </Border>
                         </StackPanel>
                     </Border>
@@ -162,7 +162,7 @@
                     <CheckBox Grid.Row="0" Grid.Column="2" HorizontalAlignment="Center"
                               Template="{DynamicResource FavsMetroButtonTemplate}" 
                               Margin="3" IsChecked="True"/>
-                    
+
                     <Label Grid.Row="1" Grid.Column="0"
                            Content="Mouse over:"/>
                     <CheckBox Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center"

@@ -11,34 +11,34 @@
         Background="#FFF0F0F0">
 
     <UserControl.Resources>
-        <local:EnumBooleanConverter x:Key="ebc" />
-        <local:NotEnumBooleanConverter x:Key="not_ebc" />
-        <local:EnumVisibilityConverter x:Key="evc" />
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Themes/LightBrushes.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        
+            <local:EnumBooleanConverter x:Key="ebc" />
+            <local:NotEnumBooleanConverter x:Key="not_ebc" />
+            <local:EnumVisibilityConverter x:Key="evc" />
 
-        <Style x:Key="rwText" TargetType="{x:Type TextBox}">
-            <Setter Property="Background" Value="White"/>
-            <Setter Property="Foreground" Value="Black"/>
-            <Setter Property="Margin" Value="3"/>
-            <Setter Property="Width" Value="140"/>
-            <Setter Property="HorizontalAlignment" Value="Left"/>
-        </Style>
-        <Style x:Key="roText" TargetType="{x:Type TextBox}" BasedOn="{StaticResource rwText}">
-            <Setter Property="IsReadOnly" Value="True"/>
-            <Setter Property="Background" Value="WhiteSmoke"/>
-        </Style>
-        <Style x:Key="label" TargetType="{x:Type TextBlock}">
-            <Setter Property="Margin" Value="3"/>
-            <Setter Property="HorizontalAlignment" Value="Right"/>
-        </Style>
-        <Style x:Key="PanelButtonStyle" TargetType="{x:Type Button}">
-            <Setter Property="Padding" Value="3"/>
-            <Setter Property="Margin" Value="3"/>
-            <Setter Property="Foreground" Value="Black"/>
-            <Setter Property="MinWidth" Value="80"/>
-        </Style>
-        <Style TargetType="{x:Type ScrollBar}" BasedOn="{x:Null}"/>
-        <Style TargetType="{x:Type ListBox}" BasedOn="{x:Null}"/>
-        <SolidColorBrush x:Key="ScrollBar.Static.Background" po:Freeze="true" Color="#FFF0F0F0" />
+            <Style x:Key="rwText" TargetType="{x:Type TextBox}">
+                <Setter Property="Margin" Value="3"/>
+                <Setter Property="Width" Value="140"/>
+                <Setter Property="HorizontalAlignment" Value="Left"/>
+            </Style>
+            <Style x:Key="roText" TargetType="{x:Type TextBox}" BasedOn="{StaticResource rwText}">
+                <Setter Property="IsReadOnly" Value="True"/>
+                <Setter Property="Background" Value="WhiteSmoke"/>
+            </Style>
+            <Style x:Key="label" TargetType="{x:Type TextBlock}">
+                <Setter Property="Margin" Value="3"/>
+                <Setter Property="HorizontalAlignment" Value="Right"/>
+            </Style>
+            <Style x:Key="PanelButtonStyle" TargetType="{x:Type Button}">
+                <Setter Property="Padding" Value="3"/>
+                <Setter Property="Margin" Value="3"/>
+                <Setter Property="MinWidth" Value="80"/>
+            </Style>
+        </ResourceDictionary>
     </UserControl.Resources>
 
     <DockPanel>
@@ -194,24 +194,6 @@
                 </ListBox>
             </TabItem>
 
-            <TabItem Header="Theme">
-                <ListBox ItemsSource="{Binding ThemeColors}" Background="Gainsboro"
-                         SelectedItem="{Binding SelectedThemeColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <Grid Margin="0">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="80"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-                                <Border Grid.Column="0" Background="{Binding Brush}" Margin="3,0" BorderBrush="Black" BorderThickness="1" />
-                                <TextBlock Grid.Column="1" Text="{Binding Name}" Margin="3,0"  Foreground="Black" />
-                            </Grid>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
-            </TabItem>
-
             <TabItem Header="System">
                 <ListBox ItemsSource="{Binding SystemColors}" Background="Gainsboro"
                          SelectedItem="{Binding SelectedSystemColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
@@ -230,24 +212,72 @@
                 </ListBox>
             </TabItem>
 
+            <TabItem Header="Theme">
+                <Grid Background="#FFE8E8E8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Label Grid.Row="0" Grid.Column="0" Content="Filter:" Style="{x:Null}"/>
+                    <TextBox Grid.Row="0" Grid.Column="1" Margin="5"
+                             Text="{Binding ThemeFilter, UpdateSourceTrigger=PropertyChanged}"
+                             Style="{x:Null}"/>
+                    <ListBox Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" 
+                             ItemsSource="{Binding ThemeColors}" Background="Gainsboro"
+                             SelectedItem="{Binding SelectedThemeColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="80"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Border Grid.Column="0" Background="{Binding Brush}" Margin="3,0" BorderBrush="Black" BorderThickness="1" />
+                                    <TextBlock Grid.Column="1" Text="{Binding Name}" Margin="3,0"  Foreground="Black" />
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Grid>
+            </TabItem>
+
             <TabItem Header="Sorted">
-                <ListBox ItemsSource="{Binding SortedColors}" Background="Gainsboro"
-                         SelectedItem="{Binding SelectedSortedColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <Grid Margin="0">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="50"/>
-                                    <ColumnDefinition Width="80"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-                                <Border Grid.Column="0" Background="{Binding Brush}" Margin="3,0" BorderBrush="Black" BorderThickness="1" />
-                                <TextBlock Grid.Column="1" Text="{Binding Hex}" Margin="3,0"  Foreground="Black" />
-                                <TextBlock Grid.Column="2" Text="{Binding Name}" Margin="3,0"  Foreground="Black" />
-                            </Grid>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
+                <Grid Background="#FFE8E8E8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Label Grid.Row="0" Grid.Column="0" Content="Filter:" Style="{x:Null}"/>
+                    <TextBox Grid.Row="0" Grid.Column="1" Margin="5"
+                             Text="{Binding SortedFilter, UpdateSourceTrigger=PropertyChanged}"
+                             Style="{x:Null}"/>
+                    <ListBox Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" 
+                             ItemsSource="{Binding SortedColors}" Background="Gainsboro"
+                             SelectedItem="{Binding SelectedSortedColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="50"/>
+                                        <ColumnDefinition Width="80"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Border Grid.Column="0" Background="{Binding Brush}" Margin="3,0" BorderBrush="Black" BorderThickness="1" />
+                                    <TextBlock Grid.Column="1" Text="{Binding Hex}" Margin="3,0"  Foreground="Black" />
+                                    <TextBlock Grid.Column="2" Text="{Binding Name}" Margin="3,0"  Foreground="Black" />
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Grid>
             </TabItem>
         </TabControl>
     </DockPanel>
