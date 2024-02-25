@@ -12,5 +12,7 @@ namespace ThemeEditor
             MainWindow = new MainWindow();
             MainWindow.Show();
         }
+
+        public ResourceDictionary ThemeResources => Resources.MergedDictionaries[0];
     }
 }

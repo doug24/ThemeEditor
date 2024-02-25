@@ -7,7 +7,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows;
-using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Effects;
@@ -130,24 +129,25 @@ namespace ThemeEditor
 
         private void BrushEditorViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (ThemeResourceVM.CanEdit && ThemeResourceVM.SelectedResource != null)
+            if (ThemeResourceVM.CanEdit && ThemeResourceVM.SelectedResource != null &&
+                Application.Current is App app)
             {
                 if (e.PropertyName == nameof(BrushEditorVM.ColorBrush))
                 {
-                    if (Application.Current.Resources[ThemeResourceVM.SelectedResource.Name] is Brush)
+                    if (app.ThemeResources[ThemeResourceVM.SelectedResource.Name] is Brush)
                     {
                         ThemeResourceVM.SelectedResource.HasPendingChange = true;
-                        Application.Current.Resources[ThemeResourceVM.SelectedResource.Name] = BrushEditorVM.ColorBrush;
+                        app.ThemeResources[ThemeResourceVM.SelectedResource.Name] = BrushEditorVM.ColorBrush;
                     }
 
                     if (ThemeResourceVM.SyncColors)
                     {
                         foreach (var item in ThemeResourceVM.ColorGroup)
                         {
-                            if (Application.Current.Resources[item.Name] is Brush)
+                            if (app.ThemeResources[item.Name] is Brush)
                             {
                                 item.HasPendingChange = true;
-                                Application.Current.Resources[item.Name] = BrushEditorVM.ColorBrush;
+                                app.ThemeResources[item.Name] = BrushEditorVM.ColorBrush;
                             }
                         }
                     }
@@ -156,20 +156,20 @@ namespace ThemeEditor
                 }
                 else if (e.PropertyName == nameof(BrushEditorVM.GradientBrush))
                 {
-                    if (Application.Current.Resources[ThemeResourceVM.SelectedResource.Name] is Brush)
+                    if (app.ThemeResources[ThemeResourceVM.SelectedResource.Name] is Brush)
                     {
                         ThemeResourceVM.SelectedResource.HasPendingChange = true;
-                        Application.Current.Resources[ThemeResourceVM.SelectedResource.Name] = BrushEditorVM.GradientBrush;
+                        app.ThemeResources[ThemeResourceVM.SelectedResource.Name] = BrushEditorVM.GradientBrush;
                     }
 
                     ThemeColorChanged?.Invoke(this, EventArgs.Empty);
                 }
                 else if (e.PropertyName == nameof(BrushEditorVM.DropShadowEffect))
                 {
-                    if (Application.Current.Resources[ThemeResourceVM.SelectedResource.Name] is DropShadowEffect)
+                    if (app.ThemeResources[ThemeResourceVM.SelectedResource.Name] is DropShadowEffect)
                     {
                         ThemeResourceVM.SelectedResource.HasPendingChange = true;
-                        Application.Current.Resources[ThemeResourceVM.SelectedResource.Name] = BrushEditorVM.DropShadowEffect;
+                        app.ThemeResources[ThemeResourceVM.SelectedResource.Name] = BrushEditorVM.DropShadowEffect;
                     }
                 }
             }
@@ -300,10 +300,11 @@ namespace ThemeEditor
                 }
             }
 
-            if (name.Equals("Dark") || name.Equals("Light"))
+            if ((name.Equals("Dark") || name.Equals("Light")) &&
+                Application.Current is App app)
             {
-                Application.Current.Resources.Clear();
-                Application.Current.Resources.MergedDictionaries[0].Source = new Uri($"/Themes/{name}Brushes.xaml", UriKind.Relative);
+                app.ThemeResources.Clear();
+                app.ThemeResources.Source = new Uri($"/Themes/{name}Brushes.xaml", UriKind.Relative);
 
                 ThemeResourceVM.InitializeColors();
                 ThemeResourceVM.CanEdit = false;
@@ -328,9 +329,10 @@ namespace ThemeEditor
 
             try
             {
-                Application.Current.Resources.Clear();
-                Application.Current.Resources.MergedDictionaries[0].Source =
-                    new Uri(EditFile, UriKind.Absolute);
+                if (Application.Current is App app)
+                {
+                    app.ThemeResources.Clear();
+                    app.ThemeResources.Source = new Uri(EditFile, UriKind.Absolute);
 
                 ThemeResourceVM.InitializeColors();
                 ThemeResourceVM.CanEdit = true;
@@ -338,6 +340,7 @@ namespace ThemeEditor
 
                 WindowTitle = $"Theme Editor - {EditThemeName}";
                 ThemeColorChanged?.Invoke(this, EventArgs.Empty);
+            }
             }
             catch (Exception ex)
             {
@@ -443,6 +446,8 @@ namespace ThemeEditor
                     themeBrush.HasPendingChange = false;
                 }
 
+                if (Application.Current is App app)
+                {
                 if (ThemeResourceVM.ButtonImageFlagChanged)
                 {
                     XElement? original = doc.Root.Elements().FirstOrDefault(
@@ -450,7 +455,7 @@ namespace ThemeEditor
                     if (original != null)
                     {
                         original.Value = ThemeResourceVM.ButtonImageFlag.ToString(CultureInfo.InvariantCulture).ToLowerInvariant();
-                        Application.Current.Resources[ThemeResourceViewModel.ButtonImageFlagKey] = ThemeResourceVM.ButtonImageFlag;
+                            app.ThemeResources[ThemeResourceViewModel.ButtonImageFlagKey] = ThemeResourceVM.ButtonImageFlag;
                     }
                 }
                 if (ThemeResourceVM.SyntaxColorFlagChanged)
@@ -460,7 +465,8 @@ namespace ThemeEditor
                     if (original != null)
                     {
                         original.Value = ThemeResourceVM.SyntaxColorFlag.ToString(CultureInfo.InvariantCulture).ToLowerInvariant();
-                        Application.Current.Resources[ThemeResourceViewModel.SyntaxColorFlagKey] = ThemeResourceVM.SyntaxColorFlag;
+                            app.ThemeResources[ThemeResourceViewModel.SyntaxColorFlagKey] = ThemeResourceVM.SyntaxColorFlag;
+                        }
                     }
                 }
 

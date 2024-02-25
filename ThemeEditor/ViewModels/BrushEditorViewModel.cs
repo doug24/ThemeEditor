@@ -483,14 +483,16 @@ namespace ThemeEditor
         private static List<NamedColor> GetThemeColors()
         {
             List<NamedColor> colors = [];
-            var dictionary = Application.Current.Resources.MergedDictionaries[0];
-            foreach (object key in dictionary.Keys)
+
+            if (Application.Current is App app)
             {
-                if (dictionary[key] is SolidColorBrush solidBrush)
+                foreach (object key in app.ThemeResources.Keys)
                 {
+                    if (app.ThemeResources[key] is SolidColorBrush solidBrush)
+                    {
                     colors.Add(new NamedColor(key.ToString() ?? string.Empty, solidBrush.Color));
                 }
-                else if (dictionary[key] is LinearGradientBrush gradientBrush)
+                    else if (app.ThemeResources[key] is LinearGradientBrush gradientBrush)
                 {
                     int idx = 0;
                     foreach (var stop in gradientBrush.GradientStops)
@@ -499,12 +501,12 @@ namespace ThemeEditor
                         colors.Add(new NamedColor(name, stop.Color));
                     }
                 }
-                else if (dictionary[key] is DropShadowEffect dropShadowEffect)
+                    else if (app.ThemeResources[key] is DropShadowEffect dropShadowEffect)
                 {
                     colors.Add(new NamedColor(key.ToString() ?? string.Empty, dropShadowEffect.Color));
                 }
             }
-
+            }
             return colors;
         }
 

@@ -25,53 +25,60 @@ namespace ThemeEditor
 
         internal void InitializeColors()
         {
-            string selectionName = string.Empty;
-            if (SelectedResource != null)
+            if (Application.Current is App app)
             {
-                selectionName = SelectedResource.Name;
-            }
-
-            List<ThemeBrush> brushes = [];
-            var dictionary = Application.Current.Resources.MergedDictionaries[0];
-            foreach (object key in dictionary.Keys)
-            {
-                if (dictionary[key] is SolidColorBrush solidBrush)
-                    brushes.Add(new ThemeBrush(key.ToString() ?? string.Empty, solidBrush));
-                else if (dictionary[key] is LinearGradientBrush gradientBrush)
-                    brushes.Add(new ThemeBrush(key.ToString() ?? string.Empty, gradientBrush));
-                else if (dictionary[key] is DropShadowEffect dropShadowEffect)
-                    brushes.Add(new ThemeBrush(key.ToString() ?? string.Empty, dropShadowEffect));
-            }
-
-            ResourceBrushes = new ObservableCollection<ThemeBrush>(brushes.OrderBy(nc => nc.Name));
-            OnPropertyChanged(nameof(ResourceBrushes));
-
-
-            bool set = false;
-            if (!string.IsNullOrEmpty(selectionName))
-            {
-                var item = ResourceBrushes.FirstOrDefault(r => r.Name == selectionName);
-
-                if (item != null)
+                string selectionName = string.Empty;
+                if (SelectedResource != null)
                 {
-                    SelectedResource = item;
-                    set = true;
+                    selectionName = SelectedResource.Name;
                 }
-            }
 
-            if (!set && ResourceBrushes.Count > 0)
-            {
-                SelectedResource = ResourceBrushes[0];
-            }
+                List<ThemeBrush> brushes = [];
+                foreach (object key in app.ThemeResources.Keys)
+                {
+                    if (app.ThemeResources[key] is SolidColorBrush solidBrush)
+                        brushes.Add(new ThemeBrush(key.ToString() ?? string.Empty, solidBrush));
+                    else if (app.ThemeResources[key] is LinearGradientBrush gradientBrush)
+                        brushes.Add(new ThemeBrush(key.ToString() ?? string.Empty, gradientBrush));
+                    else if (app.ThemeResources[key] is DropShadowEffect dropShadowEffect)
+                        brushes.Add(new ThemeBrush(key.ToString() ?? string.Empty, dropShadowEffect));
+                }
 
-            if (Application.Current.Resources[ButtonImageFlagKey] is bool flag1)
-            {
-                ButtonImageFlag = flag1;
-            }
+                ResourceBrushes.Clear();
+                foreach (ThemeBrush brush in brushes.OrderBy(b => b.Name))
+                {
+                    ResourceBrushes.Add(brush);
+                }
 
-            if (Application.Current.Resources[SyntaxColorFlagKey] is bool flag2)
-            {
-                SyntaxColorFlag = flag2;
+                //OnPropertyChanged(nameof(ResourceBrushes));
+
+
+                bool set = false;
+                if (!string.IsNullOrEmpty(selectionName))
+                {
+                    var item = ResourceBrushes.FirstOrDefault(r => r.Name == selectionName);
+
+                    if (item != null)
+                    {
+                        SelectedResource = item;
+                        set = true;
+                    }
+                }
+
+                if (!set && ResourceBrushes.Count > 0)
+                {
+                    SelectedResource = ResourceBrushes[0];
+                }
+
+                if (app.ThemeResources[ButtonImageFlagKey] is bool flag1)
+                {
+                    ButtonImageFlag = flag1;
+                }
+
+                if (app.ThemeResources[SyntaxColorFlagKey] is bool flag2)
+                {
+                    SyntaxColorFlag = flag2;
+                }
             }
         }
 
@@ -96,7 +103,7 @@ namespace ThemeEditor
 
         internal void Save(Brush brush)
         {
-            if (SelectedResource != null)
+            if (SelectedResource != null && Application.Current is App app)
             {
                 if (brush is SolidColorBrush solidBrush)
                 {
@@ -129,9 +136,9 @@ namespace ThemeEditor
                     // checkbox was unchecked just before save
                     foreach (var item in ColorGroup)
                     {
-                        if (Application.Current.Resources[item.Name] is SolidColorBrush)
+                        if (app.ThemeResources[item.Name] is SolidColorBrush)
                         {
-                            Application.Current.Resources[item.Name] = item.ColorBrush;
+                            app.ThemeResources[item.Name] = item.ColorBrush;
                             item.HasPendingChange = false;
                         }
                     }
@@ -189,24 +196,24 @@ namespace ThemeEditor
         {
             get
             {
-                if (Application.Current.Resources[ButtonImageFlagKey] is bool flag)
-                        return flag != ButtonImageFlag;
-                return false;
+                return Application.Current is App app &&
+                    app.ThemeResources[ButtonImageFlagKey] is bool flag &&
+                    flag != ButtonImageFlag;
             }
         }
 
         [ObservableProperty]
         private bool syntaxColorFlag;
 
-        public static string SyntaxColorFlagKey => "AvalonEdit.SyntaxColor.Invert";
+        public static string SyntaxColorFlagKey => "PreviewText.SyntaxColor.Invert";
 
         public bool SyntaxColorFlagChanged
         {
             get
             {
-                if (Application.Current.Resources[SyntaxColorFlagKey] is bool flag)
-                    return flag != SyntaxColorFlag;
-                return false;
+                return Application.Current is App app &&
+                    app.ThemeResources[SyntaxColorFlagKey] is bool flag &&
+                    flag != SyntaxColorFlag;
             }
         }
     }
