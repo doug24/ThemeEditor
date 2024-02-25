@@ -156,7 +156,7 @@
                 </DataGrid.RowStyle>
             </DataGrid>
 
-            <Label Content="AvalonEdit" DockPanel.Dock="Top" />
+            <Label Content="Preveiw Text" DockPanel.Dock="Top" />
             <ae:TextEditor DockPanel.Dock="Top" x:Name="textEditor" 
                            Margin="3,3,3,0"
                            Height="120" 
@@ -165,8 +165,8 @@
                            Style="{StaticResource ThemedMarkerTextEditor}"
                            FontFamily="Consolas"
                            FontSize="12"
-                           Foreground="{DynamicResource AvalonEdit.Foreground}"
-                           Background="{DynamicResource AvalonEdit.Background}"
+                           Foreground="{DynamicResource PreviewText.Foreground}"
+                           Background="{DynamicResource PreviewText.Background}"
                            ShowLineNumbers="True" 
                            IsReadOnly="True"
                            WordWrap="True"/>
