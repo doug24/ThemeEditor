@@ -129,7 +129,7 @@ namespace ThemeEditor
 
         private void BrushEditorViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (ThemeResourceVM.CanEdit && ThemeResourceVM.SelectedResource != null &&
+            if (ThemeResourceVM.SelectedResource != null &&
                 Application.Current is App app)
             {
                 if (e.PropertyName == nameof(BrushEditorVM.ColorBrush))

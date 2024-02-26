@@ -198,7 +198,7 @@ namespace ThemeEditor
 
         public ICommand RevertCommand => new RelayCommand(
             p => RevertBrush?.Invoke(this, EventArgs.Empty),
-            q => CanEdit && IsColorChanged);
+            q => IsColorChanged);
 
         [ObservableProperty]
         private bool buttonImageFlag;
