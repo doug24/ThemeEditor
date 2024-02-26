@@ -46,11 +46,11 @@ namespace ThemeEditor
 
             ThemeColors = [];
             themeColorsView = CollectionViewSource.GetDefaultView(ThemeColors);
-            themeColorsView.Filter = (o) => string.IsNullOrEmpty(ThemeFilter) || ((NamedColor)o).Name.Contains(ThemeFilter);
+            themeColorsView.Filter = (o) => string.IsNullOrEmpty(ThemeFilter) || ((NamedColor)o).Name.Contains(ThemeFilter, StringComparison.OrdinalIgnoreCase);
 
             SortedColors = [];
             sortedColorsView = CollectionViewSource.GetDefaultView(SortedColors);
-            sortedColorsView.Filter = (o) => string.IsNullOrEmpty(SortedFilter) || ((NamedColor)o).Name.Contains(SortedFilter);
+            sortedColorsView.Filter = (o) => string.IsNullOrEmpty(SortedFilter) || ((NamedColor)o).Name.Contains(SortedFilter, StringComparison.OrdinalIgnoreCase);
 
             InitializeThemeBrushes();
 

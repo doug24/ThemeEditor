@@ -14,7 +14,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/Themes/LightBrushes.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            
+
             <Style x:Key="PanelButtonStyle" TargetType="{x:Type Button}">
                 <Setter Property="Padding" Value="8,3"/>
                 <Setter Property="Margin" Value="3"/>
@@ -78,7 +78,7 @@
                           IsChecked="{Binding SyntaxColorFlag}"/>
             </StackPanel>
         </GroupBox>
-        
+
         <DockPanel DockPanel.Dock="Bottom">
             <Button DockPanel.Dock="Left" Content="Commit color change" Command="{Binding SaveCommand}" Style="{StaticResource PanelButtonStyle}"/>
             <Button DockPanel.Dock="Left" Content="Revert color change" Command="{Binding RevertCommand}" Style="{StaticResource PanelButtonStyle}"/>
@@ -92,9 +92,24 @@
         </DockPanel>
 
         <Border BorderBrush="DarkGray" BorderThickness="1">
-            <ListBox ItemsSource="{Binding ResourceBrushes}" Background="Gainsboro"
-                     SelectedItem="{Binding SelectedResource, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                     Style="{StaticResource RadioButtonListBoxStyle}"/>
+            <Grid Background="#FFE8E8E8">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Label Grid.Row="0" Grid.Column="0" Content="Filter:" Style="{x:Null}"/>
+                <TextBox Grid.Row="0" Grid.Column="1" Margin="5"
+                         Text="{Binding BrushFilter, UpdateSourceTrigger=PropertyChanged}"
+                         Style="{x:Null}"/>
+                <ListBox Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" 
+                         ItemsSource="{Binding ResourceBrushes}" Background="Gainsboro"
+                         SelectedItem="{Binding SelectedResource, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                         Style="{StaticResource RadioButtonListBoxStyle}"/>
+            </Grid>
         </Border>
     </DockPanel>
 </UserControl>

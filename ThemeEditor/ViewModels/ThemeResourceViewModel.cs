@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Effects;
@@ -17,6 +19,10 @@ namespace ThemeEditor
 
         public ThemeResourceViewModel()
         {
+            ResourceBrushes = [];
+            resourceBrushesView = CollectionViewSource.GetDefaultView(ResourceBrushes);
+            resourceBrushesView.Filter = (o) => string.IsNullOrEmpty(BrushFilter) || ((ThemeBrush)o).Name.Contains(BrushFilter, StringComparison.OrdinalIgnoreCase);
+
             InitializeColors();
         }
 
@@ -49,9 +55,6 @@ namespace ThemeEditor
                 {
                     ResourceBrushes.Add(brush);
                 }
-
-                //OnPropertyChanged(nameof(ResourceBrushes));
-
 
                 bool set = false;
                 if (!string.IsNullOrEmpty(selectionName))
@@ -160,7 +163,16 @@ namespace ThemeEditor
 
         public bool IsColorChanged => SelectedResource?.HasPendingChange ?? false;
 
-        public ObservableCollection<ThemeBrush> ResourceBrushes { get; private set; } = [];
+        public ObservableCollection<ThemeBrush> ResourceBrushes { get; }
+        
+        private readonly ICollectionView resourceBrushesView;
+
+        [ObservableProperty]
+        private string brushFilter = string.Empty;
+        partial void OnBrushFilterChanged(string value)
+        {
+            resourceBrushesView.Refresh();
+        }
 
         public ObservableCollection<ThemeBrush> ColorGroup { get; } = [];
 
