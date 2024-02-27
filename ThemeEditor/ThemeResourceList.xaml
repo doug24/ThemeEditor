@@ -74,6 +74,8 @@
             <StackPanel Margin="6,3">
                 <CheckBox Content="Use button images for dark background"
                           IsChecked="{Binding ButtonImageFlag}"/>
+                <CheckBox Content="Use dark overlay on calendar button"
+                          IsChecked="{Binding DateCalendarFlag}"/>
                 <CheckBox Content="Use syntax highlighting for dark background"
                           IsChecked="{Binding SyntaxColorFlag}"/>
             </StackPanel>

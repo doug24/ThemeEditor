@@ -255,12 +255,7 @@
     <SolidColorBrush x:Key="DatePicker.Static.Border" po:Freeze="true" Color="#FF989898" />
     <SolidColorBrush x:Key="DatePicker.Disabled.Overlay" po:Freeze="true" Color="#A5606060" />
     <SolidColorBrush x:Key="DatePicker.TextBox.Border" po:Freeze="true" Color="#FF606060" />
-    <LinearGradientBrush x:Key="DatePicker.Button.Background" po:Freeze="true" StartPoint=".7,0" EndPoint=".7,1">
-        <GradientStop po:Freeze="true" Color="#FFE0E0E0" Offset="0" />
-        <GradientStop po:Freeze="true" Color="#F9E0E0E0" Offset="0.375" />
-        <GradientStop po:Freeze="true" Color="#E5E0E0E0" Offset="0.625" />
-        <GradientStop po:Freeze="true" Color="#C6E0E0E0" Offset="1" />
-    </LinearGradientBrush>
+    <sys:Boolean x:Key="DatePicker.DarkOverlay">true</sys:Boolean>
 
     <!--  DataGrid  -->
     <SolidColorBrush x:Key="DataGrid.Foreground" po:Freeze="true" Color="#FFFFFFFF" />

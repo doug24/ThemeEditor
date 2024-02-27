@@ -27,7 +27,7 @@ namespace ThemeEditor
         }
 
         public bool IsModified => ResourceBrushes.Any(r => r.IsModified) ||
-            ButtonImageFlagChanged || SyntaxColorFlagChanged;
+            ButtonImageFlagChanged || DateCalendarFlagChanged || SyntaxColorFlagChanged;
 
         internal void InitializeColors()
         {
@@ -81,6 +81,11 @@ namespace ThemeEditor
                 if (app.ThemeResources[SyntaxColorFlagKey] is bool flag2)
                 {
                     SyntaxColorFlag = flag2;
+                }
+
+                if (app.ThemeResources[DateCalendarFlagKey] is bool flag3)
+                {
+                    DateCalendarFlag = flag3;
                 }
             }
         }
@@ -205,6 +210,20 @@ namespace ThemeEditor
 
         public static string ButtonImageFlagKey => "ToggleButton.DarkImages";
         public bool ButtonImageFlagChanged
+        {
+            get
+            {
+                return Application.Current is App app &&
+                    app.ThemeResources[ButtonImageFlagKey] is bool flag &&
+                    flag != ButtonImageFlag;
+            }
+        }
+
+        [ObservableProperty]
+        private bool dateCalendarFlag;
+
+        public static string DateCalendarFlagKey => "DatePicker.DarkOverlay";
+        public bool DateCalendarFlagChanged
         {
             get
             {
