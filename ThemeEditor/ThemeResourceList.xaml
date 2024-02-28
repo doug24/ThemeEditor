@@ -12,28 +12,27 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/Themes/LightBrushes.xaml" />
+                <ResourceDictionary Source="Themes/LightBrushes.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <Style x:Key="PanelButtonStyle" TargetType="{x:Type Button}">
                 <Setter Property="Padding" Value="8,3"/>
                 <Setter Property="Margin" Value="3"/>
-                <!--<Setter Property="Foreground" Value="Black"/>-->
                 <Setter Property="MinWidth" Value="80"/>
             </Style>
             <Style x:Key="RadioButtonStyle" TargetType="{x:Type RadioButton}">
                 <Setter Property="BorderBrush" Value="Black"/>
             </Style>
-            <!--<Style TargetType="{x:Type CheckBox}" BasedOn="{x:Null}"/>
-            <Style TargetType="{x:Type ScrollBar}" BasedOn="{x:Null}"/>
-            <Style TargetType="{x:Type ListBox}" BasedOn="{x:Null}"/>
-            <SolidColorBrush x:Key="ScrollBar.Static.Background" po:Freeze="true" Color="#FFF0F0F0" />-->
             <SolidColorBrush x:Key="GroupBox.Foreground" po:Freeze="true" Color="#FF000000" />
             <SolidColorBrush x:Key="GroupBox.Border" po:Freeze="true" Color="#FFE6E6E6" />
             <SolidColorBrush x:Key="GroupBox.Border.Inner" po:Freeze="true" Color="#FF333333" />
             <SolidColorBrush x:Key="GroupBox.Border.Outer" po:Freeze="true" Color="Transparent" />
-
-
+            <DrawingBrush x:Key="PatternBrush" TileMode="Tile" Viewport="0,0,12,12" ViewportUnits="Absolute">
+                <DrawingBrush.Drawing>
+                    <GeometryDrawing Geometry="M0,0 H1 V1 H2 V2 H1 V1 H0Z" Brush="White"/>
+                </DrawingBrush.Drawing>
+            </DrawingBrush>
+            
             <Style x:Key="RadioButtonListBoxStyle" TargetType="{x:Type ListBox}">
                 <Setter Property="BorderBrush" Value="Transparent"/>
                 <Setter Property="KeyboardNavigation.DirectionalNavigation" Value="Cycle" />
@@ -53,6 +52,7 @@
                                                         <ColumnDefinition Width="32"/>
                                                         <ColumnDefinition Width="*"/>
                                                     </Grid.ColumnDefinitions>
+                                                    <Border Grid.Column="0" Background="{StaticResource PatternBrush}"  Margin="3,0"/>
                                                     <Border Grid.Column="0" Background="{Binding Brush}" Margin="3,0" BorderBrush="Black" BorderThickness="1" />
                                                     <TextBlock Grid.Column="1" Text="{Binding Name}" Margin="3,0"  Foreground="Black" />
                                                 </Grid>

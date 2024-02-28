@@ -13,12 +13,18 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/Themes/LightBrushes.xaml" />
+                <ResourceDictionary Source="Themes/LightBrushes.xaml" />
             </ResourceDictionary.MergedDictionaries>
         
             <local:EnumBooleanConverter x:Key="ebc" />
             <local:NotEnumBooleanConverter x:Key="not_ebc" />
             <local:EnumVisibilityConverter x:Key="evc" />
+            
+            <DrawingBrush x:Key="PatternBrush" TileMode="Tile" Viewport="0,0,12,12" ViewportUnits="Absolute">
+                <DrawingBrush.Drawing>
+                    <GeometryDrawing Geometry="M0,0 H1 V1 H2 V2 H1 V1 H0Z" Brush="White"/>
+                </DrawingBrush.Drawing>
+            </DrawingBrush>
 
             <Style x:Key="rwText" TargetType="{x:Type TextBox}">
                 <Setter Property="Margin" Value="3"/>
@@ -186,6 +192,7 @@
                                     <ColumnDefinition Width="80"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
+                                <Border Grid.Column="0" Background="{StaticResource PatternBrush}"  Margin="3,0"/>
                                 <Border Grid.Column="0" Background="{Binding Brush}" Margin="3,0" BorderBrush="Black" BorderThickness="1" />
                                 <TextBlock Grid.Column="1" Text="{Binding Name}" Margin="3,0"  Foreground="Black" />
                             </Grid>
@@ -204,6 +211,7 @@
                                     <ColumnDefinition Width="80"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
+                                <Border Grid.Column="0" Background="{StaticResource PatternBrush}"  Margin="3,0"/>
                                 <Border Grid.Column="0" Background="{Binding Brush}" Margin="3,0" BorderBrush="Black" BorderThickness="1" />
                                 <TextBlock Grid.Column="1" Text="{Binding Name}" Margin="3,0"  Foreground="Black" />
                             </Grid>
@@ -236,6 +244,7 @@
                                         <ColumnDefinition Width="80"/>
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
+                                    <Border Grid.Column="0" Background="{StaticResource PatternBrush}"  Margin="3,0"/>
                                     <Border Grid.Column="0" Background="{Binding Brush}" Margin="3,0" BorderBrush="Black" BorderThickness="1" />
                                     <TextBlock Grid.Column="1" Text="{Binding Name}" Margin="3,0"  Foreground="Black" />
                                 </Grid>
@@ -270,6 +279,7 @@
                                         <ColumnDefinition Width="80"/>
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
+                                    <Border Grid.Column="0" Background="{StaticResource PatternBrush}"  Margin="3,0"/>
                                     <Border Grid.Column="0" Background="{Binding Brush}" Margin="3,0" BorderBrush="Black" BorderThickness="1" />
                                     <TextBlock Grid.Column="1" Text="{Binding Hex}" Margin="3,0"  Foreground="Black" />
                                     <TextBlock Grid.Column="2" Text="{Binding Name}" Margin="3,0"  Foreground="Black" />
