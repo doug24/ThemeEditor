@@ -9,6 +9,28 @@
              d:DesignHeight="800" d:DesignWidth="800">
 
     <UserControl.Resources>
+        <DataTemplate x:Key="comboBoxPinDelTemplate">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="TEXT"/>
+                    <ColumnDefinition Width="*" />
+                    <!-- shim -->
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="PIN"/>
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="DEL"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Margin="0,0,6,0"
+                           Text="{Binding StringValue}"/>
+                <Border Grid.Column="1" HorizontalAlignment="Stretch"/>
+                <ToggleButton Grid.Column="2" Margin="3,0"
+                              Style="{StaticResource ComboBoxPinButton}"
+                              IsChecked="{Binding IsPinned, Mode=TwoWay}"/>
+                <Button Grid.Column="3" Margin="3,0"
+                        Style="{StaticResource ComboBoxDeleteButton}"
+                        Command="{Binding DataContext.DeleteMRUItemCommand,
+                            RelativeSource={RelativeSource AncestorType=ComboBox}}"
+                        CommandParameter="{Binding}"/>
+            </Grid>
+        </DataTemplate>
     </UserControl.Resources>
     <UserControl.Background>
         <DynamicResource ResourceKey="Window.Background"/>
@@ -32,13 +54,14 @@
 
     <Grid Margin="3">
         <DockPanel>
-            
+
             <GroupBox DockPanel.Dock="Top" Header="Radio Group" Margin="3">
                 <StackPanel Orientation="Horizontal">
-                    <RadioButton Content="One" Margin="3"/>
-                    <RadioButton Content="Two" Margin="3" IsChecked="True"/>
-                    <RadioButton Content="Three" Margin="3"/>
-                    <RadioButton Content="Disabled" Margin="3" IsEnabled="False"/>
+                    <RadioButton GroupName="A" Content="One" Margin="3"/>
+                    <RadioButton GroupName="A" Content="Two" Margin="3" IsChecked="True"/>
+                    <RadioButton GroupName="A" Content="Three" Margin="3"/>
+                    <RadioButton GroupName="B" Content="Disabled" Margin="3" IsEnabled="False"/>
+                    <RadioButton GroupName="B" Content="Disabled" Margin="3" IsEnabled="False" IsChecked="True"/>
                 </StackPanel>
             </GroupBox>
 
@@ -46,8 +69,9 @@
                 <StackPanel Orientation="Horizontal">
                     <CheckBox Content="Checked" Margin="3" IsChecked="True"/>
                     <CheckBox Content="Unchecked" Margin="3"/>
-                    <CheckBox Content="Disabled" Margin="3" IsEnabled="False"/>
                     <CheckBox Content="Three State" Margin="3" IsThreeState="True" IsChecked="{x:Null}" />
+                    <CheckBox Content="Disabled" Margin="3" IsEnabled="False"/>
+                    <CheckBox Content="Disabled" Margin="3" IsEnabled="False" IsChecked="True"/>
                 </StackPanel>
             </GroupBox>
 
@@ -65,52 +89,88 @@
                     BorderBrush="{DynamicResource GroupBox.Border}" BorderThickness="1" CornerRadius="4">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="Label" Style="{StaticResource LabelTextBlockStyle}" Margin="3"/>
-                    <TextBox Text="Sample Text" Margin="3" Width="180" Style="{StaticResource FormTextBox}"/>
-                    <TextBox Text="Read Only Text" Margin="3" Width="180" Style="{StaticResource FormTextBox}" IsReadOnly="True"/>
+                    <TextBox Text="Sample Text" Margin="3" Width="160" Style="{StaticResource FormTextBox}"/>
+                    <TextBox Text="Read Only Text" Margin="3" Width="160" Style="{StaticResource FormTextBox}" IsReadOnly="True"/>
+                    <Label Content="Hover for tooltip" Margin="16,3,0,3">
+                        <Label.ToolTip>
+                            <TextBlock Text="Control.InfoBackground&#10;Control.InfoForeground&#10;Control.FrameBorder"/>
+                        </Label.ToolTip>
+                    </Label>
                 </StackPanel>
             </Border>
 
-            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" VerticalAlignment="Center" Margin="3">
-                <TextBlock Margin="3,0,3,3" Text="Folder:" Style="{StaticResource LabelTextBlockStyle}"/>
-                <ComboBox DockPanel.Dock="Top" Margin="3,4" Text="C:\\files\\to\\search" 
-                          ItemsSource="{Binding FastSearchBookmarks}"
-                          IsEditable="True" Width="340" />
-            </StackPanel>
+            <GroupBox DockPanel.Dock="Top" Header="Combo boxes">
+                <DockPanel>
 
-            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" VerticalAlignment="Center" Margin="3">
-                <TextBlock Margin="3,0,3,3" Text="Encoding:" Style="{StaticResource LabelTextBlockStyle}"/>
-                <ComboBox Width="224" Margin="3,0,3,3" 
-                          DisplayMemberPath="Key" 
-                          SelectedValuePath="Value" 
-                          ItemsSource="{Binding Path=Encodings}"
-                          SelectedValue="{Binding Path=CodePage}"
-                          VerticalAlignment="Center" 
-                          VerticalContentAlignment="Center" 
-                          HorizontalContentAlignment="Center">
-                    <ComboBox.ItemContainerStyle>
-                        <Style TargetType="{x:Type ComboBoxItem}">
-                            <Setter Property="HorizontalContentAlignment" Value="Left"/>
-                        </Style>
-                    </ComboBox.ItemContainerStyle>
-                </ComboBox>
-            </StackPanel>
+                    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" VerticalAlignment="Center" Margin="3">
+                        <TextBlock Margin="3,0,3,3" Text="Folder:" Style="{StaticResource LabelTextBlockStyle}"/>
+                        <ComboBox DockPanel.Dock="Top" Margin="3,4"
+                                  ItemTemplate="{StaticResource comboBoxPinDelTemplate}"
+                                  ItemsSource="{Binding FastPathBookmarks}"
+                                  Text="{Binding FileOrFolderPath}"
+                                  TextSearch.TextPath="StringValue"
+                                  IsEditable="True" Width="340">
+                            <ComboBox.ItemContainerStyle>
+                                <Style TargetType="ComboBoxItem" BasedOn="{StaticResource ComboBoxItemBaseStyle}">
+                                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                </Style>
+                            </ComboBox.ItemContainerStyle>
+                        </ComboBox>
+                    </StackPanel>
 
-            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="3">
-                <TextBlock Grid.Row="0" Grid.Column="0" Margin="3,4,3,5" Text="Search for:" Style="{StaticResource LabelTextBlockStyle}"/>
-                <ComboBox Grid.Row="0" Grid.Column="1" Margin="3,0,3,1" 
-                          Text="{Binding SearchFor}" 
-                          ItemsSource="{Binding FastSearchBookmarks}"
-                          IsEditable="True"
-                          Style="{DynamicResource MultilineComboBoxStyle}"
-                          IsTextSearchCaseSensitive="True" FontFamily="Consolas" FontSize="12" Width="280">
-                    <ComboBox.ToolTip>
-                        <TextBlock><Run Text=". matches all characters"/><LineBreak/><Run Text="\w matches alpha-numerics"/><LineBreak/><Run Text="\d matches digits"/><LineBreak/><Run Text="\s matches space"/><LineBreak/><Run Text="* matches any number of characters"/><LineBreak/><Run Text="{}{1,3} matches 1 to 3 characters"/><LineBreak/><Run Text="For more Regex patterns hit F1"/></TextBlock>
-                    </ComboBox.ToolTip>
-                </ComboBox>
-                <CheckBox IsChecked="{Binding Multiline}" Content="Multiline" Margin="3"/>
+                    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="3">
+                        <TextBlock Grid.Row="0" Grid.Column="0" Margin="3,4,3,5" Text="Search for:" Style="{StaticResource LabelTextBlockStyle}"/>
+                        <local:MultilineComboBox Grid.Row="0" Grid.Column="1" Margin="3,0,3,1" 
+                                      ItemsSource="{Binding FastSearchBookmarks}"
+                                      Text="{Binding SearchFor}" 
+                                      TextSearch.TextPath="StringValue"
+                                      IsEditable="True"
+                                      ItemTemplate="{StaticResource comboBoxPinDelTemplate}"
+                                      Style="{DynamicResource MultilineComboBoxStyle}"
+                                      IsTextSearchCaseSensitive="True" FontFamily="Consolas" FontSize="12" Width="280">
+                            <ComboBox.ItemContainerStyle>
+                                <Style TargetType="ComboBoxItem" BasedOn="{StaticResource ComboBoxItemBaseStyle}">
+                                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                </Style>
+                            </ComboBox.ItemContainerStyle>
+                            <ComboBox.ToolTip>
+                                <TextBlock><Run Text=". matches all characters"/><LineBreak/><Run Text="\w matches alpha-numerics"/><LineBreak/><Run Text="\d matches digits"/><LineBreak/><Run Text="\s matches space"/><LineBreak/><Run Text="* matches any number of characters"/><LineBreak/><Run Text="{}{1,3} matches 1 to 3 characters"/><LineBreak/><Run Text="For more Regex patterns hit F1"/></TextBlock>
+                            </ComboBox.ToolTip>
+                        </local:MultilineComboBox>
+                        <CheckBox IsChecked="{Binding Multiline}" Content="Multiline" Margin="3"/>
+                    </StackPanel>
 
+                    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" VerticalAlignment="Center" Margin="3">
+                        <TextBlock Margin="3,0,3,3" Text="Encoding:" Style="{StaticResource LabelTextBlockStyle}"/>
+                        <ComboBox Width="224" Margin="3,0,3,3" 
+                                  DisplayMemberPath="Key" 
+                                  SelectedValuePath="Value" 
+                                  ItemsSource="{Binding Path=Encodings}"
+                                  SelectedValue="{Binding Path=CodePage}"
+                                  VerticalAlignment="Center" 
+                                  VerticalContentAlignment="Center" 
+                                  HorizontalContentAlignment="Center">
+                            <ComboBox.ItemContainerStyle>
+                                <Style TargetType="{x:Type ComboBoxItem}" BasedOn="{StaticResource ComboBoxItemBaseStyle}">
+                                    <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                                </Style>
+                            </ComboBox.ItemContainerStyle>
+                        </ComboBox>
+                    </StackPanel>
 
-            </StackPanel>
+                    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" VerticalAlignment="Center" Margin="3">
+                        <TextBlock Margin="3,0,3,3" Text="Disabled:" Style="{StaticResource LabelTextBlockStyle}"/>
+                        <ComboBox DockPanel.Dock="Top" Margin="3,4" Text="C:\files\to\search" 
+                                  IsEnabled="False"
+                                  IsEditable="True" Width="160" />
+                        <ComboBox DockPanel.Dock="Top" Margin="3,4" 
+                                  ItemsSource="{Binding DisabledList}"
+                                  Text="{Binding ImDisabled}" 
+                                  IsEnabled="False"
+                                  IsEditable="False" Width="160" />
+                    </StackPanel>
+                </DockPanel>
+            </GroupBox>
 
             <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
                 <Expander DockPanel.Dock="Top" Header="More..." IsExpanded="True">
@@ -122,13 +182,140 @@
                 <Expander DockPanel.Dock="Top" Header="Disabled" IsEnabled="False"/>
             </StackPanel>
 
-            <Label Content="TreeView" DockPanel.Dock="Top" />
-            <TreeView Height="70" DockPanel.Dock="Top" Margin="3,3,0,3"
-                      x:Name="tree">
-                <TreeViewItem Header="Star Trek (3 matches on 2 lines)" IsExpanded="True">
-                    <TreeViewItem Header="1  Space, the final frontier."/>
-                    <TreeViewItem Header="2  These are the voyages of the Starship Enterprise."/>
-                </TreeViewItem>
+            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+                <Label Content="TreeView" VerticalAlignment="Center"/>
+                <Label Margin="24,0,0,0" Padding="6,2" VerticalAlignment="Center"
+                       Content="TreeView message label (+9,256 characters)"
+                       Foreground="{DynamicResource TreeView.Message.Highlight.Foreground}"
+                       Background="{DynamicResource TreeView.Message.Highlight.Background}">
+                    <Label.ToolTip>
+                        <TextBlock Text="TreeView.Message.Highlight.Foreground&#10;TreeView.Message.Highlight.Background"/>
+                    </Label.ToolTip>
+                </Label>
+            </StackPanel>
+            <TreeView Height="90" DockPanel.Dock="Top" Margin="3,3,0,3"
+                      ItemsSource="{Binding TreeData}">
+                <TreeView.Resources>
+                    <HierarchicalDataTemplate DataType="{x:Type local:FileNode}" 
+                                              ItemsSource="{Binding Children}">
+                        <TextBlock Text="{Binding Text}"/>
+                    </HierarchicalDataTemplate>
+                    <DataTemplate DataType="{x:Type local:LineNode}">
+                        <Border BorderBrush="{DynamicResource TreeView.Section.Border}">
+                            <Border.Resources>
+                                <Style TargetType="{x:Type Border}">
+                                    <Setter Property="BorderThickness" Value="0,0,0,0" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsSectionBreak}" Value="True">
+                                            <Setter Property="BorderThickness" Value="0,1,0,0" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Resources>
+                            <Grid>
+                                <Grid.Resources>
+                                    <Style TargetType="{x:Type TextBlock}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType={x:Type TreeViewItem}}}" Value="True">
+                                                <Setter Property="Background" Value="{DynamicResource TreeView.LineNumber.Selected.Background}" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType={x:Type TreeViewItem}}}" Value="False">
+                                                <Setter Property="Background" Value="{DynamicResource TreeView.LineNumber.Deselected.Background}" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Grid.Resources>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="NUM"/>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="COL1"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0"
+                                           Width="24" 
+                                           Margin="-3" Padding="3,3,3,3"
+                                           Text="{Binding LineNumber}"
+                                           TextAlignment="Right" />
+                                <TextBlock Grid.Column="1" Margin="6,0,0,0" Text="{Binding Text}" Style="{x:Null}"/>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </TreeView.Resources>
+                <TreeView.ItemContainerStyle>
+                    <Style TargetType="{x:Type TreeViewItem}">
+                        <Setter Property="Foreground" Value="{DynamicResource TreeView.Foreground}" />
+                        <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
+                        <Setter Property="BorderThickness" Value="1.5" />
+                        <Setter Property="Padding" Value="1" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type TreeViewItem}">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" MinWidth="19" />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition />
+                                        </Grid.RowDefinitions>
+                                        <ToggleButton x:Name="Expander" Grid.Column="0"
+                                                      Style="{StaticResource ExpandCollapseToggleStyle}"
+                                                      ClickMode="Press"
+                                                      IsChecked="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}}" />
+                                        <Border x:Name="Bd" Grid.Column="1" Grid.ColumnSpan="2"
+                                                Padding="{TemplateBinding Padding}"
+                                                SnapsToDevicePixels="true"
+                                                Background="{TemplateBinding Background}"
+                                                BorderBrush="{TemplateBinding BorderBrush}"
+                                                BorderThickness="{TemplateBinding BorderThickness}">
+                                            <ContentPresenter x:Name="PART_Header"
+                                                              HorizontalAlignment="Stretch"
+                                                              SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                                              ContentSource="Header" />
+                                        </Border>
+                                        <ItemsPresenter x:Name="ItemsHost" Grid.Row="1" Grid.Column="1"
+                                                        Grid.ColumnSpan="2" HorizontalAlignment="Stretch"/>
+                                    </Grid>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsExpanded" Value="false">
+                                            <Setter TargetName="ItemsHost" Property="Visibility" Value="Collapsed" />
+                                        </Trigger>
+                                        <Trigger Property="HasItems" Value="false">
+                                            <Setter TargetName="Expander" Property="Visibility" Value="Hidden" />
+                                        </Trigger>
+                                        <Trigger Property="IsSelected" Value="true">
+                                            <Setter TargetName="Bd" Property="Background" Value="{DynamicResource TreeViewItem.Highlight.Background}" />
+                                            <Setter Property="Foreground" Value="{DynamicResource TreeView.Foreground}" />
+                                        </Trigger>
+                                        <MultiTrigger>
+                                            <MultiTrigger.Conditions>
+                                                <Condition Property="IsSelected" Value="true" />
+                                                <Condition Property="IsSelectionActive" Value="false" />
+                                            </MultiTrigger.Conditions>
+                                            <Setter TargetName="Bd" Property="Background" Value="{DynamicResource TreeViewItem.InactiveHighlight.Background}" />
+                                            <Setter Property="Foreground" Value="{DynamicResource TreeView.Foreground}" />
+                                        </MultiTrigger>
+                                        <Trigger Property="IsEnabled" Value="false">
+                                            <Setter Property="Foreground" Value="{DynamicResource Control.GrayText}" />
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                        <Style.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="BorderBrush" Value="{DynamicResource TreeViewItem.Highlight.Border}" />
+                            </Trigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsSelected" Value="True" />
+                                    <Condition Property="IsSelectionActive" Value="False" />
+                                </MultiTrigger.Conditions>
+                                <Setter Property="BorderBrush" Value="{DynamicResource TreeViewItem.InactiveHighlight.Border}" />
+                            </MultiTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TreeView.ItemContainerStyle>
             </TreeView>
 
             <Label Content="DataGrid" DockPanel.Dock="Top" />
@@ -170,7 +357,7 @@
                            ShowLineNumbers="True" 
                            IsReadOnly="True"
                            WordWrap="True"/>
-                        
+
             <Border/>
         </DockPanel>
     </Grid>

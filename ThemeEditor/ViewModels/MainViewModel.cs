@@ -34,6 +34,7 @@ namespace ThemeEditor
             BrushEditorVM.PropertyChanged += BrushEditorViewModel_PropertyChanged;
 
             PopulateEncodings();
+            PopulateTreeData();
 
             AddMarker(10, 40, 40, MarkerType.Local);
 
@@ -199,6 +200,16 @@ namespace ThemeEditor
                 Encodings.Add(enc);
         }
 
+        public ObservableCollection<FileNode> TreeData { get; } = [];
+
+        private void PopulateTreeData()
+        {
+            TreeData.Add(new FileNode("Star Trek (3 matches on 2 lines)", true));
+            TreeData[0].Children.Add(new LineNode("Space, the final frontier.", "1"));
+            TreeData[0].Children.Add(new LineNode("These are the voyages of the Starship Enterprise.", "2"));
+            TreeData[0].Children.Add(new LineNode("to boldly go where no one has gone before!", "5", true));
+        }
+
         [ObservableProperty]
         private string editThemeName = string.Empty;
         partial void OnEditThemeNameChanged(string value)
@@ -214,12 +225,36 @@ namespace ThemeEditor
         private bool multiline;
 
         [ObservableProperty]
-        private string searchFor = "string";
+        private string searchFor = "vanilla";
 
-        public ObservableCollection<string> FastSearchBookmarks { get; } =
+        public ObservableCollection<MRUViewModel> FastSearchBookmarks { get; } =
         [
-            "text", "unique", "watch", "xenon", "yesterday", "zoom"
+            new MRUViewModel(MRUType.SearchFor, "text"),
+            new MRUViewModel(MRUType.SearchFor, "unique"),
+            new MRUViewModel(MRUType.SearchFor, "vanilla"),
+            new MRUViewModel(MRUType.SearchFor, "watch"),
+            new MRUViewModel(MRUType.SearchFor, "xenon"),
+            new MRUViewModel(MRUType.SearchFor, "yesterday"),
+            new MRUViewModel(MRUType.SearchFor, "zoom"),
+            new MRUViewModel(MRUType.SearchFor, "disabled"),
         ];
+
+        [ObservableProperty]
+        private string fileOrFolderPath = @"C:\files\to\search";
+        public ObservableCollection<MRUViewModel> FastPathBookmarks { get; } =
+        [
+            new MRUViewModel(MRUType.SearchPath, @"C:\files\to\search"),
+            new MRUViewModel(MRUType.SearchPath, @"C:\Users\user\Documents"),
+        ];
+
+        [ObservableProperty]
+        private string imDisabled = "disabled";
+
+        public ObservableCollection<string> DisabledList { get; } = [ "disabled" ];
+
+        public ICommand DeleteMRUItemCommand => new RelayCommand(
+            p => { },
+            q => true);
 
         // dummy data for DataGrid
         public record Student(string FirstName, string LastName, string Email) { }
@@ -260,6 +295,9 @@ namespace ThemeEditor
         public ICommand LightThemeCommand => new RelayCommand(
             p => LoadResource("Light"));
 
+        public ICommand ImportVSCodeCommand => new RelayCommand(
+            p => ImportVSCode(p as string));
+
         public ICommand OpenXamlCommand => new RelayCommand(
             p => OpenXaml());
 
@@ -285,6 +323,33 @@ namespace ThemeEditor
                 LoadXaml();
                 Properties.Settings.Default.CurrentEditFile = EditFile;
                 Properties.Settings.Default.Save();
+            }
+        }
+
+        private void ImportVSCode(string? input)
+        {
+            if (ThemeResourceVM.IsModified)
+            {
+                var ans = MessageBox.Show("Data has been changed - save changes?", "Theme Editor",
+                    MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.Yes);
+                if (ans == MessageBoxResult.Yes)
+                {
+                    SaveXaml();
+                }
+            }
+
+            if (!string.IsNullOrEmpty(input))
+            {
+                string name = VSCodeTheme.Convert(input);
+                if (!string.IsNullOrEmpty(name))
+                {
+                    ThemeResourceVM.InitializeColors();
+                    ThemeResourceVM.CanEdit = true;
+                    BrushEditorVM.InitializeThemeBrushes();
+
+                    WindowTitle = $"Theme Editor - {name}";
+                    ThemeColorChanged?.Invoke(this, EventArgs.Empty);
+                }
             }
         }
 
@@ -334,13 +399,13 @@ namespace ThemeEditor
                     app.ThemeResources.Clear();
                     app.ThemeResources.Source = new Uri(EditFile, UriKind.Absolute);
 
-                ThemeResourceVM.InitializeColors();
-                ThemeResourceVM.CanEdit = true;
-                BrushEditorVM.InitializeThemeBrushes();
+                    ThemeResourceVM.InitializeColors();
+                    ThemeResourceVM.CanEdit = true;
+                    BrushEditorVM.InitializeThemeBrushes();
 
-                WindowTitle = $"Theme Editor - {EditThemeName}";
-                ThemeColorChanged?.Invoke(this, EventArgs.Empty);
-            }
+                    WindowTitle = $"Theme Editor - {EditThemeName}";
+                    ThemeColorChanged?.Invoke(this, EventArgs.Empty);
+                }
             }
             catch (Exception ex)
             {
@@ -448,23 +513,33 @@ namespace ThemeEditor
 
                 if (Application.Current is App app)
                 {
-                if (ThemeResourceVM.ButtonImageFlagChanged)
-                {
-                    XElement? original = doc.Root.Elements().FirstOrDefault(
-                        el => el.Attribute(x + "Key")?.Value == ThemeResourceViewModel.ButtonImageFlagKey);
-                    if (original != null)
+                    if (ThemeResourceVM.ButtonImageFlagChanged)
                     {
-                        original.Value = ThemeResourceVM.ButtonImageFlag.ToString(CultureInfo.InvariantCulture).ToLowerInvariant();
+                        XElement? original = doc.Root.Elements().FirstOrDefault(
+                            el => el.Attribute(x + "Key")?.Value == ThemeResourceViewModel.ButtonImageFlagKey);
+                        if (original != null)
+                        {
+                            original.Value = ThemeResourceVM.ButtonImageFlag.ToString(CultureInfo.InvariantCulture).ToLowerInvariant();
                             app.ThemeResources[ThemeResourceViewModel.ButtonImageFlagKey] = ThemeResourceVM.ButtonImageFlag;
+                        }
                     }
-                }
-                if (ThemeResourceVM.SyntaxColorFlagChanged)
-                {
-                    XElement? original = doc.Root.Elements().FirstOrDefault(
-                        el => el.Attribute(x + "Key")?.Value == ThemeResourceViewModel.SyntaxColorFlagKey);
-                    if (original != null)
+                    if (ThemeResourceVM.DateCalendarFlagChanged)
                     {
-                        original.Value = ThemeResourceVM.SyntaxColorFlag.ToString(CultureInfo.InvariantCulture).ToLowerInvariant();
+                        XElement? original = doc.Root.Elements().FirstOrDefault(
+                            el => el.Attribute(x + "Key")?.Value == ThemeResourceViewModel.DateCalendarFlagKey);
+                        if (original != null)
+                        {
+                            original.Value = ThemeResourceVM.DateCalendarFlag.ToString(CultureInfo.InvariantCulture).ToLowerInvariant();
+                            app.ThemeResources[ThemeResourceViewModel.DateCalendarFlagKey] = ThemeResourceVM.DateCalendarFlag;
+                        }
+                    }
+                    if (ThemeResourceVM.SyntaxColorFlagChanged)
+                    {
+                        XElement? original = doc.Root.Elements().FirstOrDefault(
+                            el => el.Attribute(x + "Key")?.Value == ThemeResourceViewModel.SyntaxColorFlagKey);
+                        if (original != null)
+                        {
+                            original.Value = ThemeResourceVM.SyntaxColorFlag.ToString(CultureInfo.InvariantCulture).ToLowerInvariant();
                             app.ThemeResources[ThemeResourceViewModel.SyntaxColorFlagKey] = ThemeResourceVM.SyntaxColorFlag;
                         }
                     }
@@ -511,4 +586,22 @@ namespace ThemeEditor
         public double Position { get; private set; } = position;
         public MarkerType MarkerType { get; private set; } = markerType;
     }
+
+    public class FileNode(string text, bool isExpanded)
+    {
+        public ObservableCollection<LineNode> Children { get; } = [];
+        public string Text { get; } = text;
+        public bool IsExpanded { get; set; } = isExpanded;
+    }
+
+    public class LineNode(string text, string lineNumber, bool isSectionBreak = false)
+    {
+        public ObservableCollection<LineNode> Children { get; } = [];
+        public string Text { get; } = text;
+        public string LineNumber { get; } = lineNumber;
+        public bool IsExpanded { get; set; } = false;
+        public bool IsSectionBreak { get; set; } = isSectionBreak;
+    }
+
+
 }
