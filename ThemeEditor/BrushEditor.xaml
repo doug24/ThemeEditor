@@ -64,6 +64,9 @@
 
             <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Margin="6" Width="240" Height="50" 
                     BorderBrush="Black" BorderThickness="1"
+                    Background="{StaticResource PatternBrush}"/>
+            <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Margin="6" Width="240" Height="50" 
+                    BorderBrush="Black" BorderThickness="1"
                     Background="{Binding EditColor, FallbackValue=Transparent}"/>
 
             <TextBlock Grid.Row="1" Grid.Column="1" Text="RGB" Style="{StaticResource label}"/>
