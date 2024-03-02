@@ -484,28 +484,40 @@ namespace ThemeEditor
         {
             List<NamedColor> colors = [];
 
-            if (Application.Current is App app)
+            if (VSCodeTheme.ThemeColors.Count > 0)
+            {
+                foreach (string key in VSCodeTheme.ThemeColors.Keys)
+                {
+                    if (VSCodeTheme.ThemeColors.TryGetValue(key, out string? value) &&
+                        !string.IsNullOrEmpty(value) &&
+                        TryConvert(value, out Color color))
+                    {
+                        colors.Add(new NamedColor(key, color));
+                    }
+                }
+            }
+            else if (Application.Current is App app)
             {
                 foreach (object key in app.ThemeResources.Keys)
                 {
                     if (app.ThemeResources[key] is SolidColorBrush solidBrush)
                     {
-                    colors.Add(new NamedColor(key.ToString() ?? string.Empty, solidBrush.Color));
-                }
+                        colors.Add(new NamedColor(key.ToString() ?? string.Empty, solidBrush.Color));
+                    }
                     else if (app.ThemeResources[key] is LinearGradientBrush gradientBrush)
-                {
-                    int idx = 0;
-                    foreach (var stop in gradientBrush.GradientStops)
                     {
-                        string name = (key.ToString() ?? string.Empty) + ".Stop" + idx++;
-                        colors.Add(new NamedColor(name, stop.Color));
+                        int idx = 0;
+                        foreach (var stop in gradientBrush.GradientStops)
+                        {
+                            string name = (key.ToString() ?? string.Empty) + ".Stop" + idx++;
+                            colors.Add(new NamedColor(name, stop.Color));
+                        }
+                    }
+                    else if (app.ThemeResources[key] is DropShadowEffect dropShadowEffect)
+                    {
+                        colors.Add(new NamedColor(key.ToString() ?? string.Empty, dropShadowEffect.Color));
                     }
                 }
-                    else if (app.ThemeResources[key] is DropShadowEffect dropShadowEffect)
-                {
-                    colors.Add(new NamedColor(key.ToString() ?? string.Empty, dropShadowEffect.Color));
-                }
-            }
             }
             return colors;
         }
@@ -696,7 +708,7 @@ namespace ThemeEditor
         public Color Color { get; private set; } = color;
 
         public SolidColorBrush Brush { get; private set; } = new SolidColorBrush(color);
-        
+
         public string Hex { get; private set; } = string.Format("#{0:X2}{1:X2}{2:X2}{3:X2}", color.A, color.R, color.G, color.B);
 
 
