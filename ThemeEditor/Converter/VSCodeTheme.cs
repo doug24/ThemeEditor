@@ -98,10 +98,26 @@ namespace ThemeEditor
                 foreach (ThemeMap themeMap in ThemeMaps)
                 {
                     Color? source = null;
-                    if (themeMap.StaticColor != null)
+
+                    if (themeMap.LocalKey == "Window.Border.Active" && 
+                        type.Equals("Light", StringComparison.OrdinalIgnoreCase) &&
+                        TryConvert("#FF707070", out Color border1))
+                    {
+                        source = border1;
+                    }
+
+                    else if (themeMap.LocalKey == "Window.Border.Inactive" && 
+                        type.Equals("Light", StringComparison.OrdinalIgnoreCase) &&
+                        TryConvert("#FFAAAAAA", out Color border2))
+                    {
+                        source = border2;
+                    }
+
+                    else if (themeMap.StaticColor != null)
                     {
                         source = themeMap.StaticColor;
                     }
+
                     else if (!string.IsNullOrEmpty(themeMap.ForeignKey) &&
                         ThemeColors.TryGetValue(themeMap.ForeignKey, out string? hex) &&
                         TryConvert(hex, out Color c))
@@ -362,8 +378,8 @@ namespace ThemeEditor
             new ThemeMap("Splitter.Background", "sideBar.background", ColorChange.Offset(Element.V, -0.25)),
 
             //<!--  Window Caption  -->
-            new ThemeMap("Window.Border.Active", "window.activeBorder"),
-            new ThemeMap("Window.Border.Inactive", "window.inactiveBorder"),
+            new ThemeMap("Window.Border.Active", "titleBar.activeBackground"),
+            new ThemeMap("Window.Border.Inactive", "titleBar.activeBackground", ColorChange.FixedOffset(Element.S, -0.05), ColorChange.FixedOffset(Element.V, 0.05)),
             new ThemeMap("Caption.Background", "titleBar.activeBackground"),
             new ThemeMap("Caption.Foreground", "titleBar.activeForeground"),
             new ThemeMap("Caption.Background.Inactive", "titleBar.activeBackground", ColorChange.FixedOffset(Element.S, -0.05), ColorChange.FixedOffset(Element.V, 0.05)),
@@ -713,15 +729,6 @@ namespace ThemeEditor
             return new ColorChange(element, value, Change.Absolute, true);
         }
     }
-
-
-    //[Flags]
-    //public enum Modify
-    //{
-    //    Offset = 0,
-    //    AbsoluteSaturation = 1,
-    //    AbsoluteValue = 2,
-    //}
 
     public enum Element { A, R, G, B, H, S, V }
 
