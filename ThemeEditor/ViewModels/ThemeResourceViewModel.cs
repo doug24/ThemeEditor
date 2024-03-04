@@ -115,12 +115,14 @@ namespace ThemeEditor
             {
                 if (brush is SolidColorBrush solidBrush)
                 {
+                    SelectedResource.BrushType = BrushType.SolidColorBrush;
                     SelectedResource.ColorBrush = solidBrush;
                     SelectedResource.IsModified = true;
                     SelectedResource.HasPendingChange = false;
                 }
                 else if (brush is LinearGradientBrush gradientBrush)
                 {
+                    SelectedResource.BrushType = BrushType.LinearGradientBrush;
                     SelectedResource.GradientBrush = gradientBrush;
                     SelectedResource.IsModified = true;
                     SelectedResource.HasPendingChange = false;

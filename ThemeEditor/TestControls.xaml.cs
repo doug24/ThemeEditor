@@ -36,6 +36,18 @@ namespace ThemeEditor
 
             textEditor.TextArea.TextView.LineTransformers.Add(new BigEllipsisColorizer());
 
+            textEditor.TextArea.SelectionForeground = Application.Current.Resources["PreviewText.Selection.Foreground"] as Brush;
+            textEditor.TextArea.SelectionBrush = Application.Current.Resources["PreviewText.Selection.Background"] as Brush;
+            Pen selectionBorder = new(Application.Current.Resources["PreviewText.Selection.Border"] as Brush, 1.0);
+            selectionBorder.Freeze();
+            textEditor.TextArea.SelectionBorder = selectionBorder;
+
+            textEditor.TextArea.TextView.Options.HighlightCurrentLine = true;
+            textEditor.TextArea.TextView.CurrentLineBackground = Application.Current.Resources["PreviewText.CurrentLine.Background"] as Brush;
+            Pen border = new(Application.Current.Resources["PreviewText.CurrentLine.Border"] as Brush, 1.0);
+            border.Freeze();
+            textEditor.TextArea.TextView.CurrentLineBorder = border;
+
             Loaded += (s, e) => SetText();
 
             DataContextChanged += (s, e) =>
@@ -54,6 +66,18 @@ namespace ThemeEditor
             if (Application.Current is App app)
             {
                 textEditor.TextArea.TextView.LinkTextForegroundBrush = app.ThemeResources["PreviewText.Link"] as Brush;
+
+                textEditor.TextArea.SelectionForeground = Application.Current.Resources["PreviewText.Selection.Foreground"] as Brush;
+                textEditor.TextArea.SelectionBrush = Application.Current.Resources["PreviewText.Selection.Background"] as Brush;
+                Pen selectionBorder = new(Application.Current.Resources["PreviewText.Selection.Border"] as Brush, 1.0);
+                selectionBorder.Freeze();
+                textEditor.TextArea.SelectionBorder = selectionBorder;
+
+                textEditor.TextArea.TextView.CurrentLineBackground = Application.Current.Resources["PreviewText.CurrentLine.Background"] as Brush;
+                Pen border = new(Application.Current.Resources["PreviewText.CurrentLine.Border"] as Brush, 1.0);
+                border.Freeze();
+                textEditor.TextArea.TextView.CurrentLineBorder = border;
+
                 UpdatePositionMarkers();
                 textEditor.TextArea.TextView.Redraw();// redraw needed for big ellipsis
             }

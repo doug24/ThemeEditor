@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Media;
+using System.Xml;
+using System.Xml.Linq;
 
 namespace ThemeEditor
 {
@@ -15,13 +18,56 @@ namespace ThemeEditor
 
         private const byte b0 = 0;
         private const byte b255 = 255;
+        private const string Indent = "    ";
+        private const string Newline = "\r\n";
 
-        public static string Convert(string name)
+        private static readonly Color MidGray = Color.FromRgb(148, 148, 148);
+
+        public static string NewTheme(string filePath)
+        {
+            if (!File.Exists(filePath))
+                return string.Empty;
+
+            string? path = Path.GetDirectoryName(filePath);
+            if (path == null)
+                return string.Empty;
+
+            string fileName = Path.GetFileNameWithoutExtension(filePath) + ".xaml";
+            string themeFile = Path.Combine(path, fileName);
+
+            if (File.Exists(themeFile))
+            {
+                MessageBoxResult result = MessageBox.Show($"The theme file '{fileName}' already exists - Overwrite it?",
+                    "Create Theme", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
+
+                if (result == MessageBoxResult.No)
+                    return string.Empty;
+            }
+
+            string type = Convert(filePath);
+
+            CopyBaseFile(type, themeFile);
+
+            SaveXaml(themeFile);
+
+            ThemeColors.Clear();
+
+            return themeFile;
+        }
+
+        public static string LoadFile(string name)
         {
             string path = $@"C:\Repos\aatemp\{name}.jsonc";
             if (!File.Exists(path))
                 return string.Empty;
 
+            Convert(path);
+
+            return name;
+        }
+
+        private static string Convert(string path)
+        {
             ThemeColors.Clear();
 
             JsonDocumentOptions options = new()
@@ -117,31 +163,13 @@ namespace ThemeEditor
                                         break;
                                 }
                             }
-
-
-                            //if (themeMap.ModType == Modify.Offset)
-                            //{
-                            //    int sign = type == "dark" && themeMap.ReverseValuesForDark ? -1 : 1;
-                            //    hsv.Saturation = Math.Max(0, Math.Min(1.0, hsv.Saturation + sign * themeMap.Saturation));
-                            //    hsv.Value = Math.Max(0, Math.Min(1.0, hsv.Value + sign * themeMap.Value));
-                            //    color = hsv.ToColor();
-                            //}
-                            //else
-                            //{
-                            //    ColorHSV hsv = ColorHSV.ConvertFrom(color);
-                            //    if (themeMap.ModType.HasFlag(Modify.AbsoluteSaturation))
-                            //        hsv.Saturation = Math.Max(0, Math.Min(1.0, themeMap.Saturation));
-                            //    if (themeMap.ModType.HasFlag(Modify.AbsoluteValue))
-                            //        hsv.Value = Math.Max(0, Math.Min(1.0, themeMap.Value));
-                            //    color = hsv.ToColor();
-                            //}
                         }
 
                         app.ThemeResources[themeMap.LocalKey] = new SolidColorBrush(color);
                     }
                 }
             }
-            return name;
+            return type;
         }
 
         internal static readonly char[] separator = ['\r', '\n'];
@@ -160,15 +188,42 @@ namespace ThemeEditor
             return sb.ToString();
         }
 
-        private static void LoadResource(string name)
+        private static void LoadResource(string type)
         {
-            if ((name.Equals("Dark", StringComparison.OrdinalIgnoreCase) ||
-                 name.Equals("Light", StringComparison.OrdinalIgnoreCase)) &&
+            if ((type.Equals("Dark", StringComparison.OrdinalIgnoreCase) ||
+                 type.Equals("Light", StringComparison.OrdinalIgnoreCase)) &&
                 Application.Current is App app)
             {
                 app.ThemeResources.Clear();
-                app.ThemeResources.Source = new Uri($"/Themes/{name}Brushes.xaml", UriKind.Relative);
+                app.ThemeResources.Source = new Uri($"/Themes/{type}Brushes.xaml", UriKind.Relative);
             }
+        }
+
+        private static bool CopyBaseFile(string type, string themeFile)
+        {
+            if ((type.Equals("Dark", StringComparison.OrdinalIgnoreCase) ||
+                 type.Equals("Light", StringComparison.OrdinalIgnoreCase)))
+            {
+                string? path = Path.GetDirectoryName(
+                    System.Reflection.Assembly.GetExecutingAssembly().Location);
+                if (!string.IsNullOrEmpty(path))
+                {
+                    path = Path.Combine(path, $"{type}Brushes.xaml");
+
+                    if (File.Exists(path))
+                    {
+                        if (File.Exists(themeFile))
+                        {
+                            File.Delete(themeFile);
+                        }
+
+                        File.Copy(path, themeFile);
+
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
 
         private static bool TryConvert(string value, out Color color)
@@ -189,21 +244,96 @@ namespace ThemeEditor
             return false;
         }
 
-        private static readonly Color MidGray = Color.FromRgb(148, 148, 148);
+        private static void SaveXaml(string themeFile)
+        {
+            XNamespace ns = "http://schemas.microsoft.com/winfx/2006/xaml/presentation";
+            XNamespace x = "http://schemas.microsoft.com/winfx/2006/xaml";
+            XNamespace sys = "clr-namespace:System;assembly=mscorlib";
+            XNamespace mc = "http://schemas.openxmlformats.org/markup-compatibility/2006";
+            XNamespace po = "http://schemas.microsoft.com/winfx/2006/xaml/presentation/options";
+
+            XDocument doc = XDocument.Load(themeFile, LoadOptions.PreserveWhitespace);
+
+            if (doc != null && doc.Root != null &&
+                Application.Current is App app)
+            {
+                foreach (ThemeMap themeMap in ThemeMaps)
+                {
+                    XElement? original = doc.Root.Elements()
+                        .FirstOrDefault(el => el.Attribute(x + "Key")?.Value == themeMap.LocalKey);
+
+                    if (original != null && app.ThemeResources[themeMap.LocalKey] is Brush brush)
+                    {
+                        if (brush is SolidColorBrush solidBrush)
+                        {
+                            Color c = solidBrush.Color;
+                            string color = string.Format("#{0:X2}{1:X2}{2:X2}{3:X2}", c.A, c.R, c.G, c.B);
+
+                            XElement elem = new(ns + "SolidColorBrush");
+                            elem.Add(new XAttribute(x + "Key", themeMap.LocalKey));
+                            elem.Add(new XAttribute(po + "Freeze", true));
+                            elem.Add(new XAttribute("Color", color));
+
+                            original.ReplaceWith(elem);
+                        }
+                        else if (brush is LinearGradientBrush gradientBrush)
+                        {
+                            string startPoint = gradientBrush.StartPoint.ToString(CultureInfo.InvariantCulture);
+                            string endPoint = gradientBrush.EndPoint.ToString(CultureInfo.InvariantCulture);
+                            string opacity = gradientBrush.Opacity.ToString(CultureInfo.InvariantCulture);
+
+                            XElement elem = new(ns + "LinearGradientBrush");
+                            elem.Add(new XAttribute(x + "Key", themeMap.LocalKey));
+                            elem.Add(new XAttribute(po + "Freeze", true));
+                            elem.Add(new XAttribute("StartPoint", startPoint));
+                            elem.Add(new XAttribute("EndPoint", endPoint));
+                            if (gradientBrush.Opacity != 1.0)
+                                elem.Add(new XAttribute("Opacity", opacity));
+
+                            foreach (GradientStop stop in gradientBrush.GradientStops)
+                            {
+                                Color c = stop.Color;
+                                string color = string.Format("#{0:X2}{1:X2}{2:X2}{3:X2}", c.A, c.R, c.G, c.B);
+                                string offset = stop.Offset.ToString(CultureInfo.InvariantCulture);
+
+                                XElement stopElem = new(ns + "GradientStop");
+                                stopElem.Add(new XAttribute(po + "Freeze", true));
+                                stopElem.Add(new XAttribute("Color", color));
+                                stopElem.Add(new XAttribute("Offset", offset));
+
+                                elem.Add(Newline + Indent + Indent);
+                                elem.Add(stopElem);
+                            }
+                            elem.Add(Newline + Indent);
+
+                            original.ReplaceWith(elem);
+                        }
+                    }
+                }
+
+                XmlWriterSettings settings = new()
+                {
+                    Encoding = Encoding.UTF8,
+                    Indent = true,
+                    IndentChars = Indent,
+                    NewLineChars = Newline,
+                    OmitXmlDeclaration = true,
+                };
+
+                using XmlWriter writer = XmlWriter.Create(themeFile, settings);
+                doc.Save(writer);
+            }
+        }
 
         public static List<ThemeMap> ThemeMaps { get; } =
         [
-            //new ThemeMap("base.focusBorder", "focusBorder"),
-            //new ThemeMap("base.foreground", "foreground"),
-            //new ThemeMap("base.disabledForeground", "disabledForeground"),
-            //new ThemeMap("base.widget.border", "widget.border"),
-            //new ThemeMap("base.widget.shadow", "widget.shadow"),
-            //new ThemeMap("base.errorForeground", "errorForeground"),
-            //new ThemeMap("base.icon.foreground", "icon.foreground"),
-            //new ThemeMap("base.sash.hoverBorder", "icon.sash.hoverBorder"),
-
             new ThemeMap("PreviewText.Foreground", "editor.foreground"),
             new ThemeMap("PreviewText.Background", "editor.background"),
+            new ThemeMap("PreviewText.Selection.Foreground", Colors.White),
+            new ThemeMap("PreviewText.Selection.Background", "pickerGroup.border", ColorChange.FixedOffset(Element.H, 0.09), ColorChange.FixedAbsolute(Element.A, 128)),
+            new ThemeMap("PreviewText.Selection.Border", "pickerGroup.border", ColorChange.FixedOffset(Element.H, 0.09), ColorChange.FixedAbsolute(Element.A, 128)),
+            new ThemeMap("PreviewText.CurrentLine.Background", "pickerGroup.border", ColorChange.FixedAbsolute(Element.A, 32)),
+            new ThemeMap("PreviewText.CurrentLine.Border", "pickerGroup.border", ColorChange.FixedAbsolute(Element.A, 144)),
             new ThemeMap("PreviewText.Link", "textLink.foreground"),
             new ThemeMap("PreviewText.BigEllipsis"),
             new ThemeMap("PreviewText.Marker.Global.Background"),
@@ -229,7 +359,7 @@ namespace ThemeEditor
 
             new ThemeMap("Window.Background", "sideBar.background"),
             new ThemeMap("Dialog.Background", "panel.background"),
-            new ThemeMap("Splitter.Background", "settings.sashBorder"),
+            new ThemeMap("Splitter.Background", "sideBar.background", ColorChange.Offset(Element.V, -0.25)),
 
             //<!--  Window Caption  -->
             new ThemeMap("Window.Border.Active", "window.activeBorder"),
@@ -239,14 +369,14 @@ namespace ThemeEditor
             new ThemeMap("Caption.Background.Inactive", "titleBar.activeBackground", ColorChange.FixedOffset(Element.S, -0.05), ColorChange.FixedOffset(Element.V, 0.05)),
             new ThemeMap("Caption.Foreground.Inactive", "titleBar.inactiveForeground"),
             new ThemeMap("Caption.Dialog.Background", "titleBar.activeBackground"),
-            new ThemeMap("Caption.Button.Background"), // transparent
-            new ThemeMap("Caption.Button.Foreground", "textPreformat.foreground"),
+            new ThemeMap("Caption.Button.Background", Colors.Transparent),
+            new ThemeMap("Caption.Button.Foreground", "foreground"),
             new ThemeMap("Caption.Button.MouseOver.Background", "activityBar.background"),
             new ThemeMap("Caption.Button.MouseOver.Foreground", "foreground"),
-            new ThemeMap("Caption.Button.Background.Inactive"),
-            new ThemeMap("Caption.Button.Foreground.Inactive"),
-            new ThemeMap("Caption.Button.MouseOver.Background.Inactive"),
-            new ThemeMap("Caption.Button.MouseOver.Foreground.Inactive"),
+            new ThemeMap("Caption.Button.Background.Inactive", Colors.Transparent),
+            new ThemeMap("Caption.Button.Foreground.Inactive", "disabledForeground"),
+            new ThemeMap("Caption.Button.MouseOver.Background.Inactive", "activityBar.background"),
+            new ThemeMap("Caption.Button.MouseOver.Foreground.Inactive", "foreground"),
 
             //<!--  Status Bar  -->
             new ThemeMap("StatusBar.Static.Background", "statusBar.background"),
@@ -280,7 +410,7 @@ namespace ThemeEditor
 
             //<!--  Group Box  -->
             new ThemeMap("GroupBox.Foreground", "foreground"),
-            new ThemeMap("GroupBox.Border", "pickerGroup.border"),
+            new ThemeMap("GroupBox.Border", "pickerGroup.border", ColorChange.Offset(Element.V, 0.30)),
             new ThemeMap("GroupBox.Border.Inner", Colors.Transparent),
             new ThemeMap("GroupBox.Border.Outer", Colors.Transparent),
 
@@ -290,7 +420,7 @@ namespace ThemeEditor
             new ThemeMap("Radio.Static.OptionMark", "checkbox.foreground"),
             new ThemeMap("Radio.MouseOver.Background", "checkbox.background", ColorChange.Offset(Element.V, -0.2)),
             new ThemeMap("Radio.MouseOver.Border", "focusBorder"),
-            new ThemeMap("Radio.Pressed.Background","checkbox.foreground", ColorChange.FixedOffset(Element.S, 0.2), ColorChange.FixedOffset(Element.V, 0.2)),
+            new ThemeMap("Radio.Pressed.Background","checkbox.background", ColorChange.Offset(Element.V, -0.4)),
             new ThemeMap("Radio.Pressed.Border", "focusBorder"),
             new ThemeMap("Radio.Disabled.Background", "checkbox.background", ColorChange.Offset(Element.V,-0.2)),
             new ThemeMap("Radio.Disabled.Border", "checkbox.selectBorder", ColorChange.Offset(Element.V,0.2)),
@@ -307,7 +437,7 @@ namespace ThemeEditor
             new ThemeMap("OptionMark.Disabled.Background", "checkbox.background", ColorChange.Offset(Element.V, -0.2)),
             new ThemeMap("OptionMark.Disabled.Border", "checkbox.selectBorder", ColorChange.Offset(Element.V, 0.2)),
             new ThemeMap("OptionMark.Disabled.Glyph", "checkbox.foreground", ColorChange.Offset(Element.V, 0.2)),
-            new ThemeMap("OptionMark.Pressed.Background","checkbox.foreground", ColorChange.FixedOffset(Element.S, 0.2), ColorChange.FixedOffset(Element.V, 0.2)),
+            new ThemeMap("OptionMark.Pressed.Background","checkbox.background", ColorChange.Offset(Element.V, -0.4)),
             new ThemeMap("OptionMark.Pressed.Border", "focusBorder"),
             new ThemeMap("OptionMark.Pressed.Glyph", "focusBorder"),
             new ThemeMap("OptionMark.DropShadowEffect"),
@@ -315,14 +445,14 @@ namespace ThemeEditor
             //<!--  Button  -->
             new ThemeMap("Button.Static.Foreground", "button.foreground"),
             new ThemeMap("Button.Static.Background", "button.background"),
-            new ThemeMap("Button.Static.Border", "button.border"),
-            new ThemeMap("Button.Default.Border", "focusBorder"),
+            new ThemeMap("Button.Static.Border", "button.background", ColorChange.Offset(Element.V, -0.1)),
+            new ThemeMap("Button.Default.Border", "pickerGroup.border", ColorChange.Offset(Element.V, -0.2)),
             new ThemeMap("Button.MouseOver.Background", "button.hoverBackground", ColorChange.Offset(Element.V, -0.20)),
-            new ThemeMap("Button.MouseOver.Border", "focusBorder"),
-            new ThemeMap("Button.Pressed.Background", "button.foreground", ColorChange.FixedOffset(Element.S, 0.2), ColorChange.FixedOffset(Element.V, 0.2)),
-            new ThemeMap("Button.Pressed.Border", "focusBorder"),
+            new ThemeMap("Button.MouseOver.Border", "button.background", ColorChange.Offset(Element.V, -0.15)),
+            new ThemeMap("Button.Pressed.Background", "button.hoverBackground", ColorChange.Offset(Element.V, -0.30)),
+            new ThemeMap("Button.Pressed.Border", "button.background", ColorChange.Offset(Element.V, -0.20)),
             new ThemeMap("Button.Disabled.Background", "button.background", ColorChange.FixedAbsolute(Element.S, 0.05)),
-            new ThemeMap("Button.Disabled.Border", "button.selectBorder", ColorChange.Offset(Element.V, 0.2)),
+            new ThemeMap("Button.Disabled.Border", Colors.Transparent),//"button.selectBorder", ColorChange.Offset(Element.V, 0.2)),
             new ThemeMap("Button.Disabled.Foreground", "disabledForeground"),
 
             //<!-- Toggle Button -->
@@ -347,27 +477,27 @@ namespace ThemeEditor
             // for both drop-down list and editable, not disabled [dark gray/med- gray][dark gray/very light yellow]
             new ThemeMap("ComboBox.Static.Glyph", "dropdown.foreground", ColorChange.Offset(Element.V, 0.2)), 
             // drop-down list (not editable, like encodings) [light gray gradient/very dark gray][white smoke/very dark gray]
-            new ThemeMap("ComboBox.Static.Background", "dropdown.background"), 
+            new ThemeMap("ComboBox.Static.Background", "dropdown.background", ColorChange.Offset(Element.V, -0.05)), 
             // drop-down list and mouse over of editable [med gray/dark gray][light gray/darker gray]
             new ThemeMap("ComboBox.Static.Border", "dropdown.border", ColorChange.Offset(Element.V, -0.3)), 
             // editable inner border and outer button - surrounds text area [white/dark gray]
             new ThemeMap("ComboBox.Static.Editable.Background", "input.background"), 
             // editable outer border - surrounds everything [medium gray/dark- gray]
-            new ThemeMap("ComboBox.Static.Editable.Border", "dropdown.border", ColorChange.Offset(Element.V, -0.3)), 
+            new ThemeMap("ComboBox.Static.Editable.Border", "dropdown.border", ColorChange.Offset(Element.V, -0.2)), 
             // editable button - topmost  [transparent/transparent]
-            new ThemeMap("ComboBox.Static.Editable.Button.Background"), 
+            new ThemeMap("ComboBox.Static.Editable.Button.Background", Colors.Transparent), 
             // editable border - not really visible [transparent/transparent]
-            new ThemeMap("ComboBox.Static.Editable.Button.Border"), 
+            new ThemeMap("ComboBox.Static.Editable.Button.Border", Colors.Transparent), 
             // for both drop-down list and editable, not disabled [black/white]
             new ThemeMap("ComboBox.MouseOver.Glyph", "dropdown.foreground"), 
             // mouse over for drop-down list, not editable [light blue gradient/dark blue]
-            new ThemeMap("ComboBox.MouseOver.Background", "pickerGroup.border", ColorChange.Offset(Element.S, -0.2), ColorChange.Offset(Element.V, 0.35)),
+            new ThemeMap("ComboBox.MouseOver.Background", "pickerGroup.border", ColorChange.Offset(Element.S, -0.2), ColorChange.Offset(Element.V, 0.3)),
             // mouse over for drop-down list, not editable [med blue/med blue]
             new ThemeMap("ComboBox.MouseOver.Border", "pickerGroup.border"), 
             // surrounds text area of editable [white/dark gray]
-            new ThemeMap("ComboBox.MouseOver.Editable.Background", "pickerGroup.border", ColorChange.Offset(Element.S, -0.2), ColorChange.Offset(Element.V, 0.35)),
+            new ThemeMap("ComboBox.MouseOver.Editable.Background", "pickerGroup.border", ColorChange.Offset(Element.S, -0.2), ColorChange.Offset(Element.V, 0.3)),
             // editable button [light blue gradient/dark blue]
-            new ThemeMap("ComboBox.MouseOver.Editable.Button.Background", "pickerGroup.border", ColorChange.Offset(Element.S, -0.2), ColorChange.Offset(Element.V, 0.35)), 
+            new ThemeMap("ComboBox.MouseOver.Editable.Button.Background", "pickerGroup.border", ColorChange.Offset(Element.S, -0.2), ColorChange.Offset(Element.V, 0.3)), 
             // editable button [med blue/dark- blue]
             new ThemeMap("ComboBox.MouseOver.Editable.Button.Border", "pickerGroup.border"), 
             // both editable and dropdown but only on clicked while dropped, pretty worthless [black/white]
@@ -387,17 +517,17 @@ namespace ThemeEditor
             // both editable and drop-down [med gray/light gray]
             new ThemeMap("ComboBox.Disabled.Glyph", "disabledForeground"), 
             // drop-down only [light gray/dark gray]
-            new ThemeMap("ComboBox.Disabled.Background"), 
+            new ThemeMap("ComboBox.Disabled.Background", "dropdown.background", ColorChange.Offset(Element.V, -0.05)), 
             // drop-down only [light+ gray/med gray]
-            new ThemeMap("ComboBox.Disabled.Border"), 
+            new ThemeMap("ComboBox.Disabled.Border", "dropdown.border", ColorChange.Offset(Element.V, -0.3)), 
             // editable only, semi-transparent overlay [white/black]
-            new ThemeMap("ComboBox.Disabled.Editable.Background"), 
+            new ThemeMap("ComboBox.Disabled.Editable.Background", "input.background"), 
             // editable only [med gray/med gray]
-            new ThemeMap("ComboBox.Disabled.Editable.Border"), 
+            new ThemeMap("ComboBox.Disabled.Editable.Border", "dropdown.border", ColorChange.Offset(Element.V, -0.3)), 
             // editable only [transparent/transparent]
-            new ThemeMap("ComboBox.Disabled.Editable.Button.Background"), 
+            new ThemeMap("ComboBox.Disabled.Editable.Button.Background", "input.background"), 
             // editable only [transparent/transparent]
-            new ThemeMap("ComboBox.Disabled.Editable.Button.Border"), 
+            new ThemeMap("ComboBox.Disabled.Editable.Button.Border", Colors.Transparent), 
             // both editable and drop-down - the drop down part [white/med-dark gray]
             new ThemeMap("ComboBox.DropDown.Background", "dropdown.background"), 
 
@@ -476,7 +606,7 @@ namespace ThemeEditor
             new ThemeMap("TreeViewItem.TreeArrow.MouseOver.Checked.Stroke", "dropdown.foreground"),
             new ThemeMap("TreeViewItem.Highlight.Foreground", "editor.foreground"),
             new ThemeMap("TreeViewItem.Highlight.Background", "pickerGroup.border", ColorChange.FixedAbsolute(Element.A, 50)),
-            new ThemeMap("TreeViewItem.Highlight.Border", "pickerGroup.border", ColorChange.Offset(Element.S, -0.2), ColorChange.Offset(Element.V, 0.2), ColorChange.FixedAbsolute(Element.A, 240)),
+            new ThemeMap("TreeViewItem.Highlight.Border", "pickerGroup.border", ColorChange.Offset(Element.S, -0.2), ColorChange.Offset(Element.V, 0.2), ColorChange.FixedAbsolute(Element.A, 196)),
             new ThemeMap("TreeViewItem.InactiveHighlight.Foreground", "editor.foreground"),
             new ThemeMap("TreeViewItem.InactiveHighlight.Background", "pickerGroup.border", ColorChange.FixedAbsolute(Element.A, 50)),
             new ThemeMap("TreeViewItem.InactiveHighlight.Border", "pickerGroup.border", ColorChange.Offset(Element.S, -0.2), ColorChange.Offset(Element.V, 0.2), ColorChange.FixedAbsolute(Element.A, 128)),
@@ -504,6 +634,7 @@ namespace ThemeEditor
             //<!--  DataGrid  -->
             new ThemeMap("DataGrid.Foreground", "editor.foreground"),
             new ThemeMap("DataGrid.Background", "editor.background", ColorChange.Offset(Element.V, -0.03)),
+            new ThemeMap("DataGrid.GridLine", MidGray, ColorChange.Offset(Element.V, 0.25)),
             new ThemeMap("DataGrid.Border", MidGray, ColorChange.Offset(Element.V, 0.06)),
             new ThemeMap("DataGrid.Cell.Foreground", "editor.foreground"),
             new ThemeMap("DataGrid.Cell.Background", "editor.background"),

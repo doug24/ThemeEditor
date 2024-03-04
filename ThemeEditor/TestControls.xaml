@@ -183,6 +183,12 @@
             </StackPanel>
 
             <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+                <Label Content="Splitter" VerticalAlignment="Center"/>
+                <Border Height="4" Width="400" Margin="12,0"
+                    Background="{DynamicResource Splitter.Background}"/>
+            </StackPanel>
+
+            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
                 <Label Content="TreeView" VerticalAlignment="Center"/>
                 <Label Margin="24,0,0,0" Padding="6,2" VerticalAlignment="Center"
                        Content="TreeView message label (+9,256 characters)"

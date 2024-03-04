@@ -7,6 +7,11 @@
 
     <SolidColorBrush x:Key="PreviewText.Foreground" po:Freeze="true" Color="#FFF5F5F5" />
     <SolidColorBrush x:Key="PreviewText.Background" po:Freeze="true" Color="#FF1E1E1E" />
+    <SolidColorBrush x:Key="PreviewText.Selection.Foreground" po:Freeze="true" Color="#FFFFFFFF" />
+    <SolidColorBrush x:Key="PreviewText.Selection.Background" po:Freeze="true" Color="#FF0078D7" />
+    <SolidColorBrush x:Key="PreviewText.Selection.Border" po:Freeze="true" Color="#FF0078D7" />
+    <SolidColorBrush x:Key="PreviewText.CurrentLine.Background" po:Freeze="true" Color="#90094771" />
+    <SolidColorBrush x:Key="PreviewText.CurrentLine.Border" po:Freeze="true" Color="#901475A6" />
     <SolidColorBrush x:Key="PreviewText.Link" po:Freeze="true" Color="#FF00C0FF" />
     <SolidColorBrush x:Key="PreviewText.BigEllipsis" po:Freeze="true" Color="#FF00BFFF" />
     <SolidColorBrush x:Key="PreviewText.Marker.Global.Background" po:Freeze="true" Color="#FFD2691E" />
@@ -300,6 +305,7 @@
     <!--  DataGrid  -->
     <SolidColorBrush x:Key="DataGrid.Foreground" po:Freeze="true" Color="#FFFFFFFF" />
     <SolidColorBrush x:Key="DataGrid.Background" po:Freeze="true" Color="#FF404040" />
+    <SolidColorBrush x:Key="DataGrid.GridLine" po:Freeze="true" Color="#FF545454"/>
     <SolidColorBrush x:Key="DataGrid.Border" po:Freeze="true" Color="#FF808080" />
     <SolidColorBrush x:Key="DataGrid.Cell.Foreground" po:Freeze="true" Color="#FFFFFFFF" />
     <SolidColorBrush x:Key="DataGrid.Cell.Background" po:Freeze="true" Color="#FF252525" />

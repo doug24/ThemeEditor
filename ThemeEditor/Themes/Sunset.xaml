@@ -2,6 +2,11 @@
 
     <SolidColorBrush x:Key="PreviewText.Foreground" po:Freeze="true" Color="#FFF5F5F5" />
     <SolidColorBrush x:Key="PreviewText.Background" po:Freeze="true" Color="#FF1E1E1E" />
+    <SolidColorBrush x:Key="PreviewText.Selection.Foreground" po:Freeze="true" Color="#FFFFFFFF" />
+    <SolidColorBrush x:Key="PreviewText.Selection.Background" po:Freeze="true" Color="#80B05819" />
+    <SolidColorBrush x:Key="PreviewText.Selection.Border" po:Freeze="true" Color="#80B05819" />
+    <SolidColorBrush x:Key="PreviewText.CurrentLine.Background" po:Freeze="true" Color="#50713309" />
+    <SolidColorBrush x:Key="PreviewText.CurrentLine.Border" po:Freeze="true" Color="#60A64514" />
     <SolidColorBrush x:Key="PreviewText.Link" po:Freeze="true" Color="#FF00C0FF" />
     <SolidColorBrush x:Key="PreviewText.BigEllipsis" po:Freeze="true" Color="#FF00BFFF" />
     <SolidColorBrush x:Key="PreviewText.Marker.Global.Background" po:Freeze="true" Color="#FFD2691E" />
@@ -243,11 +248,11 @@
     <SolidColorBrush x:Key="TreeViewItem.TreeArrow.MouseOver.Checked.Fill" po:Freeze="true" Color="#FFFB9E82" />
     <SolidColorBrush x:Key="TreeViewItem.TreeArrow.MouseOver.Checked.Stroke" po:Freeze="true" Color="#FFF74F1C" />
     <SolidColorBrush x:Key="TreeViewItem.Highlight.Foreground" po:Freeze="true" Color="#FFF5F5F5" />
-    <SolidColorBrush x:Key="TreeViewItem.Highlight.Background" po:Freeze="true" Color="#FF7A371B" />
-    <SolidColorBrush x:Key="TreeViewItem.Highlight.Border" po:Freeze="true" Color="#FFA64514" />
+    <SolidColorBrush x:Key="TreeViewItem.Highlight.Background" po:Freeze="true" Color="#967A371B" />
+    <SolidColorBrush x:Key="TreeViewItem.Highlight.Border" po:Freeze="true" Color="#A6A64514" />
     <SolidColorBrush x:Key="TreeViewItem.InactiveHighlight.Foreground" po:Freeze="true" Color="#FFF5F5F5" />
-    <SolidColorBrush x:Key="TreeViewItem.InactiveHighlight.Background" po:Freeze="true" Color="#FF713309" />
-    <SolidColorBrush x:Key="TreeViewItem.InactiveHighlight.Border" po:Freeze="true" Color="#FFA64514" />
+    <SolidColorBrush x:Key="TreeViewItem.InactiveHighlight.Background" po:Freeze="true" Color="#80713309" />
+    <SolidColorBrush x:Key="TreeViewItem.InactiveHighlight.Border" po:Freeze="true" Color="#80A64514" />
 
     <!--  Expander  -->
     <SolidColorBrush x:Key="Expander.Static.Arrow.Stroke" po:Freeze="true" Color="#FFE0E0E0" />
@@ -273,6 +278,7 @@
     <!--  DataGrid  -->
     <SolidColorBrush x:Key="DataGrid.Foreground" po:Freeze="true" Color="#FFFFFFFF" />
     <SolidColorBrush x:Key="DataGrid.Background" po:Freeze="true" Color="#FF404040" />
+    <SolidColorBrush x:Key="DataGrid.GridLine" po:Freeze="true" Color="#FF545454" />
     <SolidColorBrush x:Key="DataGrid.Border" po:Freeze="true" Color="#FF808080" />
     <SolidColorBrush x:Key="DataGrid.Cell.Foreground" po:Freeze="true" Color="#FFFFFFFF" />
     <SolidColorBrush x:Key="DataGrid.Cell.Background" po:Freeze="true" Color="#FF252525" />

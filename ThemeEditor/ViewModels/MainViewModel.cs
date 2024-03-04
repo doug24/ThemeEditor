@@ -20,7 +20,7 @@ namespace ThemeEditor
     public partial class MainViewModel : ObservableObject
     {
         private const string Indent = "    ";
-        private const string Newline = "\n";
+        private const string Newline = "\r\n";
         public EventHandler? ThemeColorChanged;
 
         public MainViewModel()
@@ -74,6 +74,8 @@ namespace ThemeEditor
                 {
                     ThemeResourceVM.Save(BrushEditorVM.DropShadowEffect);
                 }
+
+                BrushEditorVM.InitializeThemeBrushes();
             }
         }
 
@@ -250,9 +252,9 @@ namespace ThemeEditor
         [ObservableProperty]
         private string imDisabled = "disabled";
 
-        public ObservableCollection<string> DisabledList { get; } = [ "disabled" ];
+        public ObservableCollection<string> DisabledList { get; } = ["disabled"];
 
-        public ICommand DeleteMRUItemCommand => new RelayCommand(
+        public static ICommand DeleteMRUItemCommand => new RelayCommand(
             p => { },
             q => true);
 
@@ -340,7 +342,7 @@ namespace ThemeEditor
 
             if (!string.IsNullOrEmpty(input))
             {
-                string name = VSCodeTheme.Convert(input);
+                string name = VSCodeTheme.LoadFile(input);
                 if (!string.IsNullOrEmpty(name))
                 {
                     ThemeResourceVM.InitializeColors();
@@ -349,6 +351,30 @@ namespace ThemeEditor
 
                     WindowTitle = $"Theme Editor - {name}";
                     ThemeColorChanged?.Invoke(this, EventArgs.Empty);
+                }
+            }
+            else
+            {
+                OpenFileDialog dlg = new()
+                {
+                    Filter = "Jsonc files|*.jsonc",
+                    DefaultExt = "jsonc",
+                    CheckFileExists = true,
+                };
+
+                var result = dlg.ShowDialog();
+                if (result.HasValue && result.Value)
+                {
+                    string themeFile = VSCodeTheme.NewTheme(dlg.FileName);
+                    if (!string.IsNullOrEmpty(themeFile))
+                    {
+                        EditFile = themeFile;
+                        EditThemeName = Path.GetFileNameWithoutExtension(EditFile);
+
+                        LoadXaml(false);
+                        Properties.Settings.Default.CurrentEditFile = EditFile;
+                        Properties.Settings.Default.Save();
+                    }
                 }
             }
         }
@@ -380,9 +406,9 @@ namespace ThemeEditor
             }
         }
 
-        private void LoadXaml()
+        private void LoadXaml(bool checkModified = true)
         {
-            if (ThemeResourceVM.IsModified)
+            if (checkModified && ThemeResourceVM.IsModified)
             {
                 var ans = MessageBox.Show("Data has been changed - save changes?", "Theme Editor",
                     MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.Yes);

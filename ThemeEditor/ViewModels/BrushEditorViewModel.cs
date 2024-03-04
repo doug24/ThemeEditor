@@ -670,7 +670,7 @@ namespace ThemeEditor
 
         public string Name { get; private set; }
 
-        public BrushType BrushType { get; private set; }
+        public BrushType BrushType { get; set; }
 
         /// <summary>
         /// Gets or sets if the brush as a committed change

@@ -45,7 +45,18 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <Page Update="Themes\DarkBrushes.xaml">
+      <CopyToOutputDirectory></CopyToOutputDirectory>
+    </Page>
+    <Page Update="Themes\LightBrushes.xaml">
+      <CopyToOutputDirectory></CopyToOutputDirectory>
+    </Page>
+  </ItemGroup>
   <PropertyGroup>
     <Nullable>enable</Nullable>
   </PropertyGroup>
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="xcopy /D /Y &quot;$(ProjectDir)Themes\DarkBrushes.xaml&quot; &quot;$(TargetDir)&quot;&#xD;&#xA;xcopy /D /Y &quot;$(ProjectDir)Themes\LightBrushes.xaml&quot; &quot;$(TargetDir)&quot;&#xD;&#xA;xcopy /D /Y &quot;$(ProjectDir)Themes\Sunset.xaml&quot; &quot;$(TargetDir)&quot;" />
+  </Target>
 </Project>
