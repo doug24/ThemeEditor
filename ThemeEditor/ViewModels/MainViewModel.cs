@@ -518,7 +518,6 @@ namespace ThemeEditor
                             XElement elem = new(ns + "DropShadowEffect");
                             elem.Add(new XAttribute(x + "Key", themeBrush.Name));
                             elem.Add(new XAttribute(po + "Freeze", true));
-                            elem.Add(new XAttribute(po + "Freeze", true));
                             if (themeBrush.DropShadowEffect.ShadowDepth != 5.0)
                                 elem.Add(new XAttribute("ShadowDepth", depth));
                             if (themeBrush.DropShadowEffect.BlurRadius != 5.0)

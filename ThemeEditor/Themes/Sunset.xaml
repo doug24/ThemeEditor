@@ -58,6 +58,9 @@
     <SolidColorBrush x:Key="StatusBar.Static.Background" po:Freeze="true" Color="#FF333333" />
     <SolidColorBrush x:Key="StatusBar.Static.Foreground" po:Freeze="true" Color="#FFFFFFFF" />
     <SolidColorBrush x:Key="StatusBar.Static.Border" po:Freeze="true" Color="Transparent" />
+    <SolidColorBrush x:Key="StatusBar.Static.Separator.Border" po:Freeze="true" Color="#FF696969" />
+    <SolidColorBrush x:Key="StatusBar.Paused.Background" po:Freeze="true" Color="#FF8A0000" />
+    <SolidColorBrush x:Key="StatusBar.Paused.Foreground" po:Freeze="true" Color="#FFFFFFFF" />
 
     <!--  Menu  -->
     <SolidColorBrush x:Key="Menu.TopLevel.Background" po:Freeze="true" Color="#FF333333" />

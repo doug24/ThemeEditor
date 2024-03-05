@@ -99,14 +99,14 @@ namespace ThemeEditor
                 {
                     Color? source = null;
 
-                    if (themeMap.LocalKey == "Window.Border.Active" && 
+                    if (themeMap.LocalKey == "Window.Border.Active" &&
                         type.Equals("Light", StringComparison.OrdinalIgnoreCase) &&
                         TryConvert("#FF707070", out Color border1))
                     {
                         source = border1;
                     }
 
-                    else if (themeMap.LocalKey == "Window.Border.Inactive" && 
+                    else if (themeMap.LocalKey == "Window.Border.Inactive" &&
                         type.Equals("Light", StringComparison.OrdinalIgnoreCase) &&
                         TryConvert("#FFAAAAAA", out Color border2))
                     {
@@ -398,6 +398,9 @@ namespace ThemeEditor
             new ThemeMap("StatusBar.Static.Background", "statusBar.background"),
             new ThemeMap("StatusBar.Static.Foreground", "statusBar.foreground"),
             new ThemeMap("StatusBar.Static.Border", "statusBar.border"),
+            new ThemeMap("StatusBar.Static.Separator.Border"),
+            new ThemeMap("StatusBar.Paused.Background"),
+            new ThemeMap("StatusBar.Paused.Foreground"),
 
             //<!--  Menu  -->
             new ThemeMap("Menu.TopLevel.Background", "menu.background"),

@@ -57,11 +57,33 @@
         </Menu>
 
         <StatusBar DockPanel.Dock="Bottom">
-            <StatusBarItem>
+            <StatusBarItem DockPanel.Dock="Right">
+                <TextBlock Text="Message 2" Margin="3,0"
+                           Style="{StaticResource StatusBarTextBlockStyle}"/>
+            </StatusBarItem>
+            <Separator DockPanel.Dock="Right" Style="{StaticResource StatusBarSeparatorStyle}"/>
+            <StatusBarItem DockPanel.Dock="Right">
+                <TextBlock Text="Message 1" Margin="3,0"
+                           Style="{StaticResource StatusBarTextBlockStyle}"/>
+            </StatusBarItem>
+            <StatusBarItem DockPanel.Dock="Left">
                 <StackPanel Orientation="Horizontal">
                     <ProgressBar Width="180" Height="18" IsIndeterminate="True" />
-                    <TextBlock Text="Ready!" Margin="6,0"/>
                 </StackPanel>
+            </StatusBarItem>
+            <StatusBarItem DockPanel.Dock="Left">
+                <Grid Width="120" Margin="3,0">
+                    <ProgressBar Height="18" IsIndeterminate="False" />
+                    <TextBlock Text="Paused" Style="{StaticResource StatusBarTextBlockStyle}"
+                                   Width="120" TextAlignment="Center"
+                                   Foreground="{DynamicResource StatusBar.Paused.Foreground}"
+                                   Background="{DynamicResource StatusBar.Paused.Background}"
+                                   HorizontalAlignment="Center" VerticalAlignment="Stretch"/>
+                </Grid>
+            </StatusBarItem>
+            <StatusBarItem DockPanel.Dock="Left">
+                <TextBlock Text="Status bar text left" Margin="3,0"
+                           Style="{StaticResource StatusBarTextBlockStyle}"/>
             </StatusBarItem>
         </StatusBar>
 
