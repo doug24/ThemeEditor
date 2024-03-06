@@ -31,11 +31,11 @@
                     <MenuItem Header="Light (read-only)" Command="{Binding LightThemeCommand}"/>
                 </MenuItem>
                 <MenuItem Header="Import Theme">
-                    <MenuItem Header="Open jsonc file..." Command="{Binding ImportVSCodeCommand}"/>
-                    <MenuItem Header="Dracula Soft" Command="{Binding ImportVSCodeCommand}"
+                    <MenuItem Header="VS Code jsonc file..." Command="{Binding ImportVSCodeCommand}"/>
+                    <!--<MenuItem Header="Dracula Soft" Command="{Binding ImportVSCodeCommand}"
                               CommandParameter="Dracula Soft"/>
                     <MenuItem Header="Quiet Light" Command="{Binding ImportVSCodeCommand}"
-                              CommandParameter="Quiet Light"/>
+                              CommandParameter="Quiet Light"/>-->
                 </MenuItem>
                 <MenuItem Header="_Exit" Click="Close_MenuItem_Click"/>
             </MenuItem>

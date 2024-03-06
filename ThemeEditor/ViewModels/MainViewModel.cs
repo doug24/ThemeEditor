@@ -340,7 +340,7 @@ namespace ThemeEditor
                 }
             }
 
-            if (!string.IsNullOrEmpty(input))
+            if (!string.IsNullOrEmpty(input))  // used for testing only
             {
                 string name = VSCodeTheme.LoadFile(input);
                 if (!string.IsNullOrEmpty(name))

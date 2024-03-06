@@ -55,6 +55,11 @@ namespace ThemeEditor
             return themeFile;
         }
 
+        /// <summary>
+        /// Test method only
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public static string LoadFile(string name)
         {
             string path = $@"C:\Repos\aatemp\{name}.jsonc";
