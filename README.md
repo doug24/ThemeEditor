@@ -7,7 +7,9 @@ The main window has three parts:
 - The set of named colors (the theme resources) in the middle panel
 - Color editor controls in the right panel.
 
-To begin, copy an existing theme file (DarkBrushes.xaml, LightBrushes.xaml, or Sunset.xaml) and name the file using your new theme name. Put the new file in a location where it can be both read and written. This can be the dnGrep themes directory so you can load the file in both the Theme Editor and dnGrep from the same location (see below for the location of the dnGrep themes directory).
+There are two ways to start - from an existing theme file or importing a theme from VS Code (see below). The Theme Editor zip file contains three theme files (DarkBrushes.xaml, LightBrushes.xaml, or Sunset.xaml)  or you can find the source for these and other [themes in the dnGrep source repository](https://github.com/dnGrep/dnGrep/tree/master/dnGREP.WPF/Themes).
+
+Copy an existing theme file and name the file using your new theme name. Put the new file in a location where it can be both read and written. This can be the dnGrep themes directory so you can load the file in both the Theme Editor and dnGrep from the same location (see below for the location of the dnGrep themes directory).
 
 In the Theme Editor do File - Open and select your theme file.  That file will be loaded automatically each time you start the Theme Editor or until you open a different theme file for editing.
 
