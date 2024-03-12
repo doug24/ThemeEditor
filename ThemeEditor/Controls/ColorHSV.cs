@@ -3,11 +3,13 @@ using System.Windows.Media;
 
 namespace ThemeEditor
 {
-    public class ColorHSV(double h, double s, double v)
+    public class ColorHSV(byte a, double h, double s, double v)
     {
         private double _hue = h;
         private double _saturation = s;
         private double _value = v;
+
+        public byte A { get; set; } = a;
 
         public double Hue
         {
@@ -66,10 +68,10 @@ namespace ThemeEditor
 
         public Color ToColor()
         {
-            return ConvertToColor(_hue, _saturation, _value);
+            return ConvertToColor(A, _hue, _saturation, _value);
         }
 
-        public static Color ConvertToColor(double h, double s, double v)
+        public static Color ConvertToColor(byte a, double h, double s, double v)
         {
             double r, g, b;
 
@@ -122,7 +124,7 @@ namespace ThemeEditor
                     break;
             }
 
-            Color rgb = Color.FromArgb(255,
+            Color rgb = Color.FromArgb(a,
                 Convert.ToByte(r * 255.0f),
                 Convert.ToByte(g * 255.0f),
                 Convert.ToByte(b * 255.0f));
@@ -159,7 +161,7 @@ namespace ThemeEditor
 
             val = max;
 
-            return new ColorHSV(hue, sat, val);
+            return new ColorHSV(c.A, hue, sat, val);
         }
     }
 }

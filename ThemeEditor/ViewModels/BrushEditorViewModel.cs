@@ -133,10 +133,10 @@ namespace ThemeEditor
             }
             else
             {
-                MinSaturationColor = ColorHSV.ConvertToColor(hsv.Hue, 0d, 1d);
-                MaxSaturationColor = ColorHSV.ConvertToColor(hsv.Hue, 1d, 1d);
-                MinValueColor = ColorHSV.ConvertToColor(hsv.Hue, 1d, 0d);
-                MaxValueColor = ColorHSV.ConvertToColor(hsv.Hue, 1d, 1d);
+                MinSaturationColor = ColorHSV.ConvertToColor(hsv.A, hsv.Hue, 0d, 1d);
+                MaxSaturationColor = ColorHSV.ConvertToColor(hsv.A, hsv.Hue, 1d, 1d);
+                MinValueColor = ColorHSV.ConvertToColor(hsv.A, hsv.Hue, 1d, 0d);
+                MaxValueColor = ColorHSV.ConvertToColor(hsv.A, hsv.Hue, 1d, 1d);
             }
 
             SelectedWebColor = WebColors.FirstOrDefault(nc => nc.Color.R == color.R && nc.Color.G == color.G && nc.Color.B == color.B);
@@ -372,6 +372,7 @@ namespace ThemeEditor
                 SetProperty(ref hueElem, newValue);
 
                 Color = ColorHSV.ConvertToColor(
+                    AlphaElem,
                     HueElem / 360d,
                     SaturationElem / 100d,
                     ValueElem / 100d);
@@ -383,6 +384,7 @@ namespace ThemeEditor
         partial void OnSaturationElemChanged(int value)
         {
             Color = ColorHSV.ConvertToColor(
+                AlphaElem,
                 HueElem / 360d,
                 SaturationElem / 100d,
                 ValueElem / 100d);
@@ -393,6 +395,7 @@ namespace ThemeEditor
         partial void OnValueElemChanged(int value)
         {
             Color = ColorHSV.ConvertToColor(
+                AlphaElem,
                 HueElem / 360d,
                 SaturationElem / 100d,
                 ValueElem / 100d);
