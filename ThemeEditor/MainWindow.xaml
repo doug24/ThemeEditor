@@ -54,6 +54,7 @@
             </MenuItem>
             <MenuItem Header="Disabled" IsEnabled="False"/>
             <!--<MenuItem Header="Color Shift" Click="ColorShift_Click"/>-->
+            <MenuItem Header="About" Command="{Binding AboutCommand}"/>
         </Menu>
 
         <StatusBar DockPanel.Dock="Bottom">

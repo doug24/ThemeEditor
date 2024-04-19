@@ -3,13 +3,25 @@
     <TargetFramework>net8.0-windows</TargetFramework>
     <LangVersion>12</LangVersion>
     <OutputType>WinExe</OutputType>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <UseWPF>true</UseWPF>
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
+    <EnableUnsafeBinaryFormatterSerialization>false</EnableUnsafeBinaryFormatterSerialization>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+    <GenerateAssemblyCopyrightAttribute>false</GenerateAssemblyCopyrightAttribute>
+    <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
+    <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
+    <GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>StyleSheet.ico</ApplicationIcon>
   </PropertyGroup>
+  <ItemGroup>
+    <AssemblyAttribute Include="ThemeEditor.Properties.BuildDateTime">
+      <_Parameter1>$([System.DateTime]::UtcNow.ToString("s"))</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
   <ItemGroup>
     <None Remove="Images\pin.png" />
     <None Remove="Images\pinDark.png" />
@@ -59,4 +71,7 @@
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="xcopy /D /Y &quot;$(ProjectDir)Themes\DarkBrushes.xaml&quot; &quot;$(TargetDir)&quot;&#xD;&#xA;xcopy /D /Y &quot;$(ProjectDir)Themes\LightBrushes.xaml&quot; &quot;$(TargetDir)&quot;&#xD;&#xA;xcopy /D /Y &quot;$(ProjectDir)Themes\Sunset.xaml&quot; &quot;$(TargetDir)&quot;" />
   </Target>
+  <PropertyGroup>
+    <Description>This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version.</Description>
+  </PropertyGroup>
 </Project>

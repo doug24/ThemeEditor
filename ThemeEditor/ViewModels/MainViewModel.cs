@@ -307,6 +307,18 @@ namespace ThemeEditor
             p => SaveXaml(),
             q => ThemeResourceVM.IsModified);
 
+        public static ICommand AboutCommand => new RelayCommand(
+         param => ShowAbout());
+
+        private static void ShowAbout()
+        {
+            AboutWindow aboutForm = new()
+            {
+                Owner = Application.Current.MainWindow
+            };
+            aboutForm.ShowDialog();
+        }
+
         private void OpenXaml()
         {
             OpenFileDialog dlg = new()

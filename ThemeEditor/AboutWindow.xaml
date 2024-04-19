@@ -1,0 +1,117 @@
+﻿<my:ThemedWindow x:Class="ThemeEditor.AboutWindow"
+                 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                 xmlns:my="clr-namespace:ThemeEditor"
+                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                 Title="About Theme Editor"
+                 FlowDirection="{Binding CultureFlowDirection}"
+                 FontFamily="{Binding ApplicationFontFamily}"
+                 FontSize="{Binding DialogFontSize}"
+                 Height="340"
+                 MinWidth="500"
+                 Icon="/ThemeEditor;component/StyleSheet.ico"
+                 ResizeMode="NoResize"
+                 SizeToContent="Width"
+                 WindowStartupLocation="CenterOwner"
+                 Background="{DynamicResource Dialog.Background}"
+                 CaptionBackground="{DynamicResource Caption.Dialog.Background}"
+                 mc:Ignorable="d">
+
+    <Window.Resources>
+        <Style x:Key="Decription" TargetType="TextBlock" BasedOn="{StaticResource LabelTextBlockStyle}">
+            <Setter Property="Margin" Value="6,0,0,0"/>
+        </Style>
+    </Window.Resources>
+
+    <DockPanel Margin="8" LastChildFill="True"
+               Grid.IsSharedSizeScope="True">
+
+        <Grid DockPanel.Dock="Top">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" SharedSizeGroup="A" />
+                <ColumnDefinition SharedSizeGroup="B"/>
+            </Grid.ColumnDefinitions>
+
+            <Border Grid.Row="0" Grid.RowSpan="4" Grid.Column="0"
+                Margin="8" Background="#80ffffff" CornerRadius="12">
+                <Image Width="72" Height="72" Margin="8"
+                   Source="/ThemeEditor;component/Images/pin.png" />
+            </Border>
+
+            <StackPanel Grid.Row="0" Grid.Column="1"  Orientation="Horizontal">
+                <TextBlock Text="Theme Editor" FontWeight="DemiBold" FontSize="14"
+                       Style="{StaticResource ThemedTextBlock}"/>
+                <TextBlock Style="{StaticResource ThemedTextBlock}" Margin="30,0,0,0">
+                <Hyperlink NavigateUri="https://github.com/doug24/ThemeEditor" RequestNavigate="Hyperlink_RequestNavigate">
+                    <TextBlock Text="Help on using Theme Editor"/>
+                </Hyperlink>
+                </TextBlock>
+            </StackPanel>
+
+            <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
+                <TextBlock Grid.Row="1" Grid.Column="1"
+                       Text="{Binding Version, FallbackValue='Version'}"
+                       Style="{StaticResource ThemedTextBlock}" />
+                    
+            </StackPanel>
+            <TextBlock Grid.Row="2" Grid.Column="1"
+                   Text="{Binding BuildDate, FallbackValue='Build date'}"
+                   Style="{StaticResource ThemedTextBlock}" />
+            <TextBlock Grid.Row="3" Grid.Column="1"
+                   Text="{Binding Copyright, FallbackValue='Copyright'}"
+                   Style="{StaticResource ThemedTextBlock}" />
+
+            <Border Grid.Row="4" Grid.Column="1" Margin="0,12,12,12"
+                    BorderBrush="Gray" BorderThickness="0,1,0,1"
+                    HorizontalAlignment="Stretch">
+                <TextBlock Margin="0,4"
+                           Text="{Binding Description, FallbackValue='Description'}" 
+                           TextWrapping="Wrap" MaxWidth="500"
+                           Style="{StaticResource ThemedTextBlock}" />
+            </Border>
+
+            <TextBlock Grid.Row="5" Grid.Column="0" Text="Acknowledgments" 
+                    Style="{StaticResource ThemedTextBlock}" FontWeight="DemiBold" Margin="0,12,6,0"/>
+        </Grid>
+
+        <Button DockPanel.Dock="Bottom" Width="90" Margin="0,10,0,0"
+                Height="28" HorizontalAlignment="Right" Content="OK"
+                IsDefault="True" IsCancel="True" />
+
+        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"  SharedSizeGroup="A"/>
+                    <ColumnDefinition SharedSizeGroup="B"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Row="0" Grid.Column="1" Style="{StaticResource ThemedTextBlock}">
+                    <Hyperlink NavigateUri="https://github.com/alex-titarenko/wpfcontrols" RequestNavigate="Hyperlink_RequestNavigate">
+                        <TextBlock Text="TAlex.WPF.Controls"/>
+                    </Hyperlink>
+                    <TextBlock Text="Library of WPF controls" Style="{StaticResource Decription}"/>
+                </TextBlock>
+                <TextBlock Grid.Row="1" Grid.Column="1" Style="{StaticResource ThemedTextBlock}">
+                    <Hyperlink NavigateUri="http://avalonedit.net/" RequestNavigate="Hyperlink_RequestNavigate">
+                        <TextBlock Text="Avalon Edit"/>
+                    </Hyperlink>
+                    <TextBlock Text=".NET WPF text editor Component" Style="{StaticResource Decription}"/>
+                </TextBlock>
+            </Grid>
+        </ScrollViewer>
+
+    </DockPanel>
+</my:ThemedWindow>
