@@ -28,9 +28,15 @@
     <None Remove="Images\unpin.png" />
     <None Remove="Images\unpinDark.png" />
     <None Remove="NativeMethods.txt" />
+    <None Remove="nlog.config" />
   </ItemGroup>
   <ItemGroup>
     <Page Remove="Themes\Sunset.xaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="nlog.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\pin.png" />
@@ -41,8 +47,9 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="AvalonEdit" Version="6.3.0.90" />
-    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.3.2" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="NLog" Version="5.3.4" />
     <PackageReference Include="TAlex.WPF.Controls" Version="3.0.3" />
   </ItemGroup>
   <ItemGroup>
