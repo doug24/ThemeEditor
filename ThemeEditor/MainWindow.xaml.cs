@@ -23,14 +23,75 @@ namespace ThemeEditor
             vm = new MainViewModel();
             DataContext = vm;
 
+            Rect windowBounds = Rect.Empty;
+            var settings = Properties.Settings.Default;
+            if (settings.Left != -1 && settings.Top != -1 &&
+                settings.Width != -1 && settings.Height != -1)
+            {
+                // fix for placements on monitors with different DPIs:
+                // initial placement on the primary monitor, then move it
+                // to the saved location when the window is loaded
+                Left = 0;
+                Top = 0;
+                Width = settings.Width;
+                Height = settings.Height;
+                WindowState = WindowState.Normal;
+
+                windowBounds = new(
+                    settings.Left,
+                    settings.Top,
+                    settings.Width,
+                    settings.Height);
+            }
+
             Loaded += (s, e) =>
             {
                 double sz = FontSize;
+
+                if (windowBounds.IsOnScreen())
+                {
+                    // setting Left and Top does not work when
+                    // moving to a monitor with a different DPI
+                    // than the primary monitor
+                    this.MoveWindow(settings.Left, settings.Top);
+                    WindowState = (WindowState)settings.WindowState;
+
+                    TextBoxCommands.BindCommandsToWindow(this);
+                }
+                else
+                {
+                    this.CenterWindow();
+                }
+
+                this.ConstrainToScreen();
             };
 
             Closing += (s, e) =>
             {
                 e.Cancel = vm.Closing();
+
+                if (!e.Cancel)
+                {
+                    if (WindowState == WindowState.Normal)
+                    {
+                        Properties.Settings.Default.Left = Left;
+                        Properties.Settings.Default.Top = Top;
+                        Properties.Settings.Default.Width = Width;
+                        Properties.Settings.Default.Height = Height;
+                    }
+                    else
+                    {
+                        Properties.Settings.Default.Left = RestoreBounds.Left;
+                        Properties.Settings.Default.Top = RestoreBounds.Top;
+                        Properties.Settings.Default.Width = RestoreBounds.Width;
+                        Properties.Settings.Default.Height = RestoreBounds.Height;
+                    }
+                    Properties.Settings.Default.WindowState = (int)WindowState.Normal;
+                    if (WindowState == WindowState.Maximized)
+                        Properties.Settings.Default.WindowState = (int)WindowState.Maximized;
+
+                    Properties.Settings.Default.Save();
+                }
             };
         }
 

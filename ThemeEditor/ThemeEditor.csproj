@@ -27,6 +27,7 @@
     <None Remove="Images\pinDark.png" />
     <None Remove="Images\unpin.png" />
     <None Remove="Images\unpinDark.png" />
+    <None Remove="NativeMethods.txt" />
   </ItemGroup>
   <ItemGroup>
     <Page Remove="Themes\Sunset.xaml" />
@@ -73,5 +74,6 @@
   </Target>
   <PropertyGroup>
     <Description>This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version.</Description>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
   </PropertyGroup>
 </Project>
