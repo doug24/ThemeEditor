@@ -225,8 +225,7 @@ namespace ThemeEditor
             if ((type.Equals("Dark", StringComparison.OrdinalIgnoreCase) ||
                  type.Equals("Light", StringComparison.OrdinalIgnoreCase)))
             {
-                string? path = Path.GetDirectoryName(
-                    System.Reflection.Assembly.GetExecutingAssembly().Location);
+                string? path = AppContext.BaseDirectory;
                 if (!string.IsNullOrEmpty(path))
                 {
                     path = Path.Combine(path, $"{type}Brushes.xaml");
