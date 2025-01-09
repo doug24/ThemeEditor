@@ -6,7 +6,7 @@
              xmlns:ae="http://icsharpcode.net/sharpdevelop/avalonedit"
              xmlns:local="clr-namespace:ThemeEditor"
              mc:Ignorable="d" 
-             d:DesignHeight="800" d:DesignWidth="800">
+             d:DesignHeight="1200" d:DesignWidth="800">
 
     <UserControl.Resources>
         <DataTemplate x:Key="comboBoxPinDelTemplate">
@@ -363,6 +363,19 @@
                            ShowLineNumbers="True" 
                            IsReadOnly="True"
                            WordWrap="True"/>
+
+            <Label Content="Replace Text (Diff Text)" DockPanel.Dock="Top" Margin="3,12,3,3"/>
+            <ae:TextEditor DockPanel.Dock="Top" x:Name="replaceView" 
+                           Margin="3,3,3,0"
+                           Height="120" 
+                           Width="460"
+                           HorizontalAlignment="Left"
+                           FontFamily="Consolas"
+                           FontSize="14"
+                           Foreground="{DynamicResource PreviewText.Foreground}"
+                           Background="{DynamicResource PreviewText.Background}"
+                           IsReadOnly="True"
+                           WordWrap="False"/>
 
             <Border/>
         </DockPanel>
