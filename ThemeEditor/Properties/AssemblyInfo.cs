@@ -12,8 +12,8 @@ using System.Windows;
 
 [assembly: AssemblyCompany("github.com/doug24")]
 [assembly: AssemblyProduct("Theme Editor")]
-[assembly: AssemblyCopyright("Copyright 2019, 2024")]
+[assembly: AssemblyCopyright("Copyright 2019, 2025")]
 
-[assembly: AssemblyVersion("2.0.3.0")]
-[assembly: AssemblyInformationalVersion("2.0.3.0")]
-[assembly: AssemblyFileVersion("2.0.3.0")]
+[assembly: AssemblyVersion("2.0.5.0")]
+[assembly: AssemblyInformationalVersion("2.0.5.0")]
+[assembly: AssemblyFileVersion("2.0.5.0")]
