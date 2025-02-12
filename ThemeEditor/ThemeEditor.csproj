@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net8.0-windows</TargetFramework>
-    <LangVersion>12</LangVersion>
+    <TargetFramework>net9.0-windows</TargetFramework>
+    <LangVersion>13</LangVersion>
     <OutputType>WinExe</OutputType>
     <UseWPF>true</UseWPF>
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
